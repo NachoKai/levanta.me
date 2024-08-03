@@ -1,34 +1,31 @@
-import * as faceapi from "@vladmandic/face-api";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { OPTIONS } from "./consts";
-
-const workNotificationTime = 10;
-const restNotificationTime = 10;
-const staleNotificationTime = 5;
+import { NOTIFICATION_TIMES } from "./consts";
+import { useFaceDetection } from "./hooks/useFaceDetection";
+import { useModels } from "./hooks/useModels";
+import { useTimers } from "./hooks/useTimers";
+import { formatTime } from "./utils/formatTIme";
+import { startVideo } from "./startVideo";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
-  const [workTime, setWorkTime] = useState(0);
-  const [restTime, setRestTime] = useState(0);
-  const [staleTime, setStaleTime] = useState(0);
-  const [faceDetected, setFaceDetected] = useState(false);
-  const [modelsLoaded, setModelsLoaded] = useState(false);
   const videoRef = useRef();
   const canvasRef = useRef();
-  const workTimeExceeded = workTime >= workNotificationTime;
-  const restTimeExceeded = restTime >= restNotificationTime;
-  const staleTimeExceeded = staleTime >= staleNotificationTime;
+  const modelsLoaded = useModels();
+  const faceDetected = useFaceDetection(videoRef, canvasRef, modelsLoaded);
 
-  const startVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: {} })
-      .then(stream => {
-        videoRef.current.srcObject = stream;
-      })
-      .catch(err => console.error(err));
+  const resetTimers = () => {
+    setStatus("idle");
+    setWorkTime(0);
+    setRestTime(0);
   };
+
+  const { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime } = useTimers(
+    status,
+    faceDetected,
+    resetTimers
+  );
 
   const startWorking = () => {
     setStatus("working");
@@ -42,151 +39,92 @@ const App = () => {
     setStaleTime(0);
   };
 
-  const resetTimers = () => {
-    setStatus("idle");
-    setWorkTime(0);
-    setRestTime(0);
-  };
-
-  const formatTime = time => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
   useEffect(() => {
-    const loadModels = async () => {
-      try {
-        await Promise.all([
-          faceapi.nets.ssdMobilenetv1.loadFromUri(OPTIONS.MODEL_URLS.Mobilenetv1Model),
-          faceapi.nets.tinyFaceDetector.loadFromUri(OPTIONS.MODEL_URLS.TinyFaceLandmarkModel),
-          faceapi.nets.faceLandmark68Net.loadFromUri(OPTIONS.MODEL_URLS.FaceLandmark68TinyNet),
-          faceapi.nets.faceRecognitionNet.loadFromUri(OPTIONS.MODEL_URLS.FaceRecognitionModel),
-          faceapi.nets.faceExpressionNet.loadFromUri(OPTIONS.MODEL_URLS.FaceExpressionModel),
-        ]);
-        setModelsLoaded(true);
-        startVideo();
-      } catch (error) {
-        console.error("Error loading models:", error);
-      }
-    };
-    loadModels();
-  }, []);
-
-  useEffect(() => {
-    if (modelsLoaded && videoRef.current) {
-      const interval = setInterval(async () => {
-        const detections = await faceapi.detectSingleFace(
-          videoRef.current,
-          new faceapi.TinyFaceDetectorOptions({
-            inputSize: 320,
-            scoreThreshold: 0.5,
-          })
-        );
-
-        setFaceDetected(!!detections);
-
-        if (!canvasRef.current) return;
-        const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
-        faceapi.matchDimensions(canvasRef.current, displaySize);
-        canvasRef.current
-          .getContext("2d")
-          .clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      }, 1000);
-
-      return () => clearInterval(interval);
+    if (modelsLoaded) {
+      startVideo(videoRef);
     }
   }, [modelsLoaded]);
 
-  useEffect(() => {
-    let interval = null;
-
-    if (status === "idle") {
-      clearInterval(interval);
-    } else {
-      interval = setInterval(() => {
-        if (faceDetected) {
-          if (status === "working") {
-            setWorkTime(prevTime => prevTime + 1);
-            setStaleTime(0);
-          } else {
-            setStaleTime(prevTime => prevTime + 1);
-          }
-        } else if (status === "resting") {
-          setRestTime(prevTime => prevTime + 1);
-          setStaleTime(0);
-        } else {
-          setStaleTime(prevTime => prevTime + 1);
-        }
-      }, 1000);
-    }
-
-    if (staleTime >= staleNotificationTime) {
-      resetTimers();
-    }
-
-    return () => clearInterval(interval);
-  }, [status, faceDetected, staleTime]);
-
   return (
-    <Container>
-      <VideoContainer>
+    <Flex
+      direction="column"
+      gap="32px"
+      align="center"
+      justify="center"
+      width="100%"
+      height="100%"
+      padding="32px"
+    >
+      <Flex>
         <Video ref={videoRef} autoPlay muted />
         <Canvas ref={canvasRef} />
-      </VideoContainer>
+      </Flex>
 
-      <TimerDisplay>
-        <TimerItem>Work Time: {formatTime(workTime)}</TimerItem>
-        <TimerItem>Stale Time: {formatTime(staleTime)}</TimerItem>
-        <TimerItem>Rest Time: {formatTime(restTime)}</TimerItem>
-      </TimerDisplay>
+      <Flex gap="32px" justify="space-between" padding="8px" background="#eee" radius="5px">
+        <Text color="#222">Work Time: {formatTime(workTime)}</Text>
+        <Text color="#222">Stale Time: {formatTime(staleTime)}</Text>
+        <Text color="#222">Rest Time: {formatTime(restTime)}</Text>
+      </Flex>
 
-      <ButtonsContainer>
+      <Flex gap="32px" align="space-between" justify="space-between">
         <Button onClick={startWorking} disabled={status === "working"}>
           Start Working
         </Button>
         <Button onClick={startResting} disabled={status === "resting"}>
           Start Resting
         </Button>
-        <Button onClick={resetTimers}>Reset All</Button>
-      </ButtonsContainer>
+        <Button onClick={resetTimers} disabled={status === "idle"}>
+          Reset All
+        </Button>
+      </Flex>
 
-      <StatusContainer>
-        <StatusText>Current Status: {status}</StatusText>
-        <StatusText>Face Detected: {faceDetected ? "Yes" : "No"}</StatusText>
-      </StatusContainer>
+      <Flex justify="space-between" align="space-between" gap="32px">
+        <Text fontWeight="bold">Current Status: {status}</Text>
+        <Flex gap="8px" align="center">
+          <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
+          <Circle color={faceDetected ? "#0f0" : "#f00"} />
+        </Flex>
+      </Flex>
 
-      <NotificationsContainer>
-        {workTimeExceeded && <Notification>Work Time Exceeded. Go for a break!</Notification>}
-        {staleTimeExceeded && (
+      <Flex gap="8px" padding="8px" radius="5px">
+        {workTime >= NOTIFICATION_TIMES.WORK && (
+          <Notification>Work Time Exceeded. Go for a break!</Notification>
+        )}
+        {staleTime >= NOTIFICATION_TIMES.STALE && (
           <Notification>Stale Time Exceeded. Timers have been reset.</Notification>
         )}
-        {restTimeExceeded && <Notification>Rest Time Exceeded. Get back to work!</Notification>}
-      </NotificationsContainer>
+        {restTime >= NOTIFICATION_TIMES.REST && (
+          <Notification>Rest Time Exceeded. Get back to work!</Notification>
+        )}
+      </Flex>
 
-      <InfoContainer>
-        <Info>Work time configured: {workNotificationTime} seconds</Info>
-        <Info>Stale time configured: {staleNotificationTime} seconds</Info>
-        <Info>Rest time configured: {restNotificationTime} seconds</Info>
-      </InfoContainer>
-    </Container>
+      <Flex direction="column" gap="8px">
+        <Text color="#eee">Work time configured: {NOTIFICATION_TIMES.WORK} seconds</Text>
+        <Text color="#eee">Stale time configured: {NOTIFICATION_TIMES.STALE} seconds</Text>
+        <Text color="#eee">Rest time configured: {NOTIFICATION_TIMES.REST} seconds</Text>
+      </Flex>
+    </Flex>
   );
 };
 
-const Container = styled.div`
+const Flex = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 32px;
-  font-family: Arial, sans-serif;
-  gap: 32px;
+  ${({ gap }) => gap && `gap: ${gap}`};
+  ${({ align }) => align && `align-items: ${align}`};
+  ${({ justify }) => justify && `justify-content: ${justify}`};
+  ${({ direction }) => direction && `flex-direction: ${direction}`};
+  ${({ width }) => width && `width: ${width}`};
+  ${({ height }) => height && `height: ${height}`};
+  ${({ padding }) => padding && `padding: ${padding}`};
+  ${({ margin }) => margin && `margin: ${margin}`};
+  ${({ radius }) => radius && `border-radius: ${radius}`};
+  ${({ background }) => background && `background: ${background}`};
 `;
 
-const VideoContainer = styled.div`
-  position: relative;
+const Text = styled.span`
+  ${({ color }) => color && `color: ${color}`};
+  ${({ fontSize }) => fontSize && `font-size: ${fontSize}`};
+  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
 `;
 
 const Video = styled.video`
@@ -198,25 +136,6 @@ const Canvas = styled.canvas`
   position: absolute;
   top: 0;
   left: 0;
-`;
-
-const TimerDisplay = styled.div`
-  display: flex;
-  gap: 32px;
-  justify-content: space-between;
-  padding: 10px;
-  background-color: #eee;
-  border-radius: 5px;
-`;
-
-const TimerItem = styled.span`
-  color: #222;
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 32px;
 `;
 
 const Button = styled.button`
@@ -231,29 +150,11 @@ const Button = styled.button`
 
   &:disabled {
     background-color: #cccccc;
+    pointer-events: none;
   }
 `;
 
-const StatusText = styled.span`
-  text-align: center;
-  font-weight: bold;
-`;
-
-const StatusContainer = styled.div`
-  display: flex;
-  text-align: center;
-  justify-content: space-between;
-  gap: 32px;
-`;
-
-const NotificationsContainer = styled.div`
-  display: flex;
-  padding: 10px;
-  border-radius: 5px;
-  gap: 8px;
-`;
-
-const Notification = styled.span`
+const Notification = styled(Text)`
   color: #eee;
   background-color: #444;
   border-radius: 5px;
@@ -261,13 +162,11 @@ const Notification = styled.span`
   font-weight: bold;
 `;
 
-const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: 8px;
+const Circle = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: ${({ color }) => color};
 `;
-
-const Info = styled.span``;
 
 export default App;

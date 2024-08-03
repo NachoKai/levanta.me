@@ -15,3 +15,9 @@ export const OPTIONS = {
       "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights/face_recognition_model-weights_manifest.json",
   },
 };
+
+export const NOTIFICATION_TIMES = {
+  WORK: 10,
+  REST: 10,
+  STALE: 5,
+};
