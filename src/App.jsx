@@ -7,7 +7,7 @@ import { useModels } from "./hooks/useModels";
 import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
 import { startVideo } from "./startVideo";
-import { formatTime } from "./utils/formatTime";
+import { formatCounter } from "./utils/formatCounter";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -65,14 +65,14 @@ const App = () => {
       title = "Levanta.me";
     } else if (status === "working") {
       title = workTimeExceeded
-        ? `⏰ Time to Rest! - ${formatTime(workTime)}`
-        : `💼 Working - ${formatTime(workTime)}`;
+        ? `⏰ Time to Rest! - ${formatCounter(workTime)}`
+        : `💼 Working - ${formatCounter(workTime)}`;
     } else if (status === "resting") {
       title = restTimeExceeded
-        ? `⏰ Time to Work! - ${formatTime(restTime)}`
-        : `🛌 Resting - ${formatTime(restTime)}`;
+        ? `⏰ Time to Work! - ${formatCounter(restTime)}`
+        : `🛌 Resting - ${formatCounter(restTime)}`;
     } else if (staleTimeExceeded) {
-      title = `⏰ Stale Time - ${formatTime(staleTime)}`;
+      title = `⏰ Stale Time - ${formatCounter(staleTime)}`;
     }
 
     document.title = title;
@@ -153,9 +153,9 @@ const App = () => {
         radius="5px"
         width="550px"
       >
-        <Text color="#222">💼 Work Time: {formatTime(workTime)}</Text>
-        <Text color="#222">⏰ Stale Time: {formatTime(staleTime)}</Text>
-        <Text color="#222">🛌 Rest Time: {formatTime(restTime)}</Text>
+        <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
+        <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
+        <Text color="#222">🛌 Rest Time: {formatCounter(restTime)}</Text>
       </Flex>
 
       <Flex gap="32px" align="space-between" justify="space-between">
