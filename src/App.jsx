@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { NOTIFICATION_TIMES } from "./consts";
@@ -19,6 +19,9 @@ const App = () => {
     setStatus,
     faceDetected
   );
+  const workTimeExceeded = workTime >= NOTIFICATION_TIMES.WORK;
+  const restTimeExceeded = restTime >= NOTIFICATION_TIMES.REST;
+  const staleTimeExceeded = staleTime >= NOTIFICATION_TIMES.STALE;
 
   const resetTimers = () => {
     setStatus("idle");
@@ -45,6 +48,34 @@ const App = () => {
     }
   }, [modelsLoaded]);
 
+  useLayoutEffect(() => {
+    let title = "Levanta.me";
+
+    if (status === "idle") {
+      title = "Levanta.me";
+    } else if (status === "working") {
+      title = workTimeExceeded
+        ? `⏰ Time to Rest! - ${formatTime(workTime)}`
+        : `💼 Working - ${formatTime(workTime)}`;
+    } else if (status === "resting") {
+      title = restTimeExceeded
+        ? `⏰ Time to Work! - ${formatTime(restTime)}`
+        : `🛌 Resting - ${formatTime(restTime)}`;
+    } else if (staleTimeExceeded) {
+      title = `Stale Time - ${formatTime(staleTime)}`;
+    }
+
+    document.title = title;
+  }, [
+    restTime,
+    restTimeExceeded,
+    staleTime,
+    staleTimeExceeded,
+    status,
+    workTime,
+    workTimeExceeded,
+  ]);
+
   return (
     <Flex
       direction="column"
@@ -61,9 +92,9 @@ const App = () => {
       </Flex>
 
       <Flex gap="32px" justify="space-between" padding="8px" background="#eee" radius="5px">
-        <Text color="#222">Work Time: {formatTime(workTime)}</Text>
-        <Text color="#222">Stale Time: {formatTime(staleTime)}</Text>
-        <Text color="#222">Rest Time: {formatTime(restTime)}</Text>
+        <Text color="#222">💼 Work Time: {formatTime(workTime)}</Text>
+        <Text color="#222">⏰ Stale Time: {formatTime(staleTime)}</Text>
+        <Text color="#222">🛌 Rest Time: {formatTime(restTime)}</Text>
       </Flex>
 
       <Flex gap="32px" align="space-between" justify="space-between">
@@ -87,21 +118,17 @@ const App = () => {
       </Flex>
 
       <Flex gap="8px" padding="8px" radius="5px">
-        {workTime >= NOTIFICATION_TIMES.WORK && (
-          <Notification>Work Time Exceeded. Go for a break!</Notification>
+        {workTimeExceeded && <Notification>Work Time Exceeded. Go for a break! 🛌</Notification>}
+        {staleTimeExceeded && (
+          <Notification>Stale Time Exceeded. Timers have been reset. ⏰</Notification>
         )}
-        {staleTime >= NOTIFICATION_TIMES.STALE && (
-          <Notification>Stale Time Exceeded. Timers have been reset.</Notification>
-        )}
-        {restTime >= NOTIFICATION_TIMES.REST && (
-          <Notification>Rest Time Exceeded. Get back to work!</Notification>
-        )}
+        {restTimeExceeded && <Notification>Rest Time Exceeded. Get back to work! 💼</Notification>}
       </Flex>
 
       <Flex direction="column" gap="8px">
-        <Text color="#eee">Work time configured: {NOTIFICATION_TIMES.WORK} seconds</Text>
-        <Text color="#eee">Stale time configured: {NOTIFICATION_TIMES.STALE} seconds</Text>
-        <Text color="#eee">Rest time configured: {NOTIFICATION_TIMES.REST} seconds</Text>
+        <Text color="#eee">💼 Work time configured: {NOTIFICATION_TIMES.WORK} seconds</Text>
+        <Text color="#eee">⏰ Stale time configured: {NOTIFICATION_TIMES.STALE} seconds</Text>
+        <Text color="#eee">🛌 Rest time configured: {NOTIFICATION_TIMES.REST} seconds</Text>
       </Flex>
     </Flex>
   );
