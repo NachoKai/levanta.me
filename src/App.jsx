@@ -9,6 +9,7 @@ import { useTimers } from "./hooks/useTimers";
 import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
 import { formatMinutes } from "./utils/formatMinutes";
+import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -89,23 +90,24 @@ const App = () => {
 
   useEffect(() => {
     if (loading || error) return;
+    const dateTime = getFormattedDateTime();
 
     if (workTimeExceeded && !notificationSent.workTime) {
-      sendNotification("Work Time Exceeded. Go for a break! 🛌");
+      sendNotification(`Work Time Exceeded at ${dateTime}. Go for a break! 🛌`);
       setNotificationSent(prevState => ({
         ...prevState,
         workTime: true,
       }));
     }
     if (restTimeExceeded && !notificationSent.restTime) {
-      sendNotification("Rest Time Exceeded. Get back to work! 💼");
+      sendNotification(`Rest Time Exceeded at ${dateTime}. Get back to work! 💼`);
       setNotificationSent(prevState => ({
         ...prevState,
         restTime: true,
       }));
     }
     if (staleTimeExceeded && !notificationSent.staleTime) {
-      sendNotification("Stale Time Exceeded. Timers have been reset. ⏰");
+      sendNotification(`Stale Time Exceeded at ${dateTime}. Timers have been reset. ⏰`);
       setNotificationSent(prevState => ({
         ...prevState,
         staleTime: true,
