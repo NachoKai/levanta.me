@@ -20,3 +20,8 @@ export const NOTIFICATION_TIMES = {
   REST: 10,
   STALE: 5,
 };
+
+export const TELEGRAM = {
+  BOT_TOKEN: import.meta.env.VITE_BOT_TOKEN || "",
+  CHAT_ID: import.meta.env.VITE_CHAT_ID || "",
+};

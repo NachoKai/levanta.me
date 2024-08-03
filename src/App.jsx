@@ -1,19 +1,29 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { NOTIFICATION_TIMES } from "./consts";
+import { NOTIFICATION_TIMES, TELEGRAM } from "./consts";
 import { useFaceDetection } from "./hooks/useFaceDetection";
 import { useModels } from "./hooks/useModels";
+import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
 import { startVideo } from "./startVideo";
-import { formatTime } from "./utils/formatTIme";
+import { formatTime } from "./utils/formatTime";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
+  const [notificationSent, setNotificationSent] = useState({
+    workTime: false,
+    restTime: false,
+    staleTime: false,
+  });
   const videoRef = useRef();
   const canvasRef = useRef();
   const modelsLoaded = useModels();
   const faceDetected = useFaceDetection(videoRef, canvasRef, modelsLoaded);
+  const { sendNotification, loading, error } = useTelegramNotification(
+    TELEGRAM.BOT_TOKEN,
+    TELEGRAM.CHAT_ID
+  );
   const { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime } = useTimers(
     status,
     setStatus,
@@ -75,6 +85,50 @@ const App = () => {
     workTime,
     workTimeExceeded,
   ]);
+
+  useEffect(() => {
+    if (loading || error) return;
+
+    if (workTimeExceeded && !notificationSent.workTime) {
+      sendNotification("Work Time Exceeded. Go for a break! 🛌");
+      setNotificationSent(prevState => ({
+        ...prevState,
+        workTime: true,
+      }));
+    }
+    if (restTimeExceeded && !notificationSent.restTime) {
+      sendNotification("Rest Time Exceeded. Get back to work! 💼");
+      setNotificationSent(prevState => ({
+        ...prevState,
+        restTime: true,
+      }));
+    }
+    if (staleTimeExceeded && !notificationSent.staleTime) {
+      sendNotification("Stale Time Exceeded. Timers have been reset. ⏰");
+      setNotificationSent(prevState => ({
+        ...prevState,
+        staleTime: true,
+      }));
+    }
+  }, [
+    workTimeExceeded,
+    restTimeExceeded,
+    staleTimeExceeded,
+    sendNotification,
+    loading,
+    error,
+    notificationSent,
+  ]);
+
+  useEffect(() => {
+    if (status === "idle") {
+      setNotificationSent({
+        workTime: false,
+        restTime: false,
+        staleTime: false,
+      });
+    }
+  }, [status]);
 
   return (
     <Flex
