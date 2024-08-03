@@ -100,13 +100,15 @@ yarn build
 
 ### Configuration
 
-The notification times are configured in the `App` component:
+The notification times are configured in the .env file
 
 ```
-javascriptCopy code
-const WORK_NOTIFICATION_TIME = 10; // in seconds
-const REST_NOTIFICATION_TIME = 10; // in seconds
-const STALE_NOTIFICATION_TIME = 5; // in seconds
+VITE_BOT_TOKEN=
+VITE_CHAT_ID=
+VITE_WORK_TIME=
+VITE_REST_TIME=
+VITE_STALE_TIME=
+VITE_MIN_CONFIDENCE=
 
 ```
 
