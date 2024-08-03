@@ -5,8 +5,8 @@ import { NOTIFICATION_TIMES } from "./consts";
 import { useFaceDetection } from "./hooks/useFaceDetection";
 import { useModels } from "./hooks/useModels";
 import { useTimers } from "./hooks/useTimers";
-import { formatTime } from "./utils/formatTIme";
 import { startVideo } from "./startVideo";
+import { formatTime } from "./utils/formatTIme";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -14,18 +14,18 @@ const App = () => {
   const canvasRef = useRef();
   const modelsLoaded = useModels();
   const faceDetected = useFaceDetection(videoRef, canvasRef, modelsLoaded);
+  const { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime } = useTimers(
+    status,
+    setStatus,
+    faceDetected
+  );
 
   const resetTimers = () => {
     setStatus("idle");
     setWorkTime(0);
     setRestTime(0);
+    setStaleTime(0);
   };
-
-  const { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime } = useTimers(
-    status,
-    faceDetected,
-    resetTimers
-  );
 
   const startWorking = () => {
     setStatus("working");

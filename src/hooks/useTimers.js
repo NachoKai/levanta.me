@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { NOTIFICATION_TIMES } from "../consts";
 
-export const useTimers = (status, faceDetected, resetTimers) => {
+export const useTimers = (status, setStatus, faceDetected) => {
   const [workTime, setWorkTime] = useState(0);
   const [restTime, setRestTime] = useState(0);
   const [staleTime, setStaleTime] = useState(0);
@@ -31,11 +31,13 @@ export const useTimers = (status, faceDetected, resetTimers) => {
     }
 
     if (staleTime >= NOTIFICATION_TIMES.STALE) {
-      resetTimers();
+      setStatus("idle");
+      setWorkTime(0);
+      setRestTime(0);
     }
 
     return () => clearInterval(interval);
-  }, [status, faceDetected, staleTime, resetTimers]);
+  }, [status, faceDetected, staleTime, setStatus]);
 
-  return { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime, resetTimers };
+  return { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime };
 };
