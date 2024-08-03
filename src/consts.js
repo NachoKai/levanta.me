@@ -1,6 +1,6 @@
 export const OPTIONS = {
   withLandmarks: true,
-  minConfidence: 1,
+  minConfidence: import.meta.env.VITE_MIN_CONFIDENCE || 0.5, // Set the minimum confidence for a face to be considered a match.
   MODEL_URLS: {
     Mobilenetv1Model:
       "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json",
@@ -16,12 +16,12 @@ export const OPTIONS = {
 };
 
 export const NOTIFICATION_TIMES = {
-  WORK: 10,
-  REST: 10,
-  STALE: 5,
+  WORK: import.meta.env.VITE_WORK_TIME || 50 * 60, // 50 minutes
+  REST: import.meta.env.VITE_REST_TIME || 5 * 60, // 5 minutes
+  STALE: import.meta.env.VITE_STALE_TIME || 10 * 60, // 10 minutes
 };
 
 export const TELEGRAM = {
-  BOT_TOKEN: import.meta.env.VITE_BOT_TOKEN || "",
-  CHAT_ID: import.meta.env.VITE_CHAT_ID || "",
+  BOT_TOKEN: import.meta.env.VITE_BOT_TOKEN || "", // Get your bot token from @BotFather
+  CHAT_ID: import.meta.env.VITE_CHAT_ID || "", // Get your chat id from @BotFather
 };
