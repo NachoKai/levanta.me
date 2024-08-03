@@ -8,6 +8,7 @@ import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
 import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
+import { formatMinutes } from "./utils/formatMinutes";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -187,9 +188,11 @@ const App = () => {
       </Flex>
 
       <Flex direction="column" gap="8px">
-        <Text color="#eee">💼 Work time configured: {NOTIFICATION_TIMES.WORK} seconds</Text>
-        <Text color="#eee">⏰ Stale time configured: {NOTIFICATION_TIMES.STALE} seconds</Text>
-        <Text color="#eee">🛌 Rest time configured: {NOTIFICATION_TIMES.REST} seconds</Text>
+        <Text color="#eee">💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}</Text>
+        <Text color="#eee">
+          ⏰ Stale time configured: {formatMinutes(NOTIFICATION_TIMES.STALE)}
+        </Text>
+        <Text color="#eee">🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}</Text>
       </Flex>
     </Flex>
   );
