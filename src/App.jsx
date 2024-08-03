@@ -62,7 +62,7 @@ const App = () => {
         ? `⏰ Time to Work! - ${formatTime(restTime)}`
         : `🛌 Resting - ${formatTime(restTime)}`;
     } else if (staleTimeExceeded) {
-      title = `Stale Time - ${formatTime(staleTime)}`;
+      title = `⏰ Stale Time - ${formatTime(staleTime)}`;
     }
 
     document.title = title;
@@ -82,7 +82,7 @@ const App = () => {
       gap="32px"
       align="center"
       justify="center"
-      width="100%"
+      width="600px"
       height="100%"
       padding="32px"
     >
@@ -91,7 +91,14 @@ const App = () => {
         <Canvas ref={canvasRef} />
       </Flex>
 
-      <Flex gap="32px" justify="space-between" padding="8px" background="#eee" radius="5px">
+      <Flex
+        gap="32px"
+        justify="space-between"
+        padding="8px"
+        background="#eee"
+        radius="5px"
+        width="550px"
+      >
         <Text color="#222">💼 Work Time: {formatTime(workTime)}</Text>
         <Text color="#222">⏰ Stale Time: {formatTime(staleTime)}</Text>
         <Text color="#222">🛌 Rest Time: {formatTime(restTime)}</Text>
@@ -109,7 +116,7 @@ const App = () => {
         </Button>
       </Flex>
 
-      <Flex justify="space-between" align="space-between" gap="32px">
+      <Flex justify="space-between" align="space-between" gap="32px" width="400px">
         <Text fontWeight="bold">Current Status: {status}</Text>
         <Flex gap="8px" align="center">
           <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
@@ -117,7 +124,7 @@ const App = () => {
         </Flex>
       </Flex>
 
-      <Flex gap="8px" padding="8px" radius="5px">
+      <Flex gap="8px" padding="8px" radius="5px" height="56px" align="center" justify="center">
         {workTimeExceeded && <Notification>Work Time Exceeded. Go for a break! 🛌</Notification>}
         {staleTimeExceeded && (
           <Notification>Stale Time Exceeded. Timers have been reset. ⏰</Notification>

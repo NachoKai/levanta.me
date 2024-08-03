@@ -1,7 +1,6 @@
 export const OPTIONS = {
   withLandmarks: true,
-  withDescriptors: true,
-  minConfidence: 0.5,
+  minConfidence: 1,
   MODEL_URLS: {
     Mobilenetv1Model:
       "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json",
