@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { NOTIFICATION_TIMES, TELEGRAM } from "./consts";
+import { TELEGRAM } from "./consts";
 import { useFaceDetection } from "./hooks/useFaceDetection";
 import { useIsMobile } from "./hooks/useIsMobile";
 import { useModels } from "./hooks/useModels";
@@ -9,7 +9,6 @@ import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
 import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
-import { formatMinutes } from "./utils/formatMinutes";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
 
@@ -19,6 +18,11 @@ const App = () => {
     workTime: false,
     restTime: false,
     idleTime: false,
+  });
+  const [notificationTimes, setNotificationTimes] = useState({
+    WORK: parseInt(localStorage.getItem("workTime")) || 50,
+    REST: parseInt(localStorage.getItem("restTime")) || 10,
+    IDLE: parseInt(localStorage.getItem("idleTime")) || 5,
   });
   const videoRef = useRef();
   const canvasRef = useRef();
@@ -40,9 +44,9 @@ const App = () => {
   } = useTimers(status, setStatus, faceDetected);
 
   const isMobile = useIsMobile();
-  const workTimeExceeded = workTime >= NOTIFICATION_TIMES.WORK;
-  const restTimeExceeded = restTime >= NOTIFICATION_TIMES.REST;
-  const idleTimeExceeded = idleTime >= NOTIFICATION_TIMES.IDLE;
+  const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
+  const restTimeExceeded = restTime >= notificationTimes.REST * 60;
+  const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
 
   const resetTimers = () => {
     setStatus("idle");
@@ -61,6 +65,13 @@ const App = () => {
     setStatus("resting");
     setWorkTime(0);
     setIdleTime(0);
+  };
+
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    const newValue = parseInt(value) || 0;
+    setNotificationTimes(prev => ({ ...prev, [name]: newValue }));
+    localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
   };
 
   useEffect(() => {
@@ -246,16 +257,40 @@ const App = () => {
           )}
         </Flex>
 
-        <Flex width="100%" direction="column" gap="8px" align="center">
-          <Text color="#eee">
-            💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}
-          </Text>
-          <Text color="#eee">
-            ⏰ Idle time configured: {formatMinutes(NOTIFICATION_TIMES.IDLE)}
-          </Text>
-          <Text color="#eee">
-            🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}
-          </Text>
+        <Flex width="100%" direction="column" gap="16px" align="center">
+          <InputWrapper>
+            <Label htmlFor="WORK">💼 Work time (minutes):</Label>
+            <Input
+              type="number"
+              id="WORK"
+              name="WORK"
+              value={notificationTimes.WORK}
+              onChange={handleInputChange}
+              min="1"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="IDLE">⏰ Idle time (minutes):</Label>
+            <Input
+              type="number"
+              id="IDLE"
+              name="IDLE"
+              value={notificationTimes.IDLE}
+              onChange={handleInputChange}
+              min="1"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="REST">🛌 Rest time (minutes):</Label>
+            <Input
+              type="number"
+              id="REST"
+              name="REST"
+              value={notificationTimes.REST}
+              onChange={handleInputChange}
+              min="1"
+            />
+          </InputWrapper>
         </Flex>
       </Body>
     </Flex>
@@ -338,6 +373,25 @@ const Circle = styled.div`
   height: 10px;
   border-radius: 50%;
   background-color: ${({ color }) => color};
+`;
+
+const InputWrapper = styled(Flex)`
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+`;
+
+const Label = styled.label`
+  color: #eee;
+  width: 50%;
+`;
+
+const Input = styled.input`
+  width: 50%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 `;
 
 export default App;

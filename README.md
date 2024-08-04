@@ -33,21 +33,18 @@ Ensure you have the following installed:
    ```
    git clone https://github.com/NachoKai/levanta.me.git
    cd levanta.me
-
    ```
 
 2. Install the dependencies:
 
    ```
    npm install
-
    ```
 
    or
 
    ```
    yarn install
-
    ```
 
 ### Running the App
@@ -56,14 +53,12 @@ Ensure you have the following installed:
 
    ```
    npm run dev
-
    ```
 
    or
 
    ```
    yarn run dev
-
    ```
 
 2. Open your browser and navigate to `http://localhost:5173/`.
@@ -74,14 +69,12 @@ To create a production build:
 
 ```
 npm run build
-
 ```
 
 or
 
 ```
 yarn build
-
 ```
 
 ### Project Structure
@@ -105,11 +98,7 @@ The notification times are configured in the .env file
 ```
 VITE_BOT_TOKEN=
 VITE_CHAT_ID=
-VITE_WORK_TIME=
-VITE_REST_TIME=
-VITE_IDLE_TIME=
 VITE_MIN_CONFIDENCE=
-
 ```
 
 ### Contribution
