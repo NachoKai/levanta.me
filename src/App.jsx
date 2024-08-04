@@ -144,20 +144,13 @@ const App = () => {
   }, [status]);
 
   return (
-    <Flex
-      direction="column"
-      padding="0 32px"
-      gap="32px"
-      height="100vh"
-      justify="end"
-      align="center"
-    >
+    <Flex direction="column" padding="0 32px" gap="32px" height="100vh" align="center">
       <Flex width="416px">
         <Video ref={videoRef} autoPlay muted />
         <Canvas ref={canvasRef} />
       </Flex>
 
-      <Flex direction="column" padding="32px" gap="32px" justify="end" align="center">
+      <Body direction="column" padding="32px" gap="32px" justify="end" align="center" width="438px">
         <Flex
           width="100%"
           gap="32px"
@@ -167,20 +160,26 @@ const App = () => {
           radius="5px"
           align="center"
         >
-          <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
-          <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
-          <Text color="#222">🛌 Rest Time: {formatCounter(restTime)}</Text>
+          <Text width="30%" color="#222">
+            💼 Work Time: {formatCounter(workTime)}
+          </Text>
+          <Text width="30%" color="#222">
+            ⏰ Stale Time: {formatCounter(staleTime)}
+          </Text>
+          <Text width="30%" color="#222">
+            🛌 Rest Time: {formatCounter(restTime)}
+          </Text>
         </Flex>
 
         <Flex width="100%" gap="32px" align="center" justify="space-between">
           <Button onClick={startWorking} disabled={status === "working"}>
-            Start Working
+            Work
           </Button>
           <Button onClick={startResting} disabled={status === "resting"}>
-            Start Resting
+            Rest
           </Button>
           <Button onClick={resetTimers} disabled={status === "idle"}>
-            Reset All
+            Reset
           </Button>
           <Button width="103px" onClick={togglePause} disabled={status === "idle"}>
             {isPaused ? "Resume" : "Pause"}
@@ -189,7 +188,7 @@ const App = () => {
         </Flex>
 
         <Flex width="100%" justify="space-between" align="space-between" gap="32px">
-          <Text fontWeight="bold">Current Status: {isPaused ? "Paused" : status}</Text>
+          <Text fontWeight="bold">Current Status: {isPaused ? "paused" : status}</Text>
           <Flex gap="8px" align="center">
             <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
             <Circle color={faceDetected ? "#0f0" : "#f00"} />
@@ -225,7 +224,7 @@ const App = () => {
             <Notification>Rest time finished. Get back to work! 💼</Notification>
           )}
         </Flex>
-      </Flex>
+      </Body>
     </Flex>
   );
 };
@@ -244,7 +243,13 @@ const Flex = styled.div`
   ${({ background }) => background && `background: ${background}`};
 `;
 
+const Body = styled(Flex)`
+  position: relative;
+  top: 385px;
+`;
+
 const Text = styled.span`
+  ${({ width }) => width && `width: ${width}`};
   ${({ color }) => color && `color: ${color}`};
   ${({ fontSize }) => fontSize && `font-size: ${fontSize}`};
   ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
@@ -254,14 +259,14 @@ const Video = styled.video`
   position: absolute;
   top: 0;
   width: 416px;
-  height: auto;
+  height: 416px;
 `;
 
 const Canvas = styled.canvas`
   position: absolute;
   top: 0;
   width: 416px;
-  height: auto;
+  height: 416px;
 `;
 
 const Button = styled.button`
