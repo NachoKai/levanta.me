@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import styled from "styled-components";
 
 import { NOTIFICATION_TIMES, TELEGRAM } from "./consts";
@@ -37,6 +38,8 @@ const App = () => {
     togglePause,
   } = useTimers(status, setStatus, faceDetected);
 
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   const workTimeExceeded = workTime >= NOTIFICATION_TIMES.WORK;
   const restTimeExceeded = restTime >= NOTIFICATION_TIMES.REST;
   const staleTimeExceeded = staleTime >= NOTIFICATION_TIMES.STALE;
@@ -59,10 +62,6 @@ const App = () => {
     setWorkTime(0);
     setStaleTime(0);
   };
-
-  // const testNotification = () => {
-  //   sendNotification("Test!");
-  // };
 
   useEffect(() => {
     if (modelsLoaded) {
@@ -144,50 +143,86 @@ const App = () => {
   }, [status]);
 
   return (
-    <Flex direction="column" padding="0 32px" gap="32px" height="100vh" align="center">
-      <Flex width="416px">
+    <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
+      <Flex width={isMobile ? "100%" : "416px"} align="center" justify="center">
         <Video ref={videoRef} autoPlay muted />
         <Canvas ref={canvasRef} />
       </Flex>
 
-      <Body direction="column" padding="32px" gap="32px" justify="end" align="center" width="438px">
+      <Body
+        direction="column"
+        padding={isMobile ? "16px" : "32px"}
+        gap="32px"
+        justify="end"
+        align="center"
+        maxWidth={isMobile ? "100%" : "960px"}
+      >
         <Flex
           width="100%"
-          gap="32px"
+          gap={isMobile ? "16px" : "32px"}
+          height="100%"
           justify="space-between"
           padding="8px"
           background="#eee"
           radius="5px"
           align="center"
+          direction={isMobile ? "column" : "row"}
         >
-          <Text width="30%" color="#222">
+          <Text width={isMobile ? "100%" : "30%"} color="#222">
             💼 Work Time: {formatCounter(workTime)}
           </Text>
-          <Text width="30%" color="#222">
+          <Text width={isMobile ? "100%" : "30%"} color="#222">
             ⏰ Stale Time: {formatCounter(staleTime)}
           </Text>
-          <Text width="30%" color="#222">
+          <Text width={isMobile ? "100%" : "30%"} color="#222">
             🛌 Rest Time: {formatCounter(restTime)}
           </Text>
         </Flex>
 
-        <Flex width="100%" gap="32px" align="center" justify="space-between">
-          <Button onClick={startWorking} disabled={status === "working"}>
+        <Flex
+          width="100%"
+          gap={isMobile ? "16px" : "32px"}
+          align="center"
+          justify="space-between"
+          direction={isMobile ? "column" : "row"}
+        >
+          <Button
+            onClick={startWorking}
+            disabled={status === "working"}
+            width={isMobile ? "100%" : "30%"}
+          >
             Work
           </Button>
-          <Button onClick={startResting} disabled={status === "resting"}>
+          <Button
+            onClick={startResting}
+            disabled={status === "resting"}
+            width={isMobile ? "100%" : "30%"}
+          >
             Rest
           </Button>
-          <Button onClick={resetTimers} disabled={status === "idle"}>
+          <Button
+            onClick={resetTimers}
+            disabled={status === "idle"}
+            width={isMobile ? "100%" : "30%"}
+          >
             Reset
           </Button>
-          <Button width="103px" onClick={togglePause} disabled={status === "idle"}>
+          <Button
+            width={isMobile ? "100%" : "103px"}
+            onClick={togglePause}
+            disabled={status === "idle"}
+          >
             {isPaused ? "Resume" : "Pause"}
           </Button>
-          {/* <Button onClick={testNotification}>Test Notification</Button> */}
         </Flex>
 
-        <Flex width="100%" justify="space-between" align="space-between" gap="32px">
+        <Flex
+          width="100%"
+          justify="space-between"
+          align="center"
+          gap={isMobile ? "16px" : "32px"}
+          direction={isMobile ? "column" : "row"}
+        >
           <Text fontWeight="bold">Current Status: {isPaused ? "paused" : status}</Text>
           <Flex gap="8px" align="center">
             <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
@@ -212,9 +247,9 @@ const App = () => {
           gap="8px"
           padding="8px"
           radius="5px"
-          height="56px"
           align="center"
           justify="center"
+          direction={isMobile ? "column" : "row"}
         >
           {workTimeExceeded && <Notification>Work time finished. Go for a break! 🛌</Notification>}
           {staleTimeExceeded && (
@@ -236,6 +271,7 @@ const Flex = styled.div`
   ${({ justify }) => justify && `justify-content: ${justify}`};
   ${({ direction }) => direction && `flex-direction: ${direction}`};
   ${({ width }) => width && `width: ${width}`};
+  ${({ maxWidth }) => maxWidth && `max-width: ${maxWidth}`};
   ${({ height }) => height && `height: ${height}`};
   ${({ padding }) => padding && `padding: ${padding}`};
   ${({ margin }) => margin && `margin: ${margin}`};
@@ -258,15 +294,19 @@ const Text = styled.span`
 const Video = styled.video`
   position: absolute;
   top: 0;
-  width: 416px;
-  height: 416px;
+  width: 100%;
+  max-width: 416px;
+  height: auto;
+  aspect-ratio: 1 / 1;
 `;
 
 const Canvas = styled.canvas`
   position: absolute;
   top: 0;
-  width: 416px;
-  height: 416px;
+  width: 100%;
+  max-width: 416px;
+  height: auto;
+  aspect-ratio: 1 / 1;
 `;
 
 const Button = styled.button`
@@ -292,6 +332,7 @@ const Notification = styled(Text)`
   border-radius: 5px;
   padding: 8px 16px;
   font-weight: bold;
+  text-align: center;
 `;
 
 const Circle = styled.div`
