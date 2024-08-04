@@ -148,7 +148,6 @@ const App = () => {
       direction="column"
       padding="0 32px"
       gap="32px"
-      width="416px"
       height="100vh"
       justify="end"
       align="center"
@@ -158,21 +157,21 @@ const App = () => {
         <Canvas ref={canvasRef} />
       </Flex>
 
-      <Flex width="416px" direction="column" padding="32px" gap="32px" justify="end" align="center">
+      <Flex direction="column" padding="32px" gap="32px" justify="end" align="center">
         <Flex
+          width="100%"
           gap="32px"
           justify="space-between"
           padding="8px"
           background="#eee"
           radius="5px"
-          width="416px"
         >
           <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
           <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
           <Text color="#222">🛌 Rest Time: {formatCounter(restTime)}</Text>
         </Flex>
 
-        <Flex gap="32px" align="space-between" justify="space-between">
+        <Flex width="100%" gap="32px" align="space-between" justify="space-between">
           <Button onClick={startWorking} disabled={status === "working"}>
             Start Working
           </Button>
@@ -182,13 +181,13 @@ const App = () => {
           <Button onClick={resetTimers} disabled={status === "idle"}>
             Reset All
           </Button>
-          <Button onClick={togglePause} disabled={status === "idle"}>
+          <Button width="103px" onClick={togglePause} disabled={status === "idle"}>
             {isPaused ? "Resume" : "Pause"}
           </Button>
           {/* <Button onClick={testNotification}>Test Notification</Button> */}
         </Flex>
 
-        <Flex justify="space-between" align="space-between" gap="32px">
+        <Flex width="100%" justify="space-between" align="space-between" gap="32px">
           <Text fontWeight="bold">Current Status: {isPaused ? "Paused" : status}</Text>
           <Flex gap="8px" align="center">
             <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
@@ -196,7 +195,7 @@ const App = () => {
           </Flex>
         </Flex>
 
-        <Flex direction="column" gap="8px">
+        <Flex width="100%" direction="column" gap="8px">
           <Text color="#eee">
             💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}
           </Text>
@@ -208,7 +207,15 @@ const App = () => {
           </Text>
         </Flex>
 
-        <Flex gap="8px" padding="8px" radius="5px" height="56px" align="center" justify="center">
+        <Flex
+          width="100%"
+          gap="8px"
+          padding="8px"
+          radius="5px"
+          height="56px"
+          align="center"
+          justify="center"
+        >
           {workTimeExceeded && <Notification>Work time finished. Go for a break! 🛌</Notification>}
           {staleTimeExceeded && (
             <Notification>Stale time finished. Timers have been reset. ⏰</Notification>
@@ -257,6 +264,7 @@ const Canvas = styled.canvas`
 `;
 
 const Button = styled.button`
+  ${({ width }) => width && `width: ${width}`};
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
