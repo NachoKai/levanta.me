@@ -165,13 +165,14 @@ const App = () => {
           padding="8px"
           background="#eee"
           radius="5px"
+          align="center"
         >
           <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
           <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
           <Text color="#222">🛌 Rest Time: {formatCounter(restTime)}</Text>
         </Flex>
 
-        <Flex width="100%" gap="32px" align="space-between" justify="space-between">
+        <Flex width="100%" gap="32px" align="center" justify="space-between">
           <Button onClick={startWorking} disabled={status === "working"}>
             Start Working
           </Button>
@@ -195,7 +196,7 @@ const App = () => {
           </Flex>
         </Flex>
 
-        <Flex width="100%" direction="column" gap="8px">
+        <Flex width="100%" direction="column" gap="8px" align="center">
           <Text color="#eee">
             💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}
           </Text>
