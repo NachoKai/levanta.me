@@ -46,6 +46,9 @@ const App = () => {
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
   const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
+  const isWorking = status === "working";
+  const isResting = status === "resting";
+  const isIdle = status === "idle";
 
   const resetTimers = () => {
     setStatus("idle");
@@ -82,13 +85,13 @@ const App = () => {
   useLayoutEffect(() => {
     let title = "Levanta.me";
 
-    if (status === "idle") {
+    if (isIdle) {
       title = "Levanta.me";
-    } else if (status === "working") {
+    } else if (isWorking) {
       title = workTimeExceeded
         ? `⏰ Time to Rest! - ${formatCounter(workTime)}`
         : `💼 Working - ${formatCounter(workTime)}`;
-    } else if (status === "resting") {
+    } else if (isResting) {
       title = restTimeExceeded
         ? `⏰ Time to Work! - ${formatCounter(restTime)}`
         : `🛌 Resting - ${formatCounter(restTime)}`;
@@ -97,13 +100,23 @@ const App = () => {
     }
 
     document.title = title;
-  }, [restTime, restTimeExceeded, idleTime, idleTimeExceeded, status, workTime, workTimeExceeded]);
+  }, [
+    idleTime,
+    idleTimeExceeded,
+    isIdle,
+    isResting,
+    isWorking,
+    restTime,
+    restTimeExceeded,
+    workTime,
+    workTimeExceeded,
+  ]);
 
   useEffect(() => {
     if (loading || error) return;
     const dateTime = getFormattedDateTime();
 
-    if (workTimeExceeded && !notificationSent.workTime && status === "working") {
+    if (workTimeExceeded && !notificationSent.workTime && isWorking) {
       const message = `Work time finished at ${dateTime}. Go for a break! 🛌`;
       sendNotification(message);
       sendSystemNotification("Work Time Finished", message);
@@ -112,7 +125,7 @@ const App = () => {
         workTime: true,
       }));
     }
-    if (restTimeExceeded && !notificationSent.restTime && status === "resting") {
+    if (restTimeExceeded && !notificationSent.restTime && isResting) {
       const message = `Rest time finished at ${dateTime}. Get back to work! 💼`;
       sendNotification(message);
       sendSystemNotification("Rest Time Finished", message);
@@ -121,7 +134,7 @@ const App = () => {
         restTime: true,
       }));
     }
-    if (idleTimeExceeded && !notificationSent.idleTime && status === "idle") {
+    if (idleTimeExceeded && !notificationSent.idleTime && isIdle) {
       const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
       sendNotification(message);
       sendSystemNotification("Idle Time Finished", message);
@@ -131,25 +144,29 @@ const App = () => {
       }));
     }
   }, [
-    workTimeExceeded,
-    restTimeExceeded,
-    idleTimeExceeded,
-    sendNotification,
-    loading,
     error,
-    notificationSent,
-    status,
+    idleTimeExceeded,
+    isIdle,
+    isResting,
+    isWorking,
+    loading,
+    notificationSent.idleTime,
+    notificationSent.restTime,
+    notificationSent.workTime,
+    restTimeExceeded,
+    sendNotification,
+    workTimeExceeded,
   ]);
 
   useEffect(() => {
-    if (status === "idle") {
+    if (isIdle) {
       setNotificationSent({
         workTime: false,
         restTime: false,
         idleTime: false,
       });
     }
-  }, [status]);
+  }, [isIdle]);
 
   return (
     <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
@@ -195,32 +212,16 @@ const App = () => {
           justify="space-between"
           direction={isMobile ? "column" : "row"}
         >
-          <Button
-            onClick={startWorking}
-            disabled={status === "working"}
-            width={isMobile ? "100%" : "30%"}
-          >
+          <Button onClick={startWorking} disabled={isWorking} width={isMobile ? "100%" : "30%"}>
             Work
           </Button>
-          <Button
-            onClick={startResting}
-            disabled={status === "resting"}
-            width={isMobile ? "100%" : "30%"}
-          >
+          <Button onClick={startResting} disabled={isResting} width={isMobile ? "100%" : "30%"}>
             Rest
           </Button>
-          <Button
-            onClick={resetTimers}
-            disabled={status === "idle"}
-            width={isMobile ? "100%" : "30%"}
-          >
+          <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "30%"}>
             Reset
           </Button>
-          <Button
-            width={isMobile ? "100%" : "103px"}
-            onClick={togglePause}
-            disabled={status === "idle"}
-          >
+          <Button width={isMobile ? "100%" : "103px"} onClick={togglePause} disabled={isIdle}>
             {isPaused ? "Resume" : "Pause"}
           </Button>
         </Flex>
@@ -248,11 +249,13 @@ const App = () => {
           justify="center"
           direction={isMobile ? "column" : "row"}
         >
-          {workTimeExceeded && <Notification>Work time finished. Go for a break! 🛌</Notification>}
-          {idleTimeExceeded && (
+          {isWorking && workTimeExceeded && (
+            <Notification>Work time finished. Go for a break! 🛌</Notification>
+          )}
+          {isIdle && idleTimeExceeded && (
             <Notification>Idle time finished. Timers have been reset. ⏰</Notification>
           )}
-          {restTimeExceeded && (
+          {isResting && restTimeExceeded && (
             <Notification>Rest time finished. Get back to work! 💼</Notification>
           )}
         </Flex>
