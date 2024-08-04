@@ -11,6 +11,7 @@ import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
 import { formatMinutes } from "./utils/formatMinutes";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
+import { sendSystemNotification } from "./utils/sendSystemNotification";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -93,21 +94,27 @@ const App = () => {
     const dateTime = getFormattedDateTime();
 
     if (workTimeExceeded && !notificationSent.workTime) {
-      sendNotification(`Work time finished at ${dateTime}. Go for a break! 🛌`);
+      const message = `Work time finished at ${dateTime}. Go for a break! 🛌`;
+      sendNotification(message);
+      sendSystemNotification("Work Time Finished", message);
       setNotificationSent(prevState => ({
         ...prevState,
         workTime: true,
       }));
     }
     if (restTimeExceeded && !notificationSent.restTime) {
-      sendNotification(`Rest time finished at ${dateTime}. Get back to work! 💼`);
+      const message = `Rest time finished at ${dateTime}. Get back to work! 💼`;
+      sendNotification(message);
+      sendSystemNotification("Rest Time Finished", message);
       setNotificationSent(prevState => ({
         ...prevState,
         restTime: true,
       }));
     }
     if (idleTimeExceeded && !notificationSent.idleTime) {
-      sendNotification(`Idle time finished at ${dateTime}. Timers have been reset. ⏰`);
+      const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
+      sendNotification(message);
+      sendSystemNotification("Idle Time Finished", message);
       setNotificationSent(prevState => ({
         ...prevState,
         idleTime: true,
