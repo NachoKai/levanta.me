@@ -14,10 +14,10 @@ import { useIsMobile } from "./hooks/useIsMobile";
 import { useModels } from "./hooks/useModels";
 import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
-import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
+import { startVideo } from "./utils/startVideo";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
