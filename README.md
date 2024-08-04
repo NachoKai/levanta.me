@@ -93,12 +93,11 @@ yarn build
 
 ### Configuration
 
-The notification times are configured in the .env file
+The notification bot token and chat ID are configured in the .env file
 
 ```
 VITE_BOT_TOKEN=
 VITE_CHAT_ID=
-VITE_MIN_CONFIDENCE=
 ```
 
 ### Contribution

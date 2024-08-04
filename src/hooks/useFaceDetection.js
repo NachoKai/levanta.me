@@ -23,12 +23,11 @@ export const useFaceDetection = (videoRef, canvasRef, modelsLoaded) => {
 
         setFaceDetected(!!detection);
 
-        if (detection) {
-          const displaySize = { width: video.clientWidth, height: video.clientHeight };
-          const dimensions = matchDimensions(canvas, displaySize, true);
-          const resizedDetection = resizeResults(detection, dimensions);
-          draw.drawDetections(canvas, resizedDetection);
-        }
+        if (!detection) return;
+        const displaySize = { width: video.clientWidth, height: video.clientHeight };
+        const dimensions = matchDimensions(canvas, displaySize, true);
+        const resizedDetection = resizeResults(detection, dimensions);
+        draw.drawDetections(canvas, resizedDetection);
       };
 
       detectFace();

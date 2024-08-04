@@ -1,6 +1,4 @@
 export const OPTIONS = {
-  withLandmarks: false,
-  minConfidence: import.meta.env.VITE_MIN_CONFIDENCE || 0.5, // Set the minimum confidence for a face to be considered a match.
   MODEL_URLS: {
     Mobilenetv1Model:
       "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json",
