@@ -6,11 +6,12 @@ export const useTimers = (status, setStatus, faceDetected) => {
   const [workTime, setWorkTime] = useState(0);
   const [restTime, setRestTime] = useState(0);
   const [staleTime, setStaleTime] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     let interval = null;
 
-    if (status === "idle") {
+    if (status === "idle" || isPaused) {
       clearInterval(interval);
     } else {
       interval = setInterval(() => {
@@ -37,7 +38,20 @@ export const useTimers = (status, setStatus, faceDetected) => {
     }
 
     return () => clearInterval(interval);
-  }, [status, faceDetected, staleTime, setStatus]);
+  }, [status, faceDetected, staleTime, setStatus, isPaused]);
 
-  return { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime };
+  const togglePause = () => {
+    setIsPaused(prev => !prev);
+  };
+
+  return {
+    workTime,
+    restTime,
+    staleTime,
+    setWorkTime,
+    setRestTime,
+    setStaleTime,
+    isPaused,
+    togglePause,
+  };
 };

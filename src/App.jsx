@@ -26,11 +26,17 @@ const App = () => {
     TELEGRAM.BOT_TOKEN,
     TELEGRAM.CHAT_ID
   );
-  const { workTime, restTime, staleTime, setWorkTime, setRestTime, setStaleTime } = useTimers(
-    status,
-    setStatus,
-    faceDetected
-  );
+  const {
+    workTime,
+    restTime,
+    staleTime,
+    setWorkTime,
+    setRestTime,
+    setStaleTime,
+    isPaused,
+    togglePause,
+  } = useTimers(status, setStatus, faceDetected);
+
   const workTimeExceeded = workTime >= NOTIFICATION_TIMES.WORK;
   const restTimeExceeded = restTime >= NOTIFICATION_TIMES.REST;
   const staleTimeExceeded = staleTime >= NOTIFICATION_TIMES.STALE;
@@ -176,11 +182,14 @@ const App = () => {
           <Button onClick={resetTimers} disabled={status === "idle"}>
             Reset All
           </Button>
+          <Button onClick={togglePause} disabled={status === "idle"}>
+            {isPaused ? "Resume" : "Pause"}
+          </Button>
           {/* <Button onClick={testNotification}>Test Notification</Button> */}
         </Flex>
 
         <Flex justify="space-between" align="space-between" gap="32px">
-          <Text fontWeight="bold">Current Status: {status}</Text>
+          <Text fontWeight="bold">Current Status: {isPaused ? "Paused" : status}</Text>
           <Flex gap="8px" align="center">
             <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
             <Circle color={faceDetected ? "#0f0" : "#f00"} />
