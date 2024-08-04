@@ -54,6 +54,10 @@ const App = () => {
     setStaleTime(0);
   };
 
+  // const testNotification = () => {
+  //   sendNotification("Test!");
+  // };
+
   useEffect(() => {
     if (modelsLoaded) {
       startVideo(videoRef);
@@ -168,6 +172,7 @@ const App = () => {
         <Button onClick={resetTimers} disabled={status === "idle"}>
           Reset All
         </Button>
+        {/* <Button onClick={testNotification}>Test Notification</Button> */}
       </Flex>
 
       <Flex justify="space-between" align="space-between" gap="32px">

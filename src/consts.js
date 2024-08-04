@@ -1,5 +1,5 @@
 export const OPTIONS = {
-  withLandmarks: true,
+  withLandmarks: false,
   minConfidence: import.meta.env.VITE_MIN_CONFIDENCE || 0.5, // Set the minimum confidence for a face to be considered a match.
   MODEL_URLS: {
     Mobilenetv1Model:
@@ -8,8 +8,6 @@ export const OPTIONS = {
       "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights/face_expression_model-weights_manifest.json",
     TinyFaceLandmarkModel:
       "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights/tiny_face_detector_model-weights_manifest.json",
-    FaceLandmark68TinyNet:
-      "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights/face_landmark_68_model-weights_manifest.json",
     FaceRecognitionModel:
       "https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights/face_recognition_model-weights_manifest.json",
   },

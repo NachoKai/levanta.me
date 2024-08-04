@@ -16,8 +16,8 @@ export const useFaceDetection = (videoRef, canvasRef, modelsLoaded) => {
         const detection = await detectSingleFace(
           video,
           new faceapi.TinyFaceDetectorOptions({
-            inputSize: 416,
-            scoreThreshold: 0.5,
+            inputSize: 160,
+            scoreThreshold: 0.3,
           })
         );
 
