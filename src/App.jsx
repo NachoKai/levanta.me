@@ -17,6 +17,7 @@ import ResetIcon from "./assets/replay.svg";
 import RestIcon from "./assets/rest.svg";
 import WorkIcon from "./assets/work.svg";
 import IdleIcon from "./assets/idle.svg";
+import "./App.css";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -230,10 +231,10 @@ const App = () => {
           direction={isMobile ? "column" : "row"}
         >
           <Button onClick={startWorking} disabled={isWorking} width={isMobile ? "100%" : "30%"}>
-            <Icon $white size="19px" src={WorkIcon} alt="Work" /> <Text>Work</Text>
+            Work
           </Button>
           <Button onClick={startResting} disabled={isResting} width={isMobile ? "100%" : "30%"}>
-            <Icon $white size="22px" src={RestIcon} alt="Rest" /> <Text>Rest</Text>
+            Rest
           </Button>
           <Button width={isMobile ? "100%" : "20%"} onClick={togglePause} disabled={isIdle}>
             <Icon
@@ -257,15 +258,11 @@ const App = () => {
         >
           <Flex gap="8px" align="center">
             <Text fontWeight="bold">Current Status:</Text>
-            <Icon
-              $white
-              size={isIdle ? "22px" : "20px"}
-              src={isIdle ? IdleIcon : isResting ? RestIcon : WorkIcon}
-            />
-            <Text fontWeight="bold">{isPaused ? "paused" : status}</Text>
+            <Text>{isPaused ? "paused" : status}</Text>
           </Flex>
           <Flex gap="8px" align="center">
-            <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
+            <Text fontWeight="bold">Face Detected: </Text>
+            <Text>{faceDetected ? "Yes" : "No"}</Text>
             <Circle color={faceDetected ? "#0f0" : "#f00"} />
           </Flex>
         </Flex>
@@ -293,7 +290,8 @@ const App = () => {
         <Flex width="100%" direction="column" gap="16px" align="center">
           <InputWrapper>
             <Label htmlFor="WORK">
-              <Icon $white size="19px" src={WorkIcon} alt="Work" /> Work time (minutes):
+              <Icon $white size="19px" src={WorkIcon} alt="Work" />
+              <Text fontWeight="bold">Work time (minutes):</Text>
             </Label>
             <Input
               type="number"
@@ -306,7 +304,8 @@ const App = () => {
           </InputWrapper>
           <InputWrapper>
             <Label htmlFor="IDLE">
-              <Icon $white size="22px" src={IdleIcon} alt="Idle" /> Idle time (minutes):
+              <Icon $white size="22px" src={IdleIcon} alt="Idle" />
+              <Text fontWeight="bold">Idle time (minutes):</Text>
             </Label>
             <Input
               type="number"
@@ -319,7 +318,8 @@ const App = () => {
           </InputWrapper>
           <InputWrapper>
             <Label htmlFor="REST">
-              <Icon $white size="22px" src={RestIcon} alt="Rest" /> Rest time (minutes):
+              <Icon $white size="22px" src={RestIcon} alt="Rest" />
+              <Text fontWeight="bold">Rest time (minutes):</Text>
             </Label>
             <Input
               type="number"
@@ -411,6 +411,7 @@ const Notification = styled(Text)`
   padding: 8px 16px;
   font-weight: bold;
   text-align: center;
+  width: 100%;
 `;
 
 const Circle = styled.div`
