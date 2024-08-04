@@ -12,6 +12,7 @@ import { TELEGRAM } from "./consts";
 import { useFaceDetection } from "./hooks/useFaceDetection";
 import { useIsMobile } from "./hooks/useIsMobile";
 import { useModels } from "./hooks/useModels";
+import { useStore } from "./hooks/useStore";
 import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
 import { formatCounter } from "./utils/formatCounter";
@@ -20,7 +21,7 @@ import { sendSystemNotification } from "./utils/sendSystemNotification";
 import { startVideo } from "./utils/startVideo";
 
 const App = () => {
-  const [status, setStatus] = useState("idle");
+  const { status, setStatus } = useStore();
   const [notificationSent, setNotificationSent] = useState({
     workTime: false,
     restTime: false,
@@ -124,7 +125,7 @@ const App = () => {
     const dateTime = getFormattedDateTime();
 
     if (workTimeExceeded && !notificationSent.workTime && isWorking) {
-      const message = `Work time finished at ${dateTime}. Go for a break! 🛌`;
+      const message = `Work time finished at ${dateTime}. Go for a break!`;
       sendNotification(message);
       sendSystemNotification("Work Time Finished", message);
       setNotificationSent(prevState => ({
@@ -134,7 +135,7 @@ const App = () => {
     }
 
     if (restTimeExceeded && !notificationSent.restTime && isResting) {
-      const message = `Rest time finished at ${dateTime}. Get back to work! 💼`;
+      const message = `Rest time finished at ${dateTime}. Get back to work!`;
       sendNotification(message);
       sendSystemNotification("Rest Time Finished", message);
       setNotificationSent(prevState => ({
@@ -145,7 +146,7 @@ const App = () => {
 
     if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
 
-    const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
+    const message = `Idle time finished at ${dateTime}. Timers have been reset.`;
     sendNotification(message);
     sendSystemNotification("Idle Time Finished", message);
     setNotificationSent(prevState => ({
