@@ -24,7 +24,7 @@ Levanta.me is a React-based application that uses the `@vladmandic/face-api` lib
 Ensure you have the following installed:
 
 - Node.js (>= 14.x)
-- npm (>= 6.x) or yarn (>= 1.x)
+- yarn (>= 1.x)
 
 ### Installation
 
@@ -38,24 +38,12 @@ Ensure you have the following installed:
 2. Install the dependencies:
 
    ```
-   npm install
-   ```
-
-   or
-
-   ```
    yarn install
    ```
 
 ### Running the App
 
 1. Start the development server:
-
-   ```
-   npm run dev
-   ```
-
-   or
 
    ```
    yarn run dev
@@ -67,7 +55,7 @@ Ensure you have the following installed:
 
 1. **Start Working**: Click the "Work" button to begin the work timer.
 2. **Start Resting**: Click the "Resting" button to begin the rest timer.
-3. **Reset All**: Click the "Reset" button to reset all timers.
+3. **Reset**: Click the reset button to reset all timers.
 4. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
 
 ### Configuration
