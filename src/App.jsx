@@ -1,6 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
+import "./App.css";
+import IdleIcon from "./assets/idle.svg";
+import PauseIcon from "./assets/pause.svg";
+import PlayIcon from "./assets/play.svg";
+import ResetIcon from "./assets/replay.svg";
+import RestIcon from "./assets/rest.svg";
+import WorkIcon from "./assets/work.svg";
 import { TELEGRAM } from "./consts";
 import { useFaceDetection } from "./hooks/useFaceDetection";
 import { useIsMobile } from "./hooks/useIsMobile";
@@ -11,13 +18,6 @@ import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
-import PlayIcon from "./assets/play.svg";
-import PauseIcon from "./assets/pause.svg";
-import ResetIcon from "./assets/replay.svg";
-import RestIcon from "./assets/rest.svg";
-import WorkIcon from "./assets/work.svg";
-import IdleIcon from "./assets/idle.svg";
-import "./App.css";
 
 const App = () => {
   const [status, setStatus] = useState("idle");

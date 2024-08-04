@@ -63,32 +63,11 @@ Ensure you have the following installed:
 
 2. Open your browser and navigate to `http://localhost:5173/`.
 
-### Build for Production
-
-To create a production build:
-
-```
-npm run build
-```
-
-or
-
-```
-yarn build
-```
-
-### Project Structure
-
-- `src/components`: Contains React components.
-- `src/hooks`: Custom hooks for reusable logic.
-- `src/consts`: Constants used in the application.
-- `src/utils`: Utility functions.
-
 ### Usage
 
-1. **Start Working**: Click the "Start Working" button to begin the work timer.
-2. **Start Resting**: Click the "Start Resting" button to begin the rest timer.
-3. **Reset All**: Click the "Reset All" button to reset all timers.
+1. **Start Working**: Click the "Work" button to begin the work timer.
+2. **Start Resting**: Click the "Resting" button to begin the rest timer.
+3. **Reset All**: Click the "Reset" button to reset all timers.
 4. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
 
 ### Configuration
