@@ -97,21 +97,21 @@ const App = () => {
     const dateTime = getFormattedDateTime();
 
     if (workTimeExceeded && !notificationSent.workTime) {
-      sendNotification(`Work Time Exceeded at ${dateTime}. Go for a break! 🛌`);
+      sendNotification(`Work time finished at ${dateTime}. Go for a break! 🛌`);
       setNotificationSent(prevState => ({
         ...prevState,
         workTime: true,
       }));
     }
     if (restTimeExceeded && !notificationSent.restTime) {
-      sendNotification(`Rest Time Exceeded at ${dateTime}. Get back to work! 💼`);
+      sendNotification(`Rest time finished at ${dateTime}. Get back to work! 💼`);
       setNotificationSent(prevState => ({
         ...prevState,
         restTime: true,
       }));
     }
     if (staleTimeExceeded && !notificationSent.staleTime) {
-      sendNotification(`Stale Time Exceeded at ${dateTime}. Timers have been reset. ⏰`);
+      sendNotification(`Stale time finished at ${dateTime}. Timers have been reset. ⏰`);
       setNotificationSent(prevState => ({
         ...prevState,
         staleTime: true,
@@ -147,56 +147,67 @@ const App = () => {
       justify="end"
       align="center"
     >
-      <Video ref={videoRef} autoPlay muted />
-      <Canvas ref={canvasRef} />
-      <Flex
-        gap="32px"
-        justify="space-between"
-        padding="8px"
-        background="#eee"
-        radius="5px"
-        width="416px"
-      >
-        <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
-        <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
-        <Text color="#222">🛌 Rest Time: {formatCounter(restTime)}</Text>
+      <Flex width="416px">
+        <Video ref={videoRef} autoPlay muted />
+        <Canvas ref={canvasRef} />
       </Flex>
 
-      <Flex gap="32px" align="space-between" justify="space-between">
-        <Button onClick={startWorking} disabled={status === "working"}>
-          Start Working
-        </Button>
-        <Button onClick={startResting} disabled={status === "resting"}>
-          Start Resting
-        </Button>
-        <Button onClick={resetTimers} disabled={status === "idle"}>
-          Reset All
-        </Button>
-        {/* <Button onClick={testNotification}>Test Notification</Button> */}
-      </Flex>
-
-      <Flex justify="space-between" align="space-between" gap="32px">
-        <Text fontWeight="bold">Current Status: {status}</Text>
-        <Flex gap="8px" align="center">
-          <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
-          <Circle color={faceDetected ? "#0f0" : "#f00"} />
+      <Flex width="416px" direction="column" padding="32px" gap="32px" justify="end" align="center">
+        <Flex
+          gap="32px"
+          justify="space-between"
+          padding="8px"
+          background="#eee"
+          radius="5px"
+          width="416px"
+        >
+          <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
+          <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
+          <Text color="#222">🛌 Rest Time: {formatCounter(restTime)}</Text>
         </Flex>
-      </Flex>
 
-      <Flex direction="column" gap="8px">
-        <Text color="#eee">💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}</Text>
-        <Text color="#eee">
-          ⏰ Stale time configured: {formatMinutes(NOTIFICATION_TIMES.STALE)}
-        </Text>
-        <Text color="#eee">🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}</Text>
-      </Flex>
+        <Flex gap="32px" align="space-between" justify="space-between">
+          <Button onClick={startWorking} disabled={status === "working"}>
+            Start Working
+          </Button>
+          <Button onClick={startResting} disabled={status === "resting"}>
+            Start Resting
+          </Button>
+          <Button onClick={resetTimers} disabled={status === "idle"}>
+            Reset All
+          </Button>
+          {/* <Button onClick={testNotification}>Test Notification</Button> */}
+        </Flex>
 
-      <Flex gap="8px" padding="8px" radius="5px" height="56px" align="center" justify="center">
-        {workTimeExceeded && <Notification>Work Time Exceeded. Go for a break! 🛌</Notification>}
-        {staleTimeExceeded && (
-          <Notification>Stale Time Exceeded. Timers have been reset. ⏰</Notification>
-        )}
-        {restTimeExceeded && <Notification>Rest Time Exceeded. Get back to work! 💼</Notification>}
+        <Flex justify="space-between" align="space-between" gap="32px">
+          <Text fontWeight="bold">Current Status: {status}</Text>
+          <Flex gap="8px" align="center">
+            <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
+            <Circle color={faceDetected ? "#0f0" : "#f00"} />
+          </Flex>
+        </Flex>
+
+        <Flex direction="column" gap="8px">
+          <Text color="#eee">
+            💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}
+          </Text>
+          <Text color="#eee">
+            ⏰ Stale time configured: {formatMinutes(NOTIFICATION_TIMES.STALE)}
+          </Text>
+          <Text color="#eee">
+            🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}
+          </Text>
+        </Flex>
+
+        <Flex gap="8px" padding="8px" radius="5px" height="56px" align="center" justify="center">
+          {workTimeExceeded && <Notification>Work time finished. Go for a break! 🛌</Notification>}
+          {staleTimeExceeded && (
+            <Notification>Stale time finished. Timers have been reset. ⏰</Notification>
+          )}
+          {restTimeExceeded && (
+            <Notification>Rest time finished. Get back to work! 💼</Notification>
+          )}
+        </Flex>
       </Flex>
     </Flex>
   );
