@@ -11,6 +11,12 @@ import { startVideo } from "./startVideo";
 import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
+import PlayIcon from "./assets/play.svg";
+import PauseIcon from "./assets/pause.svg";
+import ResetIcon from "./assets/replay.svg";
+import RestIcon from "./assets/rest.svg";
+import WorkIcon from "./assets/work.svg";
+import IdleIcon from "./assets/idle.svg";
 
 const App = () => {
   const [status, setStatus] = useState("idle");
@@ -125,6 +131,7 @@ const App = () => {
         workTime: true,
       }));
     }
+
     if (restTimeExceeded && !notificationSent.restTime && isResting) {
       const message = `Rest time finished at ${dateTime}. Get back to work! 💼`;
       sendNotification(message);
@@ -134,15 +141,16 @@ const App = () => {
         restTime: true,
       }));
     }
-    if (idleTimeExceeded && !notificationSent.idleTime && isIdle) {
-      const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
-      sendNotification(message);
-      sendSystemNotification("Idle Time Finished", message);
-      setNotificationSent(prevState => ({
-        ...prevState,
-        idleTime: true,
-      }));
-    }
+
+    if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
+
+    const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
+    sendNotification(message);
+    sendSystemNotification("Idle Time Finished", message);
+    setNotificationSent(prevState => ({
+      ...prevState,
+      idleTime: true,
+    }));
   }, [
     error,
     idleTimeExceeded,
@@ -194,15 +202,24 @@ const App = () => {
           align="center"
           direction={isMobile ? "column" : "row"}
         >
-          <Text width={isMobile ? "100%" : "30%"} color="#222">
-            💼 Work Time: {formatCounter(workTime)}
-          </Text>
-          <Text width={isMobile ? "100%" : "30%"} color="#222">
-            ⏰ Idle Time: {formatCounter(idleTime)}
-          </Text>
-          <Text width={isMobile ? "100%" : "30%"} color="#222">
-            🛌 Rest Time: {formatCounter(restTime)}
-          </Text>
+          <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
+            <Icon size="19px" src={WorkIcon} alt="Work" />
+            <Text fontWeight="500" color="#222">
+              Work Time: {formatCounter(workTime)}
+            </Text>
+          </Flex>
+          <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
+            <Icon size="22px" src={IdleIcon} alt="Idle" />
+            <Text fontWeight="500" color="#222">
+              Idle Time: {formatCounter(idleTime)}
+            </Text>
+          </Flex>
+          <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
+            <Icon size="24px" src={RestIcon} alt="Rest" />
+            <Text fontWeight="500" color="#222">
+              Rest Time: {formatCounter(restTime)}
+            </Text>
+          </Flex>
         </Flex>
 
         <Flex
@@ -213,16 +230,21 @@ const App = () => {
           direction={isMobile ? "column" : "row"}
         >
           <Button onClick={startWorking} disabled={isWorking} width={isMobile ? "100%" : "30%"}>
-            Work
+            <Icon $white size="19px" src={WorkIcon} alt="Work" /> <Text>Work</Text>
           </Button>
           <Button onClick={startResting} disabled={isResting} width={isMobile ? "100%" : "30%"}>
-            Rest
+            <Icon $white size="22px" src={RestIcon} alt="Rest" /> <Text>Rest</Text>
           </Button>
-          <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "30%"}>
-            Reset
+          <Button width={isMobile ? "100%" : "20%"} onClick={togglePause} disabled={isIdle}>
+            <Icon
+              $white
+              size="30px"
+              src={isPaused ? PlayIcon : PauseIcon}
+              alt={isPaused ? "Play" : "Pause"}
+            />
           </Button>
-          <Button width={isMobile ? "100%" : "103px"} onClick={togglePause} disabled={isIdle}>
-            {isPaused ? "Resume" : "Pause"}
+          <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "20%"}>
+            <Icon $white size="30px" src={ResetIcon} alt="Reset" />
           </Button>
         </Flex>
 
@@ -233,7 +255,15 @@ const App = () => {
           gap={isMobile ? "16px" : "32px"}
           direction={isMobile ? "column" : "row"}
         >
-          <Text fontWeight="bold">Current Status: {isPaused ? "paused" : status}</Text>
+          <Flex gap="8px" align="center">
+            <Text fontWeight="bold">Current Status:</Text>
+            <Icon
+              $white
+              size={isIdle ? "22px" : "20px"}
+              src={isIdle ? IdleIcon : isResting ? RestIcon : WorkIcon}
+            />
+            <Text fontWeight="bold">{isPaused ? "paused" : status}</Text>
+          </Flex>
           <Flex gap="8px" align="center">
             <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
             <Circle color={faceDetected ? "#0f0" : "#f00"} />
@@ -262,7 +292,9 @@ const App = () => {
 
         <Flex width="100%" direction="column" gap="16px" align="center">
           <InputWrapper>
-            <Label htmlFor="WORK">💼 Work time (minutes):</Label>
+            <Label htmlFor="WORK">
+              <Icon $white size="19px" src={WorkIcon} alt="Work" /> Work time (minutes):
+            </Label>
             <Input
               type="number"
               id="WORK"
@@ -273,7 +305,9 @@ const App = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Label htmlFor="IDLE">⏰ Idle time (minutes):</Label>
+            <Label htmlFor="IDLE">
+              <Icon $white size="22px" src={IdleIcon} alt="Idle" /> Idle time (minutes):
+            </Label>
             <Input
               type="number"
               id="IDLE"
@@ -284,7 +318,9 @@ const App = () => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Label htmlFor="REST">🛌 Rest time (minutes):</Label>
+            <Label htmlFor="REST">
+              <Icon $white size="22px" src={RestIcon} alt="Rest" /> Rest time (minutes):
+            </Label>
             <Input
               type="number"
               id="REST"
@@ -347,7 +383,10 @@ const Canvas = styled.canvas`
 
 const Button = styled.button`
   ${({ width }) => width && `width: ${width}`};
-  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 16px;
   font-weight: bold;
   color: white;
@@ -355,6 +394,9 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  padding: 0;
+  height: 42px;
+  line-height: 42px;
 
   &:disabled {
     background-color: #cccccc;
@@ -385,6 +427,9 @@ const InputWrapper = styled(Flex)`
 `;
 
 const Label = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: #eee;
   width: 50%;
 `;
@@ -395,6 +440,12 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+`;
+
+const Icon = styled.img`
+  width: ${({ size }) => size || "24px"};
+  height: ${({ size }) => size || "24px"};
+  ${({ $white }) => $white && "filter: invert(1)"};
 `;
 
 export default App;
