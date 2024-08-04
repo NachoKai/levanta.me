@@ -32,6 +32,9 @@ const App = () => {
     TELEGRAM.BOT_TOKEN,
     TELEGRAM.CHAT_ID
   );
+  const isWorking = status === "working";
+  const isResting = status === "resting";
+  const isIdle = status === "idle";
   const {
     workTime,
     restTime,
@@ -41,14 +44,11 @@ const App = () => {
     setIdleTime,
     isPaused,
     togglePause,
-  } = useTimers(status, setStatus, faceDetected);
+  } = useTimers(isWorking, isResting, isIdle, setStatus, faceDetected);
   const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
   const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
-  const isWorking = status === "working";
-  const isResting = status === "resting";
-  const isIdle = status === "idle";
 
   const resetTimers = () => {
     setStatus("idle");

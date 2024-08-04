@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { NOTIFICATION_TIMES } from "../consts";
 
-export const useTimers = (status, setStatus, faceDetected) => {
+export const useTimers = (isWorking, isResting, isIdle, setStatus, faceDetected) => {
   const [workTime, setWorkTime] = useState(0);
   const [restTime, setRestTime] = useState(0);
   const [idleTime, setIdleTime] = useState(0);
@@ -11,18 +11,18 @@ export const useTimers = (status, setStatus, faceDetected) => {
   useEffect(() => {
     let interval = null;
 
-    if (status === "idle" || isPaused) {
+    if (isIdle || isPaused) {
       clearInterval(interval);
     } else {
       interval = setInterval(() => {
         if (faceDetected) {
-          if (status === "working") {
+          if (isWorking) {
             setWorkTime(prevTime => prevTime + 1);
             setIdleTime(0);
           } else {
             setIdleTime(prevTime => prevTime + 1);
           }
-        } else if (status === "resting") {
+        } else if (isResting) {
           setRestTime(prevTime => prevTime + 1);
           setIdleTime(0);
         } else {
@@ -38,7 +38,7 @@ export const useTimers = (status, setStatus, faceDetected) => {
     }
 
     return () => clearInterval(interval);
-  }, [status, faceDetected, idleTime, setStatus, isPaused]);
+  }, [faceDetected, idleTime, setStatus, isPaused, isIdle, isResting, isWorking]);
 
   const togglePause = () => {
     setIsPaused(prev => !prev);

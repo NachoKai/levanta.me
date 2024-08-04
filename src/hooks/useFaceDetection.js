@@ -32,7 +32,7 @@ export const useFaceDetection = (videoRef, canvasRef, modelsLoaded) => {
       };
 
       detectFace();
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [canvasRef, modelsLoaded, videoRef]);
