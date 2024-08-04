@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useMediaQuery } from "react-responsive";
 import styled from "styled-components";
 
 import { NOTIFICATION_TIMES, TELEGRAM } from "./consts";
 import { useFaceDetection } from "./hooks/useFaceDetection";
+import { useIsMobile } from "./hooks/useIsMobile";
 import { useModels } from "./hooks/useModels";
 import { useTelegramNotification } from "./hooks/useTelegramNotification";
 import { useTimers } from "./hooks/useTimers";
@@ -38,8 +38,7 @@ const App = () => {
     togglePause,
   } = useTimers(status, setStatus, faceDetected);
 
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-
+  const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= NOTIFICATION_TIMES.WORK;
   const restTimeExceeded = restTime >= NOTIFICATION_TIMES.REST;
   const staleTimeExceeded = staleTime >= NOTIFICATION_TIMES.STALE;
