@@ -221,10 +221,7 @@ const Text = styled.span`
 `;
 
 const Video = styled.video`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 416px;
+  width: 450px;
   height: auto;
 `;
 
@@ -232,8 +229,6 @@ const Canvas = styled.canvas`
   position: absolute;
   top: 0;
   left: 0;
-  width: 416px;
-  height: auto;
 `;
 
 const Button = styled.button`
