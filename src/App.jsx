@@ -42,7 +42,6 @@ const App = () => {
     isPaused,
     togglePause,
   } = useTimers(status, setStatus, faceDetected);
-
   const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
@@ -104,7 +103,7 @@ const App = () => {
     if (loading || error) return;
     const dateTime = getFormattedDateTime();
 
-    if (workTimeExceeded && !notificationSent.workTime) {
+    if (workTimeExceeded && !notificationSent.workTime && status === "working") {
       const message = `Work time finished at ${dateTime}. Go for a break! 🛌`;
       sendNotification(message);
       sendSystemNotification("Work Time Finished", message);
@@ -113,7 +112,7 @@ const App = () => {
         workTime: true,
       }));
     }
-    if (restTimeExceeded && !notificationSent.restTime) {
+    if (restTimeExceeded && !notificationSent.restTime && status === "resting") {
       const message = `Rest time finished at ${dateTime}. Get back to work! 💼`;
       sendNotification(message);
       sendSystemNotification("Rest Time Finished", message);
@@ -122,7 +121,7 @@ const App = () => {
         restTime: true,
       }));
     }
-    if (idleTimeExceeded && !notificationSent.idleTime) {
+    if (idleTimeExceeded && !notificationSent.idleTime && status === "idle") {
       const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
       sendNotification(message);
       sendSystemNotification("Idle Time Finished", message);
@@ -139,6 +138,7 @@ const App = () => {
     loading,
     error,
     notificationSent,
+    status,
   ]);
 
   useEffect(() => {
