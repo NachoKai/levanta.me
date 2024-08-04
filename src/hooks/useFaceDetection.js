@@ -5,29 +5,37 @@ export const useFaceDetection = (videoRef, canvasRef, modelsLoaded) => {
   const [faceDetected, setFaceDetected] = useState(false);
 
   useEffect(() => {
-    if (modelsLoaded && videoRef.current) {
-      const interval = setInterval(async () => {
-        const detections = await faceapi.detectSingleFace(
-          videoRef.current,
+    const interval = setInterval(async () => {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      if (!canvas || !video || !modelsLoaded) return;
+
+      const { detectSingleFace, matchDimensions, draw, resizeResults } = faceapi;
+
+      const detectFace = async () => {
+        const detection = await detectSingleFace(
+          video,
           new faceapi.TinyFaceDetectorOptions({
-            inputSize: 320,
+            inputSize: 416,
             scoreThreshold: 0.5,
           })
         );
 
-        setFaceDetected(!!detections);
+        setFaceDetected(!!detection);
 
-        if (!canvasRef.current) return;
-        const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
-        faceapi.matchDimensions(canvasRef.current, displaySize);
-        canvasRef.current
-          .getContext("2d")
-          .clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      }, 1000);
+        if (detection) {
+          const displaySize = { width: video.clientWidth, height: video.clientHeight };
+          const dimensions = matchDimensions(canvas, displaySize, true);
+          const resizedDetection = resizeResults(detection, dimensions);
+          draw.drawDetections(canvas, resizedDetection);
+        }
+      };
 
-      return () => clearInterval(interval);
-    }
-  }, [modelsLoaded, videoRef, canvasRef]);
+      detectFace();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [canvasRef, modelsLoaded, videoRef]);
 
   return faceDetected;
 };

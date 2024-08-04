@@ -136,25 +136,22 @@ const App = () => {
   return (
     <Flex
       direction="column"
+      padding="0 32px"
       gap="32px"
+      width="416px"
+      height="100vh"
+      justify="end"
       align="center"
-      justify="center"
-      width="600px"
-      height="100%"
-      padding="32px"
     >
-      <Flex>
-        <Video ref={videoRef} autoPlay muted />
-        <Canvas ref={canvasRef} />
-      </Flex>
-
+      <Video ref={videoRef} autoPlay muted />
+      <Canvas ref={canvasRef} />
       <Flex
         gap="32px"
         justify="space-between"
         padding="8px"
         background="#eee"
         radius="5px"
-        width="550px"
+        width="416px"
       >
         <Text color="#222">💼 Work Time: {formatCounter(workTime)}</Text>
         <Text color="#222">⏰ Stale Time: {formatCounter(staleTime)}</Text>
@@ -173,20 +170,12 @@ const App = () => {
         </Button>
       </Flex>
 
-      <Flex justify="space-between" align="space-between" gap="32px" width="400px">
+      <Flex justify="space-between" align="space-between" gap="32px">
         <Text fontWeight="bold">Current Status: {status}</Text>
         <Flex gap="8px" align="center">
           <Text fontWeight="bold">Face Detected: {faceDetected ? "Yes" : "No"}</Text>
           <Circle color={faceDetected ? "#0f0" : "#f00"} />
         </Flex>
-      </Flex>
-
-      <Flex gap="8px" padding="8px" radius="5px" height="56px" align="center" justify="center">
-        {workTimeExceeded && <Notification>Work Time Exceeded. Go for a break! 🛌</Notification>}
-        {staleTimeExceeded && (
-          <Notification>Stale Time Exceeded. Timers have been reset. ⏰</Notification>
-        )}
-        {restTimeExceeded && <Notification>Rest Time Exceeded. Get back to work! 💼</Notification>}
       </Flex>
 
       <Flex direction="column" gap="8px">
@@ -195,6 +184,14 @@ const App = () => {
           ⏰ Stale time configured: {formatMinutes(NOTIFICATION_TIMES.STALE)}
         </Text>
         <Text color="#eee">🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}</Text>
+      </Flex>
+
+      <Flex gap="8px" padding="8px" radius="5px" height="56px" align="center" justify="center">
+        {workTimeExceeded && <Notification>Work Time Exceeded. Go for a break! 🛌</Notification>}
+        {staleTimeExceeded && (
+          <Notification>Stale Time Exceeded. Timers have been reset. ⏰</Notification>
+        )}
+        {restTimeExceeded && <Notification>Rest Time Exceeded. Get back to work! 💼</Notification>}
       </Flex>
     </Flex>
   );
@@ -221,14 +218,17 @@ const Text = styled.span`
 `;
 
 const Video = styled.video`
-  width: 450px;
+  position: absolute;
+  top: 0;
+  width: 416px;
   height: auto;
 `;
 
 const Canvas = styled.canvas`
   position: absolute;
   top: 0;
-  left: 0;
+  width: 416px;
+  height: auto;
 `;
 
 const Button = styled.button`
