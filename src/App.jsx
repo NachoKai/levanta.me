@@ -44,7 +44,7 @@ const App = () => {
     setIdleTime,
     isPaused,
     togglePause,
-  } = useTimers(isWorking, isResting, isIdle, setStatus, faceDetected);
+  } = useTimers(isWorking, isResting, isIdle, setStatus, faceDetected, notificationTimes);
   const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
