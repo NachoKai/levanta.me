@@ -2,13 +2,13 @@
 
 ## Overview
 
-Levanta.me is a React-based application that uses the `@vladmandic/face-api` library to detect faces through a webcam feed. It tracks the user's work, rest, and stale times and notifies the user when specific thresholds are exceeded.
+Levanta.me is a React-based application that uses the `@vladmandic/face-api` library to detect faces through a webcam feed. It tracks the user's work, rest, and idle times and notifies the user when specific thresholds are exceeded.
 
 ## Features
 
 - **Face Detection**: Uses `face-api.js` to detect faces in real-time from the webcam.
-- **Timer Management**: Tracks work, rest, and stale times based on face detection.
-- **Notifications**: Alerts the user when the work or rest time exceeds the configured limits or when the face is not detected for a certain period (stale time).
+- **Timer Management**: Tracks work, rest, and idle times based on face detection.
+- **Notifications**: Alerts the user when the work or rest time exceeds the configured limits or when the face is not detected for a certain period (idle time).
 
 ## Technologies Used
 
@@ -96,7 +96,7 @@ yarn build
 1. **Start Working**: Click the "Start Working" button to begin the work timer.
 2. **Start Resting**: Click the "Start Resting" button to begin the rest timer.
 3. **Reset All**: Click the "Reset All" button to reset all timers.
-4. **Notifications**: Alerts will appear when the configured work, rest, or stale times are exceeded.
+4. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
 
 ### Configuration
 

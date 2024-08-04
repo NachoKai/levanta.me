@@ -17,7 +17,7 @@ const App = () => {
   const [notificationSent, setNotificationSent] = useState({
     workTime: false,
     restTime: false,
-    staleTime: false,
+    idleTime: false,
   });
   const videoRef = useRef();
   const canvasRef = useRef();
@@ -30,10 +30,10 @@ const App = () => {
   const {
     workTime,
     restTime,
-    staleTime,
+    idleTime,
     setWorkTime,
     setRestTime,
-    setStaleTime,
+    setIdleTime,
     isPaused,
     togglePause,
   } = useTimers(status, setStatus, faceDetected);
@@ -41,25 +41,25 @@ const App = () => {
   const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= NOTIFICATION_TIMES.WORK;
   const restTimeExceeded = restTime >= NOTIFICATION_TIMES.REST;
-  const staleTimeExceeded = staleTime >= NOTIFICATION_TIMES.STALE;
+  const idleTimeExceeded = idleTime >= NOTIFICATION_TIMES.IDLE;
 
   const resetTimers = () => {
     setStatus("idle");
     setWorkTime(0);
     setRestTime(0);
-    setStaleTime(0);
+    setIdleTime(0);
   };
 
   const startWorking = () => {
     setStatus("working");
     setRestTime(0);
-    setStaleTime(0);
+    setIdleTime(0);
   };
 
   const startResting = () => {
     setStatus("resting");
     setWorkTime(0);
-    setStaleTime(0);
+    setIdleTime(0);
   };
 
   useEffect(() => {
@@ -81,20 +81,12 @@ const App = () => {
       title = restTimeExceeded
         ? `⏰ Time to Work! - ${formatCounter(restTime)}`
         : `🛌 Resting - ${formatCounter(restTime)}`;
-    } else if (staleTimeExceeded) {
-      title = `⏰ Stale Time - ${formatCounter(staleTime)}`;
+    } else if (idleTimeExceeded) {
+      title = `⏰ Idle Time - ${formatCounter(idleTime)}`;
     }
 
     document.title = title;
-  }, [
-    restTime,
-    restTimeExceeded,
-    staleTime,
-    staleTimeExceeded,
-    status,
-    workTime,
-    workTimeExceeded,
-  ]);
+  }, [restTime, restTimeExceeded, idleTime, idleTimeExceeded, status, workTime, workTimeExceeded]);
 
   useEffect(() => {
     if (loading || error) return;
@@ -114,17 +106,17 @@ const App = () => {
         restTime: true,
       }));
     }
-    if (staleTimeExceeded && !notificationSent.staleTime) {
-      sendNotification(`Stale time finished at ${dateTime}. Timers have been reset. ⏰`);
+    if (idleTimeExceeded && !notificationSent.idleTime) {
+      sendNotification(`Idle time finished at ${dateTime}. Timers have been reset. ⏰`);
       setNotificationSent(prevState => ({
         ...prevState,
-        staleTime: true,
+        idleTime: true,
       }));
     }
   }, [
     workTimeExceeded,
     restTimeExceeded,
-    staleTimeExceeded,
+    idleTimeExceeded,
     sendNotification,
     loading,
     error,
@@ -136,32 +128,32 @@ const App = () => {
       setNotificationSent({
         workTime: false,
         restTime: false,
-        staleTime: false,
+        idleTime: false,
       });
     }
   }, [status]);
 
   return (
     <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
-      <Flex width={isMobile ? "100%" : "416px"} align="center" justify="center">
+      <Flex width="100%" align="center" justify="center">
         <Video ref={videoRef} autoPlay muted />
         <Canvas ref={canvasRef} />
       </Flex>
 
       <Body
         direction="column"
-        padding={isMobile ? "16px" : "32px"}
         gap="32px"
         justify="end"
+        width="100%"
         align="center"
-        maxWidth={isMobile ? "100%" : "960px"}
+        $maxWidth={isMobile ? "100%" : "620px"}
       >
         <Flex
           width="100%"
           gap={isMobile ? "16px" : "32px"}
           height="100%"
           justify="space-between"
-          padding="8px"
+          padding="8px 0"
           background="#eee"
           radius="5px"
           align="center"
@@ -171,7 +163,7 @@ const App = () => {
             💼 Work Time: {formatCounter(workTime)}
           </Text>
           <Text width={isMobile ? "100%" : "30%"} color="#222">
-            ⏰ Stale Time: {formatCounter(staleTime)}
+            ⏰ Idle Time: {formatCounter(idleTime)}
           </Text>
           <Text width={isMobile ? "100%" : "30%"} color="#222">
             🛌 Rest Time: {formatCounter(restTime)}
@@ -229,34 +221,34 @@ const App = () => {
           </Flex>
         </Flex>
 
-        <Flex width="100%" direction="column" gap="8px" align="center">
-          <Text color="#eee">
-            💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}
-          </Text>
-          <Text color="#eee">
-            ⏰ Stale time configured: {formatMinutes(NOTIFICATION_TIMES.STALE)}
-          </Text>
-          <Text color="#eee">
-            🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}
-          </Text>
-        </Flex>
-
         <Flex
           width="100%"
           gap="8px"
-          padding="8px"
+          padding="8px 0"
           radius="5px"
           align="center"
           justify="center"
           direction={isMobile ? "column" : "row"}
         >
           {workTimeExceeded && <Notification>Work time finished. Go for a break! 🛌</Notification>}
-          {staleTimeExceeded && (
-            <Notification>Stale time finished. Timers have been reset. ⏰</Notification>
+          {idleTimeExceeded && (
+            <Notification>Idle time finished. Timers have been reset. ⏰</Notification>
           )}
           {restTimeExceeded && (
             <Notification>Rest time finished. Get back to work! 💼</Notification>
           )}
+        </Flex>
+
+        <Flex width="100%" direction="column" gap="8px" align="center">
+          <Text color="#eee">
+            💼 Work time configured: {formatMinutes(NOTIFICATION_TIMES.WORK)}
+          </Text>
+          <Text color="#eee">
+            ⏰ Idle time configured: {formatMinutes(NOTIFICATION_TIMES.IDLE)}
+          </Text>
+          <Text color="#eee">
+            🛌 Rest time configured: {formatMinutes(NOTIFICATION_TIMES.REST)}
+          </Text>
         </Flex>
       </Body>
     </Flex>
@@ -270,7 +262,7 @@ const Flex = styled.div`
   ${({ justify }) => justify && `justify-content: ${justify}`};
   ${({ direction }) => direction && `flex-direction: ${direction}`};
   ${({ width }) => width && `width: ${width}`};
-  ${({ maxWidth }) => maxWidth && `max-width: ${maxWidth}`};
+  ${({ $maxWidth }) => $maxWidth && `max-width: ${$maxWidth}`};
   ${({ height }) => height && `height: ${height}`};
   ${({ padding }) => padding && `padding: ${padding}`};
   ${({ margin }) => margin && `margin: ${margin}`};

@@ -5,7 +5,7 @@ import { NOTIFICATION_TIMES } from "../consts";
 export const useTimers = (status, setStatus, faceDetected) => {
   const [workTime, setWorkTime] = useState(0);
   const [restTime, setRestTime] = useState(0);
-  const [staleTime, setStaleTime] = useState(0);
+  const [idleTime, setIdleTime] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
@@ -18,27 +18,27 @@ export const useTimers = (status, setStatus, faceDetected) => {
         if (faceDetected) {
           if (status === "working") {
             setWorkTime(prevTime => prevTime + 1);
-            setStaleTime(0);
+            setIdleTime(0);
           } else {
-            setStaleTime(prevTime => prevTime + 1);
+            setIdleTime(prevTime => prevTime + 1);
           }
         } else if (status === "resting") {
           setRestTime(prevTime => prevTime + 1);
-          setStaleTime(0);
+          setIdleTime(0);
         } else {
-          setStaleTime(prevTime => prevTime + 1);
+          setIdleTime(prevTime => prevTime + 1);
         }
       }, 1000);
     }
 
-    if (staleTime >= NOTIFICATION_TIMES.STALE) {
+    if (idleTime >= NOTIFICATION_TIMES.IDLE) {
       setStatus("idle");
       setWorkTime(0);
       setRestTime(0);
     }
 
     return () => clearInterval(interval);
-  }, [status, faceDetected, staleTime, setStatus, isPaused]);
+  }, [status, faceDetected, idleTime, setStatus, isPaused]);
 
   const togglePause = () => {
     setIsPaused(prev => !prev);
@@ -47,10 +47,10 @@ export const useTimers = (status, setStatus, faceDetected) => {
   return {
     workTime,
     restTime,
-    staleTime,
+    idleTime,
     setWorkTime,
     setRestTime,
-    setStaleTime,
+    setIdleTime,
     isPaused,
     togglePause,
   };

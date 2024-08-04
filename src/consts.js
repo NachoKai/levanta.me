@@ -15,7 +15,7 @@ export const OPTIONS = {
 
 export const NOTIFICATION_TIMES = {
   WORK: import.meta.env.VITE_WORK_TIME || 50 * 60, // 50 minutes
-  STALE: import.meta.env.VITE_STALE_TIME || 10 * 60, // 10 minutes
+  IDLE: import.meta.env.VITE_STALE_TIME || 10 * 60, // 10 minutes
   REST: import.meta.env.VITE_REST_TIME || 5 * 60, // 5 minutes
 };
 
