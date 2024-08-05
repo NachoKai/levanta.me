@@ -1,5 +1,5 @@
 import * as faceapi from "@vladmandic/face-api";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import "./App.css";
@@ -42,208 +42,42 @@ const App = () => {
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
   const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  const togglePause = () => {
+  const togglePause = useCallback(() => {
     setIsPaused(prev => !prev);
-  };
+  }, []);
 
-  const resetTimers = () => {
+  const resetTimers = useCallback(() => {
     setStatus("idle");
     setWorkTime(0);
     setRestTime(0);
     setIdleTime(0);
     setIsPaused(false);
-  };
+    setNotificationSent({
+      workTime: false,
+      restTime: false,
+      idleTime: false,
+    });
+  }, []);
 
-  const startWorking = () => {
+  const startWorking = useCallback(() => {
     setStatus("working");
     setRestTime(0);
     setIdleTime(0);
-  };
+  }, []);
 
-  const startResting = () => {
+  const startResting = useCallback(() => {
     setStatus("resting");
     setWorkTime(0);
     setIdleTime(0);
-  };
+  }, []);
 
-  const handleInputChange = e => {
+  const handleInputChange = useCallback(e => {
     const { name, value } = e.target;
     const newValue = parseInt(value) || 0;
     setNotificationTimes(prev => ({ ...prev, [name]: newValue }));
     localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
-  };
-
-  useLayoutEffect(() => {
-    let title = "Levanta.me";
-
-    if (isIdle) {
-      title = "Levanta.me";
-    } else if (isWorking) {
-      title = workTimeExceeded
-        ? `⏰ Time to Rest! - ${formatCounter(workTime)}`
-        : `💼 Working - ${formatCounter(workTime)}`;
-    } else if (isResting) {
-      title = restTimeExceeded
-        ? `⏰ Time to Work! - ${formatCounter(restTime)}`
-        : `🛌 Resting - ${formatCounter(restTime)}`;
-    } else if (idleTimeExceeded) {
-      title = `⏰ Idle Time - ${formatCounter(idleTime)}`;
-    }
-
-    document.title = title;
-  }, [
-    idleTime,
-    idleTimeExceeded,
-    isIdle,
-    isResting,
-    isWorking,
-    restTime,
-    restTimeExceeded,
-    workTime,
-    workTimeExceeded,
-  ]);
-
-  useEffect(() => {
-    if (modelsLoaded) {
-      navigator.mediaDevices
-        .getUserMedia({ video: {} })
-        .then(stream => {
-          videoRef.current.srcObject = stream;
-        })
-        .catch(err => console.error(err));
-    }
-  }, [modelsLoaded]);
-
-  useEffect(() => {
-    const sendNotification = async message => {
-      setLoading(true);
-      setError(null);
-
-      const url = `https://api.telegram.org/bot${TELEGRAM.BOT_TOKEN}/sendMessage`;
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chat_id: TELEGRAM.CHAT_ID,
-            text: message,
-          }),
-        });
-
-        if (response.data.ok) {
-          console.info("Notification sent successfully");
-        } else {
-          throw new Error("Failed to send notification");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (loading || error) return;
-    const dateTime = getFormattedDateTime();
-
-    if (workTimeExceeded && !notificationSent.workTime && isWorking) {
-      const message = `Work time finished at ${dateTime}. Go for a break! 🛌`;
-      sendNotification(message);
-      sendSystemNotification("Work Time Finished", message);
-      setNotificationSent(prevState => ({
-        ...prevState,
-        workTime: true,
-      }));
-    }
-
-    if (restTimeExceeded && !notificationSent.restTime && isResting) {
-      const message = `Rest time finished at ${dateTime}. Get back to work! 💼`;
-      sendNotification(message);
-      sendSystemNotification("Rest Time Finished", message);
-      setNotificationSent(prevState => ({
-        ...prevState,
-        restTime: true,
-      }));
-    }
-
-    if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
-
-    const message = `Idle time finished at ${dateTime}. Timers have been reset. ⏰`;
-    sendNotification(message);
-    sendSystemNotification("Idle Time Finished", message);
-    setNotificationSent(prevState => ({
-      ...prevState,
-      idleTime: true,
-    }));
-  }, [
-    error,
-    idleTimeExceeded,
-    isIdle,
-    isResting,
-    isWorking,
-    loading,
-    notificationSent.idleTime,
-    notificationSent.restTime,
-    notificationSent.workTime,
-    restTimeExceeded,
-    workTimeExceeded,
-  ]);
-
-  useEffect(() => {
-    if (isIdle) {
-      setNotificationSent({
-        workTime: false,
-        restTime: false,
-        idleTime: false,
-      });
-    }
-  }, [isIdle]);
-
-  useEffect(() => {
-    let interval = null;
-
-    if (isIdle || isPaused) {
-      clearInterval(interval);
-    } else {
-      interval = setInterval(() => {
-        if (faceDetected) {
-          if (isWorking) {
-            setWorkTime(prevTime => prevTime + 1);
-            setIdleTime(0);
-          } else {
-            setIdleTime(prevTime => prevTime + 1);
-          }
-        } else if (isResting) {
-          setRestTime(prevTime => prevTime + 1);
-          setIdleTime(0);
-        } else {
-          setIdleTime(prevTime => prevTime + 1);
-        }
-      }, 1000);
-    }
-
-    if (idleTime >= notificationTimes.IDLE) {
-      setStatus("idle");
-      setWorkTime(0);
-      setRestTime(0);
-    }
-
-    return () => clearInterval(interval);
-  }, [
-    faceDetected,
-    idleTime,
-    isIdle,
-    isPaused,
-    isResting,
-    isWorking,
-    setStatus,
-    notificationTimes.IDLE,
-  ]);
+  }, []);
 
   useEffect(() => {
     const loadModels = async () => {
@@ -258,36 +92,122 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    if (!modelsLoaded) return;
+
+    navigator.mediaDevices
+      .getUserMedia({ video: {} })
+      .then(stream => {
+        videoRef.current.srcObject = stream;
+      })
+      .catch(err => console.error(err));
+
     const interval = setInterval(async () => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      if (!canvas || !video || !modelsLoaded) return;
+      if (!canvas || !video) return;
 
-      const { detectSingleFace, matchDimensions, draw, resizeResults } = faceapi;
+      const detection = await faceapi.detectSingleFace(
+        video,
+        new faceapi.TinyFaceDetectorOptions({
+          inputSize: 160,
+          scoreThreshold: 0.3,
+        })
+      );
 
-      const detectFace = async () => {
-        const detection = await detectSingleFace(
-          video,
-          new faceapi.TinyFaceDetectorOptions({
-            inputSize: 160,
-            scoreThreshold: 0.3,
-          })
-        );
+      setFaceDetected(!!detection);
 
-        setFaceDetected(!!detection);
-
-        if (!detection) return;
-        const displaySize = { width: video.clientWidth, height: video.clientHeight };
-        const dimensions = matchDimensions(canvas, displaySize, true);
-        const resizedDetection = resizeResults(detection, dimensions);
-        draw.drawDetections(canvas, resizedDetection);
-      };
-
-      detectFace();
+      if (!detection) return;
+      const displaySize = { width: video.clientWidth, height: video.clientHeight };
+      const dimensions = faceapi.matchDimensions(canvas, displaySize, true);
+      const resizedDetection = faceapi.resizeResults(detection, dimensions);
+      faceapi.draw.drawDetections(canvas, resizedDetection);
     }, 500);
 
     return () => clearInterval(interval);
-  }, [canvasRef, modelsLoaded, videoRef]);
+  }, [modelsLoaded]);
+
+  useEffect(() => {
+    const interval =
+      !isPaused && !isIdle
+        ? setInterval(() => {
+            if (faceDetected && isWorking) {
+              setWorkTime(prevTime => prevTime + 1);
+              setIdleTime(0);
+            } else if (isResting) {
+              setRestTime(prevTime => prevTime + 1);
+              setIdleTime(0);
+            } else {
+              setIdleTime(prevTime => prevTime + 1);
+            }
+          }, 1000)
+        : null;
+
+    return () => clearInterval(interval);
+  }, [faceDetected, isIdle, isPaused, isResting, isWorking]);
+
+  useEffect(() => {
+    if (idleTime >= notificationTimes.IDLE * 60) {
+      resetTimers();
+    }
+  }, [idleTime, notificationTimes.IDLE, resetTimers]);
+
+  useEffect(() => {
+    const sendNotification = async message => {
+      const url = `https://api.telegram.org/bot${TELEGRAM.BOT_TOKEN}/sendMessage`;
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: TELEGRAM.CHAT_ID,
+            text: message,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to send notification");
+        }
+      } catch (err) {
+        console.error("Error sending notification:", err);
+      }
+    };
+    const dateTime = getFormattedDateTime();
+
+    if (workTimeExceeded && !notificationSent.workTime && isWorking) {
+      const message = `Work time finished at ${dateTime}. Go for a break!`;
+      sendNotification(message);
+      sendSystemNotification("Work Time Finished", message);
+      setNotificationSent(prev => ({ ...prev, workTime: true }));
+    }
+
+    if (restTimeExceeded && !notificationSent.restTime && isResting) {
+      const message = `Rest time finished at ${dateTime}. Get back to work!`;
+      sendNotification(message);
+      sendSystemNotification("Rest Time Finished", message);
+      setNotificationSent(prev => ({ ...prev, restTime: true }));
+    }
+
+    if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
+    const message = `Idle time finished at ${dateTime}. Timers have been reset.`;
+    sendNotification(message);
+    sendSystemNotification("Idle Time Finished", message);
+    setNotificationSent(prev => ({ ...prev, idleTime: true }));
+  }, [
+    workTime,
+    restTime,
+    idleTime,
+    notificationTimes,
+    notificationSent,
+    isWorking,
+    isResting,
+    isIdle,
+    workTimeExceeded,
+    restTimeExceeded,
+    idleTimeExceeded,
+  ]);
 
   return (
     <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
