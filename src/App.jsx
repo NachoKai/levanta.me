@@ -144,7 +144,7 @@ const App = () => {
             if (faceDetected && isWorking) {
               setWorkTime(prevTime => prevTime + 1);
               setIdleTime(0);
-            } else if (isResting) {
+            } else if (!faceDetected && isResting) {
               setRestTime(prevTime => prevTime + 1);
               setIdleTime(0);
             } else {
