@@ -132,7 +132,7 @@ const App = () => {
       const dimensions = faceapi.matchDimensions(canvas, displaySize, true);
       const resizedDetection = faceapi.resizeResults(detection, dimensions);
       faceapi.draw.drawDetections(canvas, resizedDetection);
-    }, 500);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, [modelsLoaded]);
@@ -150,7 +150,7 @@ const App = () => {
             } else {
               setIdleTime(prevTime => prevTime + 1);
             }
-          }, 1000)
+          }, 950)
         : null;
 
     return () => clearInterval(interval);
