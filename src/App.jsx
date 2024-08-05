@@ -1,17 +1,16 @@
 import * as faceapi from "@vladmandic/face-api";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-
 import "./App.css";
-import IdleIcon from "./assets/idle.svg";
-import PauseIcon from "./assets/pause.svg";
-import PlayIcon from "./assets/play.svg";
-import ResetIcon from "./assets/replay.svg";
-import RestIcon from "./assets/rest.svg";
-import WorkIcon from "./assets/work.svg";
+import { ButtonsSection } from "./components/ButtonsSection";
+import { InputsSection } from "./components/InputsSection";
+import { NotificationsSection } from "./components/NotificationsSection";
+import { StatusSection } from "./components/StatusSection";
+import { Flex } from "./components/StyledComponents";
+import { TimersSection } from "./components/TimersSection";
+import { VideoSection } from "./components/VideoSection";
 import { TELEGRAM } from "./consts";
 import { useIsMobile } from "./hooks/useIsMobile";
-import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
 
@@ -211,10 +210,7 @@ const App = () => {
 
   return (
     <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
-      <Flex width="100%" align="center" justify="center">
-        <Video ref={videoRef} autoPlay muted />
-        <Canvas ref={canvasRef} />
-      </Flex>
+      <VideoSection videoRef={videoRef} canvasRef={canvasRef} />
 
       <Body
         direction="column"
@@ -224,261 +220,54 @@ const App = () => {
         align="center"
         $maxWidth={isMobile ? "100%" : "620px"}
       >
-        <Flex
-          width="100%"
-          gap={isMobile ? "16px" : "32px"}
-          height="100%"
-          justify="space-between"
-          padding="8px 0"
-          background="#eee"
-          radius="5px"
-          align="center"
-          direction={isMobile ? "column" : "row"}
-        >
-          <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
-            <Icon size="19px" src={WorkIcon} alt="Work" />
-            <Text fontWeight="500" color="#222">
-              Work Time: {formatCounter(workTime)}
-            </Text>
-          </Flex>
-          <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
-            <Icon size="22px" src={IdleIcon} alt="Idle" />
-            <Text fontWeight="500" color="#222">
-              Idle Time: {formatCounter(idleTime)}
-            </Text>
-          </Flex>
-          <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
-            <Icon size="24px" src={RestIcon} alt="Rest" />
-            <Text fontWeight="500" color="#222">
-              Rest Time: {formatCounter(restTime)}
-            </Text>
-          </Flex>
-        </Flex>
+        <TimersSection
+          isMobile={isMobile}
+          workTime={workTime}
+          restTime={restTime}
+          idleTime={idleTime}
+        />
 
-        <Flex
-          width="100%"
-          gap={isMobile ? "16px" : "32px"}
-          align="center"
-          justify="space-between"
-          direction={isMobile ? "column" : "row"}
-        >
-          <Button onClick={startWorking} disabled={isWorking} width={isMobile ? "100%" : "30%"}>
-            Work
-          </Button>
-          <Button onClick={startResting} disabled={isResting} width={isMobile ? "100%" : "30%"}>
-            Rest
-          </Button>
-          <Button width={isMobile ? "100%" : "20%"} onClick={togglePause} disabled={isIdle}>
-            <Icon
-              $white
-              size="30px"
-              src={isPaused ? PlayIcon : PauseIcon}
-              alt={isPaused ? "Play" : "Pause"}
-            />
-          </Button>
-          <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "20%"}>
-            <Icon $white size="30px" src={ResetIcon} alt="Reset" />
-          </Button>
-        </Flex>
+        <ButtonsSection
+          isMobile={isMobile}
+          isWorking={isWorking}
+          isResting={isResting}
+          isIdle={isIdle}
+          isPaused={isPaused}
+          startWorking={startWorking}
+          startResting={startResting}
+          togglePause={togglePause}
+          resetTimers={resetTimers}
+        />
 
-        <Flex
-          width="100%"
-          justify="space-between"
-          align="center"
-          gap={isMobile ? "16px" : "32px"}
-          direction={isMobile ? "column" : "row"}
-        >
-          <Flex gap="8px" align="center">
-            <Text fontWeight="bold">Current Status:</Text>
-            <Text>{isPaused ? "paused" : status}</Text>
-          </Flex>
-          <Flex gap="8px" align="center">
-            <Text fontWeight="bold">Face Detected: </Text>
-            <Text>{faceDetected ? "Yes" : "No"}</Text>
-            <Circle color={faceDetected ? "#0f0" : "#f00"} />
-          </Flex>
-        </Flex>
+        <StatusSection
+          isMobile={isMobile}
+          status={status}
+          faceDetected={faceDetected}
+          isPaused={isPaused}
+        />
 
-        <Flex
-          width="100%"
-          gap="8px"
-          padding="8px 0"
-          radius="5px"
-          align="center"
-          justify="center"
-          direction={isMobile ? "column" : "row"}
-        >
-          {isWorking && workTimeExceeded && (
-            <Notification>Work time finished. Go for a break! 🛌</Notification>
-          )}
-          {isIdle && idleTimeExceeded && (
-            <Notification>Idle time finished. Timers have been reset. ⏰</Notification>
-          )}
-          {isResting && restTimeExceeded && (
-            <Notification>Rest time finished. Get back to work! 💼</Notification>
-          )}
-        </Flex>
+        <NotificationsSection
+          isMobile={isMobile}
+          isWorking={isWorking}
+          workTimeExceeded={workTimeExceeded}
+          isIdle={isIdle}
+          idleTimeExceeded={idleTimeExceeded}
+          isResting={isResting}
+          restTimeExceeded={restTimeExceeded}
+        />
 
-        <Flex width="100%" direction="column" gap="16px" align="center">
-          <InputWrapper>
-            <Label htmlFor="WORK">
-              <Icon $white size="19px" src={WorkIcon} alt="Work" />
-              <Text fontWeight="bold">Work time (minutes):</Text>
-            </Label>
-            <Input
-              type="number"
-              id="WORK"
-              name="WORK"
-              value={notificationTimes.WORK}
-              onChange={handleInputChange}
-              min="1"
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="IDLE">
-              <Icon $white size="22px" src={IdleIcon} alt="Idle" />
-              <Text fontWeight="bold">Idle time (minutes):</Text>
-            </Label>
-            <Input
-              type="number"
-              id="IDLE"
-              name="IDLE"
-              value={notificationTimes.IDLE}
-              onChange={handleInputChange}
-              min="1"
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="REST">
-              <Icon $white size="22px" src={RestIcon} alt="Rest" />
-              <Text fontWeight="bold">Rest time (minutes):</Text>
-            </Label>
-            <Input
-              type="number"
-              id="REST"
-              name="REST"
-              value={notificationTimes.REST}
-              onChange={handleInputChange}
-              min="1"
-            />
-          </InputWrapper>
-        </Flex>
+        <InputsSection
+          notificationTimes={notificationTimes}
+          handleInputChange={handleInputChange}
+        />
       </Body>
     </Flex>
   );
 };
 
-const Flex = styled.div`
-  display: flex;
-  ${({ gap }) => gap && `gap: ${gap}`};
-  ${({ align }) => align && `align-items: ${align}`};
-  ${({ justify }) => justify && `justify-content: ${justify}`};
-  ${({ direction }) => direction && `flex-direction: ${direction}`};
-  ${({ width }) => width && `width: ${width}`};
-  ${({ $maxWidth }) => $maxWidth && `max-width: ${$maxWidth}`};
-  ${({ height }) => height && `height: ${height}`};
-  ${({ padding }) => padding && `padding: ${padding}`};
-  ${({ margin }) => margin && `margin: ${margin}`};
-  ${({ radius }) => radius && `border-radius: ${radius}`};
-  ${({ background }) => background && `background: ${background}`};
-`;
+export default App;
 
 const Body = styled(Flex)`
   position: relative;
   top: 385px;
 `;
-
-const Text = styled.span`
-  ${({ width }) => width && `width: ${width}`};
-  ${({ color }) => color && `color: ${color}`};
-  ${({ fontSize }) => fontSize && `font-size: ${fontSize}`};
-  ${({ fontWeight }) => fontWeight && `font-weight: ${fontWeight}`};
-`;
-
-const Video = styled.video`
-  position: absolute;
-  top: 0;
-  width: 100%;
-  max-width: 416px;
-  height: auto;
-  aspect-ratio: 1 / 1;
-`;
-
-const Canvas = styled.canvas`
-  position: absolute;
-  top: 0;
-  width: 100%;
-  max-width: 416px;
-  height: auto;
-  aspect-ratio: 1 / 1;
-`;
-
-const Button = styled.button`
-  ${({ width }) => width && `width: ${width}`};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0;
-  height: 42px;
-  line-height: 42px;
-
-  &:disabled {
-    background-color: #cccccc;
-    pointer-events: none;
-  }
-`;
-
-const Notification = styled(Text)`
-  color: #eee;
-  background-color: #444;
-  border-radius: 5px;
-  padding: 8px 16px;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-`;
-
-const Circle = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: ${({ color }) => color};
-`;
-
-const InputWrapper = styled(Flex)`
-  align-items: center;
-  width: 100%;
-  gap: 8px;
-`;
-
-const Label = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #eee;
-  width: 50%;
-`;
-
-const Input = styled.input`
-  width: 50%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Icon = styled.img`
-  width: ${({ size }) => size || "24px"};
-  height: ${({ size }) => size || "24px"};
-  ${({ $white }) => $white && "filter: invert(1)"};
-`;
-
-export default App;
