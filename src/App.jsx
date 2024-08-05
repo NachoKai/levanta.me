@@ -244,7 +244,11 @@ const App = () => {
               alt={isPaused ? "Play" : "Pause"}
             />
           </Button>
-          <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "20%"}>
+          <Button
+            onClick={resetTimers}
+            disabled={isIdle || isPaused}
+            width={isMobile ? "100%" : "20%"}
+          >
             <Icon $white size="30px" src={ResetIcon} alt="Reset" />
           </Button>
         </Flex>
