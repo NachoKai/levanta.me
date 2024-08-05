@@ -4,5 +4,6 @@ export const formatMinutes = timeInSeconds => {
   if (minutes === 1) return `${minutes} minute`;
   if (minutes > 1) return `${minutes} minutes`;
   if (minutes > 59) return `${Math.floor(minutes / 60)} hour`;
+
   return `${minutes} minutes`;
 };

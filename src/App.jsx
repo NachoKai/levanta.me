@@ -1,3 +1,4 @@
+import * as faceapi from "@vladmandic/face-api";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -9,17 +10,18 @@ import ResetIcon from "./assets/replay.svg";
 import RestIcon from "./assets/rest.svg";
 import WorkIcon from "./assets/work.svg";
 import { TELEGRAM } from "./consts";
-import { useFaceDetection } from "./hooks/useFaceDetection";
 import { useIsMobile } from "./hooks/useIsMobile";
-import { useModels } from "./hooks/useModels";
-import { useTelegramNotification } from "./hooks/useTelegramNotification";
-import { useTimers } from "./hooks/useTimers";
 import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
-import { startVideo } from "./utils/startVideo";
 
 const App = () => {
+  const [workTime, setWorkTime] = useState(0);
+  const [restTime, setRestTime] = useState(0);
+  const [idleTime, setIdleTime] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [faceDetected, setFaceDetected] = useState(false);
   const [status, setStatus] = useState("idle");
   const [notificationSent, setNotificationSent] = useState({
     workTime: false,
@@ -33,35 +35,26 @@ const App = () => {
   });
   const videoRef = useRef();
   const canvasRef = useRef();
-  const modelsLoaded = useModels();
-  const faceDetected = useFaceDetection(videoRef, canvasRef, modelsLoaded);
-  const { sendNotification, loading, error } = useTelegramNotification(
-    TELEGRAM.BOT_TOKEN,
-    TELEGRAM.CHAT_ID
-  );
   const isWorking = status === "working";
   const isResting = status === "resting";
   const isIdle = status === "idle";
-  const {
-    workTime,
-    restTime,
-    idleTime,
-    setWorkTime,
-    setRestTime,
-    setIdleTime,
-    isPaused,
-    togglePause,
-  } = useTimers(isWorking, isResting, isIdle, setStatus, faceDetected, notificationTimes);
   const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
   const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const togglePause = () => {
+    setIsPaused(prev => !prev);
+  };
 
   const resetTimers = () => {
     setStatus("idle");
     setWorkTime(0);
     setRestTime(0);
     setIdleTime(0);
+    setIsPaused(false);
   };
 
   const startWorking = () => {
@@ -82,12 +75,6 @@ const App = () => {
     setNotificationTimes(prev => ({ ...prev, [name]: newValue }));
     localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
   };
-
-  useEffect(() => {
-    if (modelsLoaded) {
-      startVideo(videoRef);
-    }
-  }, [modelsLoaded]);
 
   useLayoutEffect(() => {
     let title = "Levanta.me";
@@ -120,6 +107,47 @@ const App = () => {
   ]);
 
   useEffect(() => {
+    if (modelsLoaded) {
+      navigator.mediaDevices
+        .getUserMedia({ video: {} })
+        .then(stream => {
+          videoRef.current.srcObject = stream;
+        })
+        .catch(err => console.error(err));
+    }
+  }, [modelsLoaded]);
+
+  useEffect(() => {
+    const sendNotification = async message => {
+      setLoading(true);
+      setError(null);
+
+      const url = `https://api.telegram.org/bot${TELEGRAM.BOT_TOKEN}/sendMessage`;
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: TELEGRAM.CHAT_ID,
+            text: message,
+          }),
+        });
+
+        if (response.data.ok) {
+          console.info("Notification sent successfully");
+        } else {
+          throw new Error("Failed to send notification");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (loading || error) return;
     const dateTime = getFormattedDateTime();
 
@@ -163,7 +191,6 @@ const App = () => {
     notificationSent.restTime,
     notificationSent.workTime,
     restTimeExceeded,
-    sendNotification,
     workTimeExceeded,
   ]);
 
@@ -176,6 +203,91 @@ const App = () => {
       });
     }
   }, [isIdle]);
+
+  useEffect(() => {
+    let interval = null;
+
+    if (isIdle || isPaused) {
+      clearInterval(interval);
+    } else {
+      interval = setInterval(() => {
+        if (faceDetected) {
+          if (isWorking) {
+            setWorkTime(prevTime => prevTime + 1);
+            setIdleTime(0);
+          } else {
+            setIdleTime(prevTime => prevTime + 1);
+          }
+        } else if (isResting) {
+          setRestTime(prevTime => prevTime + 1);
+          setIdleTime(0);
+        } else {
+          setIdleTime(prevTime => prevTime + 1);
+        }
+      }, 1000);
+    }
+
+    if (idleTime >= notificationTimes.IDLE) {
+      setStatus("idle");
+      setWorkTime(0);
+      setRestTime(0);
+    }
+
+    return () => clearInterval(interval);
+  }, [
+    faceDetected,
+    idleTime,
+    isIdle,
+    isPaused,
+    isResting,
+    isWorking,
+    setStatus,
+    notificationTimes.IDLE,
+  ]);
+
+  useEffect(() => {
+    const loadModels = async () => {
+      try {
+        await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
+        setModelsLoaded(true);
+      } catch (error) {
+        console.error("Error loading models:", error);
+      }
+    };
+    loadModels();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      if (!canvas || !video || !modelsLoaded) return;
+
+      const { detectSingleFace, matchDimensions, draw, resizeResults } = faceapi;
+
+      const detectFace = async () => {
+        const detection = await detectSingleFace(
+          video,
+          new faceapi.TinyFaceDetectorOptions({
+            inputSize: 160,
+            scoreThreshold: 0.3,
+          })
+        );
+
+        setFaceDetected(!!detection);
+
+        if (!detection) return;
+        const displaySize = { width: video.clientWidth, height: video.clientHeight };
+        const dimensions = matchDimensions(canvas, displaySize, true);
+        const resizedDetection = resizeResults(detection, dimensions);
+        draw.drawDetections(canvas, resizedDetection);
+      };
+
+      detectFace();
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [canvasRef, modelsLoaded, videoRef]);
 
   return (
     <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
@@ -244,11 +356,7 @@ const App = () => {
               alt={isPaused ? "Play" : "Pause"}
             />
           </Button>
-          <Button
-            onClick={resetTimers}
-            disabled={isIdle || isPaused}
-            width={isMobile ? "100%" : "20%"}
-          >
+          <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "20%"}>
             <Icon $white size="30px" src={ResetIcon} alt="Reset" />
           </Button>
         </Flex>
