@@ -53,19 +53,11 @@ Ensure you have the following installed:
 
 ### Usage
 
-1. **Start Working**: Click the "Work" button to begin the work timer.
-2. **Start Resting**: Click the "Resting" button to begin the rest timer.
-3. **Reset**: Click the reset button to reset all timers.
-4. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
-
-### Configuration
-
-The notification bot token and chat ID are configured in the .env file
-
-```
-VITE_BOT_TOKEN=
-VITE_CHAT_ID=
-```
+1. **Configuration**: Set the work, rest, and idle time limits. Set telegram Bot Token and Chat ID.
+2. **Start Working**: Click the "Work" button to begin the work timer.
+3. **Start Resting**: Click the "Resting" button to begin the rest timer.
+4. **Reset**: Click the reset button to reset all timers.
+5. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
 
 ### Contribution
 
