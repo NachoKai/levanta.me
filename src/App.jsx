@@ -1,5 +1,5 @@
 import * as faceapi from "@vladmandic/face-api";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import "./App.css";
 import { ButtonsSection } from "./components/ButtonsSection";
@@ -10,6 +10,7 @@ import { Flex } from "./components/StyledComponents";
 import { TimersSection } from "./components/TimersSection";
 import { VideoSection } from "./components/VideoSection";
 import { useIsMobile } from "./hooks/useIsMobile";
+import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
 
@@ -219,6 +220,36 @@ const App = () => {
     idleTimeExceeded,
     botToken,
     chatId,
+  ]);
+
+  useLayoutEffect(() => {
+    let title = "Levanta.me";
+
+    if (isIdle) {
+      title = "Levanta.me";
+    } else if (isWorking) {
+      title = workTimeExceeded
+        ? `⏰ Time to Rest! - ${formatCounter(workTime)}`
+        : `💼 Working - ${formatCounter(workTime)}`;
+    } else if (isResting) {
+      title = restTimeExceeded
+        ? `⏰ Time to Work! - ${formatCounter(restTime)}`
+        : `🛌 Resting - ${formatCounter(restTime)}`;
+    } else if (idleTimeExceeded) {
+      title = `⏰ Idle Time - ${formatCounter(idleTime)}`;
+    }
+
+    document.title = title;
+  }, [
+    idleTime,
+    idleTimeExceeded,
+    isIdle,
+    isResting,
+    isWorking,
+    restTime,
+    restTimeExceeded,
+    workTime,
+    workTimeExceeded,
   ]);
 
   return (

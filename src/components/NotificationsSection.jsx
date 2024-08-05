@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Flex } from "./StyledComponents";
+import { Flex, Text } from "./StyledComponents";
 
 export const NotificationsSection = ({
   isMobile,
