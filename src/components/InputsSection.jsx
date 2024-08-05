@@ -3,9 +3,17 @@ import styled from "styled-components";
 import IdleIcon from "../assets/idle.svg";
 import RestIcon from "../assets/rest.svg";
 import WorkIcon from "../assets/work.svg";
+import TelegramIcon from "../assets/telegram.svg";
 import { Flex, Icon, Text } from "./StyledComponents";
 
-export const InputsSection = ({ notificationTimes, handleInputChange }) => {
+export const InputsSection = ({
+  notificationTimes,
+  handleInputChange,
+  botToken,
+  chatId,
+  handleBotTokenChange,
+  handleChatIdChange,
+}) => {
   return (
     <Flex width="100%" direction="column" gap="16px" align="center">
       <InputWrapper>
@@ -22,6 +30,7 @@ export const InputsSection = ({ notificationTimes, handleInputChange }) => {
           min="1"
         />
       </InputWrapper>
+
       <InputWrapper>
         <Label htmlFor="IDLE">
           <Icon $white size="22px" src={IdleIcon} alt="Idle" />
@@ -36,6 +45,7 @@ export const InputsSection = ({ notificationTimes, handleInputChange }) => {
           min="1"
         />
       </InputWrapper>
+
       <InputWrapper>
         <Label htmlFor="REST">
           <Icon $white size="22px" src={RestIcon} alt="Rest" />
@@ -48,6 +58,34 @@ export const InputsSection = ({ notificationTimes, handleInputChange }) => {
           value={notificationTimes.REST}
           onChange={handleInputChange}
           min="1"
+        />
+      </InputWrapper>
+
+      <InputWrapper>
+        <Label htmlFor="BOT_TOKEN">
+          <Icon $white size="24px" src={TelegramIcon} alt="Telegram" />
+          <Text fontWeight="bold">Telegram Bot Token:</Text>
+        </Label>
+        <Input
+          type="text"
+          id="BOT_TOKEN"
+          name="BOT_TOKEN"
+          value={botToken}
+          onChange={handleBotTokenChange}
+        />
+      </InputWrapper>
+
+      <InputWrapper>
+        <Label htmlFor="CHAT_ID">
+          <Icon $white size="24px" src={TelegramIcon} alt="Telegram" />
+          <Text fontWeight="bold">Telegram Chat ID:</Text>
+        </Label>
+        <Input
+          type="text"
+          id="CHAT_ID"
+          name="CHAT_ID"
+          value={chatId}
+          onChange={handleChatIdChange}
         />
       </InputWrapper>
     </Flex>
@@ -79,4 +117,8 @@ const Input = styled.input`
 InputsSection.propTypes = {
   notificationTimes: PropTypes.object.isRequired,
   handleInputChange: PropTypes.func.isRequired,
+  botToken: PropTypes.string.isRequired,
+  chatId: PropTypes.string.isRequired,
+  handleBotTokenChange: PropTypes.func.isRequired,
+  handleChatIdChange: PropTypes.func.isRequired,
 };

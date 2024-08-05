@@ -9,7 +9,6 @@ import { StatusSection } from "./components/StatusSection";
 import { Flex } from "./components/StyledComponents";
 import { TimersSection } from "./components/TimersSection";
 import { VideoSection } from "./components/VideoSection";
-import { TELEGRAM } from "./consts";
 import { useIsMobile } from "./hooks/useIsMobile";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
@@ -21,6 +20,8 @@ const App = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
+  const [botToken, setBotToken] = useState(localStorage.getItem("botToken") || "");
+  const [chatId, setChatId] = useState(localStorage.getItem("chatId") || "");
   const [status, setStatus] = useState("idle");
   const [notificationSent, setNotificationSent] = useState({
     workTime: false,
@@ -76,6 +77,16 @@ const App = () => {
     const newValue = parseInt(value) || 0;
     setNotificationTimes(prev => ({ ...prev, [name]: newValue }));
     localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
+  }, []);
+
+  const handleBotTokenChange = useCallback(e => {
+    setBotToken(e.target.value);
+    localStorage.setItem("botToken", e.target.value);
+  }, []);
+
+  const handleChatIdChange = useCallback(e => {
+    setChatId(e.target.value);
+    localStorage.setItem("chatId", e.target.value);
   }, []);
 
   useEffect(() => {
@@ -152,7 +163,7 @@ const App = () => {
 
   useEffect(() => {
     const sendNotification = async message => {
-      const url = `https://api.telegram.org/bot${TELEGRAM.BOT_TOKEN}/sendMessage`;
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
       try {
         const response = await fetch(url, {
@@ -161,7 +172,7 @@ const App = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: TELEGRAM.CHAT_ID,
+            chat_id: chatId,
             text: message,
           }),
         });
@@ -206,6 +217,8 @@ const App = () => {
     workTimeExceeded,
     restTimeExceeded,
     idleTimeExceeded,
+    botToken,
+    chatId,
   ]);
 
   return (
@@ -259,6 +272,10 @@ const App = () => {
         <InputsSection
           notificationTimes={notificationTimes}
           handleInputChange={handleInputChange}
+          botToken={botToken}
+          chatId={chatId}
+          handleBotTokenChange={handleBotTokenChange}
+          handleChatIdChange={handleChatIdChange}
         />
       </Body>
     </Flex>
