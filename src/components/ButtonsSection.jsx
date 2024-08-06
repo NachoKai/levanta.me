@@ -17,8 +17,9 @@ export const ButtonsSection = ({
       align="center"
       border="1px solid #eee"
       borderRadius={5}
-      direction={{ sm: "column", md: "row" }}
-      gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+      boxShadow="md"
+      direction={{ base: "column", sm: "column", md: "row" }}
+      gap={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
       justify="space-between"
       p="24px"
       w="100%"
@@ -26,7 +27,7 @@ export const ButtonsSection = ({
       <Button
         isDisabled={isWorking}
         leftIcon={<Icon alt="Work" as={MdWork} boxSize="20px" />}
-        w={{ sm: "100%", md: "300px" }}
+        w={{ base: "100%", sm: "100%", md: "300px" }}
         onClick={startWorking}
       >
         Work
@@ -35,7 +36,7 @@ export const ButtonsSection = ({
       <Button
         isDisabled={isResting}
         leftIcon={<Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />}
-        w={{ sm: "100%", md: "300px" }}
+        w={{ base: "100%", sm: "100%", md: "300px" }}
         onClick={startResting}
       >
         Rest
@@ -50,7 +51,7 @@ export const ButtonsSection = ({
             boxSize="20px"
           />
         }
-        w={{ sm: "100%", md: "300px" }}
+        w={{ base: "100%", sm: "100%", md: "300px" }}
         onClick={togglePause}
       >
         {isPaused ? "Play" : "Pause"}
@@ -59,7 +60,7 @@ export const ButtonsSection = ({
       <Button
         isDisabled={isIdle}
         leftIcon={<Icon alt="Reset" as={MdReplay} boxSize="20px" />}
-        w={{ sm: "100%", md: "300px" }}
+        w={{ base: "100%", sm: "100%", md: "300px" }}
         onClick={resetTimers}
       >
         Reset

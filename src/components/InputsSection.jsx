@@ -17,13 +17,19 @@ export const InputsSection = ({
       align="center"
       border="1px solid #eee"
       borderRadius={5}
+      boxShadow="md"
       direction="column"
       gap="32px"
       justify="space-between"
       p="24px"
       w="100%"
     >
-      <Flex align="center" direction={{ sm: "column", md: "row" }} gap="32px" w="100%">
+      <Flex
+        align="center"
+        direction={{ base: "column", sm: "column", md: "row" }}
+        gap="32px"
+        w="100%"
+      >
         <FormControl align="center" gap={8} w="100%">
           <FormLabel align="center" display="flex" gap={4} htmlFor="WORK">
             <Icon alt="Work" as={MdWorkOutline} boxSize="20px" />
@@ -78,8 +84,8 @@ export const InputsSection = ({
 
       <Flex
         align="center"
-        direction={{ sm: "column", md: "row" }}
-        gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+        direction={{ base: "column", sm: "column", md: "row" }}
+        gap={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
       >
         <FormControl align="center" gap={8} w="100%">

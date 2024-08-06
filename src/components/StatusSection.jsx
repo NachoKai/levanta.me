@@ -18,8 +18,9 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
       align="center"
       border="1px solid #eee"
       borderRadius={5}
-      direction={{ sm: "column", md: "row" }}
-      gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+      boxShadow="md"
+      direction={{ base: "column", sm: "column", md: "row" }}
+      gap={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
       justify="space-between"
       p="24px"
       w="100%"

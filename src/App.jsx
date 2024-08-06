@@ -269,10 +269,10 @@ const App = () => {
         borderRadius={5}
         direction="column"
         gap="32px"
-        maxW={{ sm: "100%", md: "620px", lg: "720px", xl: "960px" }}
-        p={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+        maxW={{ base: "100%", sm: "100%", md: "620px", lg: "720px", xl: "960px" }}
+        p={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
         position="relative"
-        top={{ sm: "330px", md: "320px", lg: "380px", xl: "340px" }}
+        top={{ base: "330px", sm: "330px", md: "320px", lg: "380px", xl: "340px" }}
         w="100%"
       >
         <TimersSection idleTime={idleTime} restTime={restTime} workTime={workTime} />
