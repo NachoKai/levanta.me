@@ -268,7 +268,7 @@ const App = () => {
         align="center"
         borderRadius={5}
         direction="column"
-        gap="32px"
+        gap={{ base: "4px", sm: "16px", md: "24px", lg: "24px", xl: "32px" }}
         maxW={{ base: "100%", sm: "100%", md: "620px", lg: "720px", xl: "960px" }}
         p={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
         position="relative"
