@@ -18,8 +18,9 @@ export const NotificationsSection = ({
   return (
     <Flex
       align="center"
-      backgroundColor={showNotifications ? "#eee" : "transparent"}
-      border={showNotifications ? "1px solid #eee" : "none"}
+      background="gray.100"
+      backgroundColor={showNotifications ? "gray.50" : "transparent"}
+      border={showNotifications ? "1px solid gray.50" : "none"}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}

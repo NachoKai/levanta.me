@@ -15,7 +15,8 @@ export const ButtonsSection = ({
   return (
     <Flex
       align="center"
-      border="1px solid #eee"
+      background="gray.100"
+      border="1px solid gray.50"
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
@@ -25,6 +26,7 @@ export const ButtonsSection = ({
       w="100%"
     >
       <Button
+        colorScheme="blue"
         isDisabled={isWorking}
         leftIcon={<Icon alt="Work" as={MdWork} boxSize="20px" />}
         w={{ base: "100%", sm: "100%", md: "300px" }}
@@ -34,6 +36,7 @@ export const ButtonsSection = ({
       </Button>
 
       <Button
+        colorScheme="blue"
         isDisabled={isResting}
         leftIcon={<Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />}
         w={{ base: "100%", sm: "100%", md: "300px" }}
@@ -43,6 +46,7 @@ export const ButtonsSection = ({
       </Button>
 
       <Button
+        colorScheme="blue"
         isDisabled={isIdle}
         leftIcon={
           <Icon
@@ -58,6 +62,7 @@ export const ButtonsSection = ({
       </Button>
 
       <Button
+        colorScheme="blue"
         isDisabled={isIdle}
         leftIcon={<Icon alt="Reset" as={MdReplay} boxSize="20px" />}
         w={{ base: "100%", sm: "100%", md: "300px" }}

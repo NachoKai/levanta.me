@@ -15,7 +15,8 @@ export const InputsSection = ({
   return (
     <Flex
       align="center"
-      border="1px solid #eee"
+      background="gray.100"
+      border="1px solid gray.50"
       borderRadius={5}
       boxShadow="md"
       direction="column"
@@ -36,6 +37,7 @@ export const InputsSection = ({
             <Text fontWeight="bold">Work time (minutes):</Text>
           </FormLabel>
           <Input
+            background="white"
             id="WORK"
             min="1"
             name="WORK"
@@ -53,6 +55,7 @@ export const InputsSection = ({
             <Text fontWeight="bold">Idle time (minutes):</Text>
           </FormLabel>
           <Input
+            background="white"
             id="IDLE"
             min="1"
             name="IDLE"
@@ -70,6 +73,7 @@ export const InputsSection = ({
             <Text fontWeight="bold">Rest time (minutes):</Text>
           </FormLabel>
           <Input
+            background="white"
             id="REST"
             min="1"
             name="REST"
@@ -94,6 +98,7 @@ export const InputsSection = ({
             <Text fontWeight="bold">Telegram Bot Token:</Text>
           </FormLabel>
           <Input
+            background="white"
             id="BOT_TOKEN"
             name="BOT_TOKEN"
             placeholder="Bot Token from @BotFather"
@@ -110,6 +115,7 @@ export const InputsSection = ({
             <Text fontWeight="bold">Telegram Chat ID:</Text>
           </FormLabel>
           <Input
+            background="white"
             id="CHAT_ID"
             name="CHAT_ID"
             placeholder="Chat ID from @BotFather"

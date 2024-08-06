@@ -9,7 +9,8 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
   return (
     <Flex
       align="center"
-      border="1px solid #eee"
+      background="gray.100"
+      border="1px solid gray.50"
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
