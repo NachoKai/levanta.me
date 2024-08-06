@@ -1,15 +1,13 @@
 import * as faceapi from "@vladmandic/face-api";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import "./App.css";
+
+import { Flex } from "@chakra-ui/react";
 import { ButtonsSection } from "./components/ButtonsSection";
 import { InputsSection } from "./components/InputsSection";
 import { NotificationsSection } from "./components/NotificationsSection";
 import { StatusSection } from "./components/StatusSection";
-import { Flex } from "./components/StyledComponents";
 import { TimersSection } from "./components/TimersSection";
 import { VideoSection } from "./components/VideoSection";
-import { useIsMobile } from "./hooks/useIsMobile";
 import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
@@ -39,7 +37,6 @@ const App = () => {
   const isWorking = status === "working";
   const isResting = status === "resting";
   const isIdle = status === "idle";
-  const isMobile = useIsMobile();
   const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
   const restTimeExceeded = restTime >= notificationTimes.REST * 60;
   const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
@@ -75,7 +72,8 @@ const App = () => {
 
   const handleInputChange = useCallback(e => {
     const { name, value } = e.target;
-    const newValue = parseInt(value) || 0;
+    const newValue = parseInt(value);
+
     setNotificationTimes(prev => ({ ...prev, [name]: newValue }));
     localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
   }, []);
@@ -99,6 +97,7 @@ const App = () => {
         console.error("Error loading models:", error);
       }
     };
+
     loadModels();
   }, []);
 
@@ -115,6 +114,7 @@ const App = () => {
     const interval = setInterval(async () => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
+
       if (!canvas || !video) return;
 
       const detection = await faceapi.detectSingleFace(
@@ -128,9 +128,13 @@ const App = () => {
       setFaceDetected(!!detection);
 
       if (!detection) return;
-      const displaySize = { width: video.clientWidth, height: video.clientHeight };
+      const displaySize = {
+        width: video.clientWidth,
+        height: video.clientHeight,
+      };
       const dimensions = faceapi.matchDimensions(canvas, displaySize, true);
       const resizedDetection = faceapi.resizeResults(detection, dimensions);
+
       faceapi.draw.drawDetections(canvas, resizedDetection);
     }, 1500);
 
@@ -190,6 +194,7 @@ const App = () => {
 
     if (workTimeExceeded && !notificationSent.workTime && isWorking) {
       const message = `Work time finished at ${dateTime}. Go for a break!`;
+
       sendNotification(message);
       sendSystemNotification("Work Time Finished", message);
       setNotificationSent(prev => ({ ...prev, workTime: true }));
@@ -197,6 +202,7 @@ const App = () => {
 
     if (restTimeExceeded && !notificationSent.restTime && isResting) {
       const message = `Rest time finished at ${dateTime}. Get back to work!`;
+
       sendNotification(message);
       sendSystemNotification("Rest Time Finished", message);
       setNotificationSent(prev => ({ ...prev, restTime: true }));
@@ -204,6 +210,7 @@ const App = () => {
 
     if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
     const message = `Idle time finished at ${dateTime}. Timers have been reset.`;
+
     sendNotification(message);
     sendSystemNotification("Idle Time Finished", message);
     setNotificationSent(prev => ({ ...prev, idleTime: true }));
@@ -254,69 +261,55 @@ const App = () => {
   ]);
 
   return (
-    <Flex direction="column" padding={isMobile ? "16px" : "32px"} gap="32px" align="center">
-      <VideoSection videoRef={videoRef} canvasRef={canvasRef} />
+    <Flex align="center" direction="column" h="100%" w="100%">
+      <VideoSection canvasRef={canvasRef} videoRef={videoRef} />
 
-      <Body
+      <Flex
+        align="center"
+        borderRadius={5}
         direction="column"
         gap="32px"
-        justify="end"
-        width="100%"
-        align="center"
-        $maxWidth={isMobile ? "100%" : "620px"}
+        maxW={{ sm: "100%", md: "620px", lg: "720px", xl: "960px" }}
+        p={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+        position="relative"
+        top={{ sm: "330px", md: "320px", lg: "380px", xl: "340px" }}
+        w="100%"
       >
-        <TimersSection
-          isMobile={isMobile}
-          workTime={workTime}
-          restTime={restTime}
-          idleTime={idleTime}
-        />
+        <TimersSection idleTime={idleTime} restTime={restTime} workTime={workTime} />
 
         <ButtonsSection
-          isMobile={isMobile}
-          isWorking={isWorking}
-          isResting={isResting}
           isIdle={isIdle}
           isPaused={isPaused}
-          startWorking={startWorking}
-          startResting={startResting}
-          togglePause={togglePause}
+          isResting={isResting}
+          isWorking={isWorking}
           resetTimers={resetTimers}
+          startResting={startResting}
+          startWorking={startWorking}
+          togglePause={togglePause}
         />
 
-        <StatusSection
-          isMobile={isMobile}
-          status={status}
-          faceDetected={faceDetected}
-          isPaused={isPaused}
-        />
+        <StatusSection faceDetected={faceDetected} isPaused={isPaused} status={status} />
 
         <NotificationsSection
-          isMobile={isMobile}
-          isWorking={isWorking}
-          workTimeExceeded={workTimeExceeded}
-          isIdle={isIdle}
           idleTimeExceeded={idleTimeExceeded}
+          isIdle={isIdle}
           isResting={isResting}
+          isWorking={isWorking}
           restTimeExceeded={restTimeExceeded}
+          workTimeExceeded={workTimeExceeded}
         />
 
         <InputsSection
-          notificationTimes={notificationTimes}
-          handleInputChange={handleInputChange}
           botToken={botToken}
           chatId={chatId}
           handleBotTokenChange={handleBotTokenChange}
           handleChatIdChange={handleChatIdChange}
+          handleInputChange={handleInputChange}
+          notificationTimes={notificationTimes}
         />
-      </Body>
+      </Flex>
     </Flex>
   );
 };
 
 export default App;
-
-const Body = styled(Flex)`
-  position: relative;
-  top: 385px;
-`;

@@ -1,47 +1,39 @@
+import { Flex, Icon, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import IdleIcon from "../assets/idle.svg";
-import RestIcon from "../assets/rest.svg";
-import WorkIcon from "../assets/work.svg";
-import { formatCounter } from "../utils/formatCounter";
-import { Flex, Icon, Text } from "./StyledComponents";
+import { BsClockHistory } from "react-icons/bs";
+import { MdOutlineBed, MdWorkOutline } from "react-icons/md";
 
-export const TimersSection = ({ isMobile, workTime, restTime, idleTime }) => {
+import { formatCounter } from "../utils/formatCounter";
+
+export const TimersSection = ({ workTime, restTime, idleTime }) => {
   return (
     <Flex
-      width="100%"
-      gap={isMobile ? "16px" : "32px"}
-      height="100%"
-      justify="space-between"
-      padding="8px 0"
-      background="#eee"
-      radius="5px"
       align="center"
-      direction={isMobile ? "column" : "row"}
+      border="1px solid #eee"
+      borderRadius={5}
+      direction={{ sm: "column", md: "row" }}
+      gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+      justify="space-between"
+      p="24px"
+      w="100%"
     >
-      <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
-        <Icon size="19px" src={WorkIcon} alt="Work" />
-        <Text fontWeight="500" color="#222">
-          Work Time: {formatCounter(workTime)}
-        </Text>
+      <Flex align="center" gap={4} justify="center" width={{ sm: "100%", md: "30%" }}>
+        <Icon alt="Work" as={MdWorkOutline} boxSize="20px" />
+        <Text fontWeight={600}>Work Time: {formatCounter(workTime)}</Text>
       </Flex>
-      <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
-        <Icon size="22px" src={IdleIcon} alt="Idle" />
-        <Text fontWeight="500" color="#222">
-          Idle Time: {formatCounter(idleTime)}
-        </Text>
+      <Flex align="center" gap={4} justify="center" width={{ sm: "100%", md: "30%" }}>
+        <Icon alt="Idle" as={BsClockHistory} boxSize="20px" />
+        <Text fontWeight={600}>Idle Time: {formatCounter(idleTime)}</Text>
       </Flex>
-      <Flex align="center" justify="center" gap="4px" width={isMobile ? "100%" : "30%"}>
-        <Icon size="24px" src={RestIcon} alt="Rest" />
-        <Text fontWeight="500" color="#222">
-          Rest Time: {formatCounter(restTime)}
-        </Text>
+      <Flex align="center" gap={4} justify="center" width={{ sm: "100%", md: "30%" }}>
+        <Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />
+        <Text fontWeight={600}>Rest Time: {formatCounter(restTime)}</Text>
       </Flex>
     </Flex>
   );
 };
 
 TimersSection.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
   workTime: PropTypes.number.isRequired,
   restTime: PropTypes.number.isRequired,
   idleTime: PropTypes.number.isRequired,

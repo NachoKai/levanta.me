@@ -1,12 +1,8 @@
+import { Button, Flex, Icon } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import PauseIcon from "../assets/pause.svg";
-import PlayIcon from "../assets/play.svg";
-import ResetIcon from "../assets/replay.svg";
-import { Flex, Icon } from "./StyledComponents";
+import { MdOutlineBed, MdOutlinePause, MdPlayArrow, MdReplay, MdWork } from "react-icons/md";
 
 export const ButtonsSection = ({
-  isMobile,
   isWorking,
   isResting,
   isIdle,
@@ -18,58 +14,61 @@ export const ButtonsSection = ({
 }) => {
   return (
     <Flex
-      width="100%"
-      gap={isMobile ? "16px" : "32px"}
       align="center"
+      border="1px solid #eee"
+      borderRadius={5}
+      direction={{ sm: "column", md: "row" }}
+      gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
       justify="space-between"
-      direction={isMobile ? "column" : "row"}
+      p="24px"
+      w="100%"
     >
-      <Button onClick={startWorking} disabled={isWorking} width={isMobile ? "100%" : "30%"}>
+      <Button
+        isDisabled={isWorking}
+        leftIcon={<Icon alt="Work" as={MdWork} boxSize="20px" />}
+        w={{ sm: "100%", md: "300px" }}
+        onClick={startWorking}
+      >
         Work
       </Button>
-      <Button onClick={startResting} disabled={isResting} width={isMobile ? "100%" : "30%"}>
+
+      <Button
+        isDisabled={isResting}
+        leftIcon={<Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />}
+        w={{ sm: "100%", md: "300px" }}
+        onClick={startResting}
+      >
         Rest
       </Button>
-      <Button width={isMobile ? "100%" : "20%"} onClick={togglePause} disabled={isIdle}>
-        <Icon
-          $white
-          size="30px"
-          src={isPaused ? PlayIcon : PauseIcon}
-          alt={isPaused ? "Play" : "Pause"}
-        />
+
+      <Button
+        isDisabled={isIdle}
+        leftIcon={
+          <Icon
+            alt={isPaused ? "Play" : "Pause"}
+            as={isPaused ? MdPlayArrow : MdOutlinePause}
+            boxSize="20px"
+          />
+        }
+        w={{ sm: "100%", md: "300px" }}
+        onClick={togglePause}
+      >
+        {isPaused ? "Play" : "Pause"}
       </Button>
-      <Button onClick={resetTimers} disabled={isIdle} width={isMobile ? "100%" : "20%"}>
-        <Icon $white size="30px" src={ResetIcon} alt="Reset" />
+
+      <Button
+        isDisabled={isIdle}
+        leftIcon={<Icon alt="Reset" as={MdReplay} boxSize="20px" />}
+        w={{ sm: "100%", md: "300px" }}
+        onClick={resetTimers}
+      >
+        Reset
       </Button>
     </Flex>
   );
 };
 
-const Button = styled.button`
-  ${({ width }) => width && `width: ${width}`};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0;
-  height: 42px;
-  line-height: 42px;
-
-  &:disabled {
-    background-color: #cccccc;
-    pointer-events: none;
-  }
-`;
-
 ButtonsSection.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
   startWorking: PropTypes.func.isRequired,
   startResting: PropTypes.func.isRequired,
   togglePause: PropTypes.func.isRequired,

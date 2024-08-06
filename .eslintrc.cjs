@@ -10,7 +10,7 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
   settings: { react: { version: "18.2" } },
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "react", "react-hooks"],
   rules: {
     "react/jsx-no-target-blank": "off",
     "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
@@ -18,14 +18,6 @@ module.exports = {
       "warn",
       {
         allow: ["warn", "error", "info", "debug"],
-      },
-    ],
-    quotes: [2, "double", "avoid-escape"],
-    indent: [
-      0,
-      "tab",
-      {
-        SwitchCase: 1,
       },
     ],
     "no-unused-vars": [
@@ -55,5 +47,64 @@ module.exports = {
     ],
     "array-callback-return": "warn",
     "no-self-compare": "warn",
+    "sort-imports": [
+      "warn",
+      {
+        ignoreCase: false,
+        ignoreDeclarationSort: true,
+        ignoreMemberSort: false,
+        memberSyntaxSortOrder: ["none", "all", "multiple", "single"],
+        allowSeparatedGroups: false,
+      },
+    ],
+    "padding-line-between-statements": [
+      "warn",
+      {
+        blankLine: "always",
+        prev: "*",
+        next: "return",
+      },
+      {
+        blankLine: "always",
+        prev: ["const", "let", "var"],
+        next: "*",
+      },
+      {
+        blankLine: "any",
+        prev: ["const", "let", "var"],
+        next: ["const", "let", "var"],
+      },
+    ],
+    "react/jsx-sort-props": [
+      "warn",
+      {
+        callbacksLast: true,
+        shorthandFirst: true,
+        noSortAlphabetically: false,
+        reservedFirst: true,
+      },
+    ],
+    "react/react-in-jsx-scope": "off",
+    // "prettier/prettier": [
+    //   "warn",
+    //   {
+    //     printWidth: 90,
+    //     tabWidth: 2,
+    //     useTabs: true,
+    //     semi: false,
+    //     arrowParens: "avoid",
+    //     bracketSpacing: true,
+    //     bracketSameLine: false,
+    //     singleQuote: true,
+    //     trailingComma: "es5",
+    //     endOfLine: "lf",
+    //     htmlWhitespaceSensitivity: "css",
+    //     jsxSingleQuote: true,
+    //     quoteProps: "as-needed",
+    //     requirePragma: false,
+    //     insertPragma: false,
+    //     proseWrap: "always",
+    //   },
+    // ],
   },
 };

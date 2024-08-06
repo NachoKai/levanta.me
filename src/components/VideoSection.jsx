@@ -1,33 +1,32 @@
+import { AspectRatio, Flex } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Flex } from "./StyledComponents";
 
 export const VideoSection = ({ videoRef, canvasRef }) => {
   return (
-    <Flex width="100%" align="center" justify="center">
-      <Video ref={videoRef} autoPlay muted />
-      <Canvas ref={canvasRef} />
+    <Flex align="center" borderRadius={5} justify="center" w="100%">
+      <AspectRatio
+        h="auto"
+        maxW={{ sm: 320, md: 416, lg: 512, xl: 608 }}
+        position="absolute"
+        ratio={{ sm: 1, md: 4 / 3, lg: 4 / 3, xl: 16 / 9 }}
+        top="0"
+        w="100%"
+      >
+        <video ref={videoRef} autoPlay muted />
+      </AspectRatio>
+      <AspectRatio
+        h="auto"
+        maxW={{ sm: 320, md: 416, lg: 512, xl: 608 }}
+        position="absolute"
+        ratio={{ sm: 1, md: 4 / 3, lg: 4 / 3, xl: 16 / 9 }}
+        top="0"
+        w="100%"
+      >
+        <canvas ref={canvasRef} />
+      </AspectRatio>
     </Flex>
   );
 };
-
-export const Video = styled.video`
-  position: absolute;
-  top: 0;
-  width: 100%;
-  max-width: 416px;
-  height: auto;
-  aspect-ratio: 1 / 1;
-`;
-
-export const Canvas = styled.canvas`
-  position: absolute;
-  top: 0;
-  width: 100%;
-  max-width: 416px;
-  height: auto;
-  aspect-ratio: 1 / 1;
-`;
 
 VideoSection.propTypes = {
   videoRef: PropTypes.object.isRequired,

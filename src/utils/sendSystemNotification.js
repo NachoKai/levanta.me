@@ -1,6 +1,7 @@
 export const sendSystemNotification = (title, body) => {
   if (!("Notification" in window)) {
     console.info("This browser does not support system notifications");
+
     return;
   }
 

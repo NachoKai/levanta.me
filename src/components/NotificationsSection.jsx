@@ -1,9 +1,7 @@
+import { Flex, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Flex, Text } from "./StyledComponents";
 
 export const NotificationsSection = ({
-  isMobile,
   isWorking,
   workTimeExceeded,
   isIdle,
@@ -11,41 +9,45 @@ export const NotificationsSection = ({
   isResting,
   restTimeExceeded,
 }) => {
+  const showWorkingNotification = isWorking && workTimeExceeded;
+  const showIdleNotification = isIdle && idleTimeExceeded;
+  const showRestingNotification = isResting && restTimeExceeded;
+  const showNotifications =
+    showWorkingNotification || showIdleNotification || showRestingNotification;
+
   return (
     <Flex
-      width="100%"
-      gap="8px"
-      padding="8px 0"
-      radius="5px"
       align="center"
-      justify="center"
-      direction={isMobile ? "column" : "row"}
+      backgroundColor={showNotifications ? "#eee" : "transparent"}
+      border={showNotifications ? "1px solid #eee" : "none"}
+      borderRadius={5}
+      direction={{ sm: "column", md: "row" }}
+      display={showNotifications ? "flex" : "none"}
+      gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+      justify="space-between"
+      p="24px"
+      w="100%"
     >
-      {isWorking && workTimeExceeded && (
-        <Notification>Work time finished. Go for a break! 🛌</Notification>
+      {showWorkingNotification && (
+        <Text fontWeight={600} p="8px 16px">
+          Work time finished. Go for a break! 🛌
+        </Text>
       )}
-      {isIdle && idleTimeExceeded && (
-        <Notification>Idle time finished. Timers have been reset. ⏰</Notification>
+      {showIdleNotification && (
+        <Text fontWeight={600} p="8px 16px">
+          Idle time finished. Timers have been reset. ⏰
+        </Text>
       )}
-      {isResting && restTimeExceeded && (
-        <Notification>Rest time finished. Get back to work! 💼</Notification>
+      {showRestingNotification && (
+        <Text fontWeight={600} p="8px 16px">
+          Rest time finished. Get back to work! 💼
+        </Text>
       )}
     </Flex>
   );
 };
 
-const Notification = styled(Text)`
-  color: #eee;
-  background-color: #444;
-  border-radius: 5px;
-  padding: 8px 16px;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-`;
-
 NotificationsSection.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
   isWorking: PropTypes.bool.isRequired,
   workTimeExceeded: PropTypes.bool.isRequired,
   isIdle: PropTypes.bool.isRequired,

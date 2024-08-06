@@ -1,10 +1,8 @@
+import { Flex, FormControl, FormLabel, Icon, Input, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import IdleIcon from "../assets/idle.svg";
-import RestIcon from "../assets/rest.svg";
-import WorkIcon from "../assets/work.svg";
-import TelegramIcon from "../assets/telegram.svg";
-import { Flex, Icon, Text } from "./StyledComponents";
+import { BsClockHistory } from "react-icons/bs";
+import { LiaTelegram } from "react-icons/lia";
+import { MdOutlineBed, MdWorkOutline } from "react-icons/md";
 
 export const InputsSection = ({
   notificationTimes,
@@ -15,104 +13,110 @@ export const InputsSection = ({
   handleChatIdChange,
 }) => {
   return (
-    <Flex width="100%" direction="column" gap="16px" align="center">
-      <InputWrapper>
-        <Label htmlFor="WORK">
-          <Icon $white size="19px" src={WorkIcon} alt="Work" />
-          <Text fontWeight="bold">Work time (minutes):</Text>
-        </Label>
-        <Input
-          type="number"
-          id="WORK"
-          name="WORK"
-          value={notificationTimes.WORK}
-          onChange={handleInputChange}
-          min="1"
-        />
-      </InputWrapper>
+    <Flex
+      align="center"
+      border="1px solid #eee"
+      borderRadius={5}
+      direction="column"
+      gap="32px"
+      justify="space-between"
+      p="24px"
+      w="100%"
+    >
+      <Flex align="center" direction={{ sm: "column", md: "row" }} gap="32px" w="100%">
+        <FormControl align="center" gap={8} w="100%">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="WORK">
+            <Icon alt="Work" as={MdWorkOutline} boxSize="20px" />
+            <Text fontWeight="bold">Work time (minutes):</Text>
+          </FormLabel>
+          <Input
+            id="WORK"
+            min="1"
+            name="WORK"
+            placeholder="50"
+            type="number"
+            value={notificationTimes.WORK}
+            w="100%"
+            onChange={handleInputChange}
+          />
+        </FormControl>
 
-      <InputWrapper>
-        <Label htmlFor="IDLE">
-          <Icon $white size="22px" src={IdleIcon} alt="Idle" />
-          <Text fontWeight="bold">Idle time (minutes):</Text>
-        </Label>
-        <Input
-          type="number"
-          id="IDLE"
-          name="IDLE"
-          value={notificationTimes.IDLE}
-          onChange={handleInputChange}
-          min="1"
-        />
-      </InputWrapper>
+        <FormControl align="center" gap={8} w="100%">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="IDLE">
+            <Icon alt="Idle" as={BsClockHistory} boxSize="20px" />
+            <Text fontWeight="bold">Idle time (minutes):</Text>
+          </FormLabel>
+          <Input
+            id="IDLE"
+            min="1"
+            name="IDLE"
+            placeholder="50"
+            type="number"
+            value={notificationTimes.IDLE}
+            w="100%"
+            onChange={handleInputChange}
+          />
+        </FormControl>
 
-      <InputWrapper>
-        <Label htmlFor="REST">
-          <Icon $white size="22px" src={RestIcon} alt="Rest" />
-          <Text fontWeight="bold">Rest time (minutes):</Text>
-        </Label>
-        <Input
-          type="number"
-          id="REST"
-          name="REST"
-          value={notificationTimes.REST}
-          onChange={handleInputChange}
-          min="1"
-        />
-      </InputWrapper>
+        <FormControl align="center" gap={8} w="100%">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="REST">
+            <Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />
+            <Text fontWeight="bold">Rest time (minutes):</Text>
+          </FormLabel>
+          <Input
+            id="REST"
+            min="1"
+            name="REST"
+            placeholder="10"
+            type="number"
+            value={notificationTimes.REST}
+            w="100%"
+            onChange={handleInputChange}
+          />
+        </FormControl>
+      </Flex>
 
-      <InputWrapper>
-        <Label htmlFor="BOT_TOKEN">
-          <Icon $white size="24px" src={TelegramIcon} alt="Telegram" />
-          <Text fontWeight="bold">Telegram Bot Token:</Text>
-        </Label>
-        <Input
-          type="text"
-          id="BOT_TOKEN"
-          name="BOT_TOKEN"
-          value={botToken}
-          onChange={handleBotTokenChange}
-        />
-      </InputWrapper>
+      <Flex
+        align="center"
+        direction={{ sm: "column", md: "row" }}
+        gap={{ sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+        w="100%"
+      >
+        <FormControl align="center" gap={8} w="100%">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="BOT_TOKEN">
+            <Icon alt="Telegram" as={LiaTelegram} boxSize="20px" />
+            <Text fontWeight="bold">Telegram Bot Token:</Text>
+          </FormLabel>
+          <Input
+            id="BOT_TOKEN"
+            name="BOT_TOKEN"
+            placeholder="Bot Token from @BotFather"
+            type="text"
+            value={botToken}
+            w="100%"
+            onChange={handleBotTokenChange}
+          />
+        </FormControl>
 
-      <InputWrapper>
-        <Label htmlFor="CHAT_ID">
-          <Icon $white size="24px" src={TelegramIcon} alt="Telegram" />
-          <Text fontWeight="bold">Telegram Chat ID:</Text>
-        </Label>
-        <Input
-          type="text"
-          id="CHAT_ID"
-          name="CHAT_ID"
-          value={chatId}
-          onChange={handleChatIdChange}
-        />
-      </InputWrapper>
+        <FormControl align="center" gap={8} w="100%">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="CHAT_ID">
+            <Icon alt="Telegram" as={LiaTelegram} boxSize="20px" />
+            <Text fontWeight="bold">Telegram Chat ID:</Text>
+          </FormLabel>
+          <Input
+            id="CHAT_ID"
+            name="CHAT_ID"
+            placeholder="Chat ID from @BotFather"
+            type="text"
+            value={chatId}
+            w="100%"
+            onChange={handleChatIdChange}
+          />
+        </FormControl>
+      </Flex>
     </Flex>
   );
 };
-
-const InputWrapper = styled(Flex)`
-  align-items: center;
-  width: 100%;
-  gap: 8px;
-`;
-
-const Label = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #eee;
-  width: 50%;
-`;
-
-const Input = styled.input`
-  width: 50%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
 
 InputsSection.propTypes = {
   notificationTimes: PropTypes.object.isRequired,
