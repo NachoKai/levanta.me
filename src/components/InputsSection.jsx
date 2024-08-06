@@ -20,7 +20,7 @@ export const InputsSection = ({
       borderRadius={5}
       boxShadow="md"
       direction="column"
-      gap={{ base: "4px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
+      gap={{ base: "8px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
       justify="space-between"
       p="24px"
       w="100%"
@@ -28,7 +28,7 @@ export const InputsSection = ({
       <Flex
         align="center"
         direction={{ base: "column", sm: "column", md: "row" }}
-        gap={{ base: "4px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
+        gap={{ base: "8px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
       >
         <FormControl align="center" gap={8} w="100%">
