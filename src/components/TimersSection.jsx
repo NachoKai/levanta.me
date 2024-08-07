@@ -14,7 +14,7 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
-      gap={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+      gap={{ base: "8px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
       justify="space-between"
       p="24px"
       w="100%"

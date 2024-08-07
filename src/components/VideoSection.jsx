@@ -34,7 +34,7 @@ export const VideoSection = ({ videoRef, canvasRef }) => {
           borderRadius={5}
           boxShadow="md"
           direction="column"
-          gap={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
+          gap={{ base: "8px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
           h={{ base: "335px", sm: "325px", md: "325px", lg: "285px", xl: "345px" }}
           justify="space-between"
           maxW={{ base: "100%", sm: "100%", md: "588px", lg: "670px", xl: "890px" }}
