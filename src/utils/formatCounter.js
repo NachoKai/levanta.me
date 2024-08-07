@@ -1,6 +1,7 @@
 export const formatCounter = time => {
+  const hours = Math.floor(time / 3600);
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
 
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  return `${hours}h ${minutes}m ${seconds}s`;
 };
