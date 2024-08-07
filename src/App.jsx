@@ -19,8 +19,10 @@ const App = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
-  const [botToken, setBotToken] = useState(localStorage.getItem("botToken") || "");
-  const [chatId, setChatId] = useState(localStorage.getItem("chatId") || "");
+  const [telegramConfig, setTelegramConfig] = useState({
+    botToken: localStorage.getItem("botToken") || "",
+    chatId: localStorage.getItem("chatId") || "",
+  });
   const [status, setStatus] = useState("idle");
   const [notificationSent, setNotificationSent] = useState({
     workTime: false,
@@ -78,14 +80,16 @@ const App = () => {
     localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
   }, []);
 
-  const handleBotTokenChange = useCallback(e => {
-    setBotToken(e.target.value);
-    localStorage.setItem("botToken", e.target.value);
-  }, []);
+  const handleTelegramConfigChange = useCallback(e => {
+    const { name, value } = e.target;
 
-  const handleChatIdChange = useCallback(e => {
-    setChatId(e.target.value);
-    localStorage.setItem("chatId", e.target.value);
+    setTelegramConfig(prev => {
+      const newConfig = { ...prev, [name]: value };
+
+      localStorage.setItem(name, value);
+
+      return newConfig;
+    });
   }, []);
 
   useEffect(() => {
@@ -168,6 +172,8 @@ const App = () => {
 
   useEffect(() => {
     const sendNotification = async message => {
+      const { botToken, chatId } = telegramConfig;
+
       if (!botToken || !chatId) return;
       const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
@@ -226,8 +232,7 @@ const App = () => {
     workTimeExceeded,
     restTimeExceeded,
     idleTimeExceeded,
-    botToken,
-    chatId,
+    telegramConfig,
   ]);
 
   useLayoutEffect(() => {
@@ -300,12 +305,10 @@ const App = () => {
         />
 
         <InputsSection
-          botToken={botToken}
-          chatId={chatId}
-          handleBotTokenChange={handleBotTokenChange}
-          handleChatIdChange={handleChatIdChange}
           handleInputChange={handleInputChange}
+          handleTelegramConfigChange={handleTelegramConfigChange}
           notificationTimes={notificationTimes}
+          telegramConfig={telegramConfig}
         />
       </Flex>
     </Flex>

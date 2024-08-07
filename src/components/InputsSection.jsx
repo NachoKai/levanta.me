@@ -20,10 +20,8 @@ import { ToggleColorMode } from "./ToggleColorMode";
 export const InputsSection = ({
   notificationTimes,
   handleInputChange,
-  botToken,
-  chatId,
-  handleBotTokenChange,
-  handleChatIdChange,
+  telegramConfig,
+  handleTelegramConfigChange,
 }) => {
   return (
     <Flex
@@ -80,21 +78,21 @@ export const InputsSection = ({
       >
         <FormInput
           icon={MdNotifications}
-          id="BOT_TOKEN"
+          id="botToken"
           label="Telegram Bot Token:"
           placeholder="Bot Token from @BotFather"
           type="text"
-          value={botToken}
-          onChange={handleBotTokenChange}
+          value={telegramConfig.botToken}
+          onChange={handleTelegramConfigChange}
         />
         <FormInput
           icon={MdNotifications}
-          id="CHAT_ID"
+          id="chatId"
           label="Telegram Chat ID:"
           placeholder="Chat ID from @BotFather"
           type="text"
-          value={chatId}
-          onChange={handleChatIdChange}
+          value={telegramConfig.chatId}
+          onChange={handleTelegramConfigChange}
         />
 
         <ToggleColorMode />
@@ -106,10 +104,11 @@ export const InputsSection = ({
 InputsSection.propTypes = {
   notificationTimes: PropTypes.object.isRequired,
   handleInputChange: PropTypes.func.isRequired,
-  botToken: PropTypes.string.isRequired,
-  chatId: PropTypes.string.isRequired,
-  handleBotTokenChange: PropTypes.func.isRequired,
-  handleChatIdChange: PropTypes.func.isRequired,
+  telegramConfig: PropTypes.shape({
+    botToken: PropTypes.string.isRequired,
+    chatId: PropTypes.string.isRequired,
+  }).isRequired,
+  handleTelegramConfigChange: PropTypes.func.isRequired,
 };
 
 const FormInput = ({ icon, label, id, value, onChange, placeholder, type = "number", min }) => {
