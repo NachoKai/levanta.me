@@ -35,7 +35,7 @@ export const InputsSection = ({
         w="100%"
       >
         <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="WORK">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="WORK" justify="center">
             <Icon alt="Work" as={MdWorkOutline} boxSize="20px" />
             <Text fontWeight="bold">Work time (minutes):</Text>
           </FormLabel>
@@ -53,7 +53,7 @@ export const InputsSection = ({
         </FormControl>
 
         <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="IDLE">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="IDLE" justify="center">
             <Icon alt="Idle" as={MdOutlineQueryBuilder} boxSize="20px" />
             <Text fontWeight="bold">Idle time (minutes):</Text>
           </FormLabel>
@@ -71,7 +71,7 @@ export const InputsSection = ({
         </FormControl>
 
         <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="REST">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="REST" justify="center">
             <Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />
             <Text fontWeight="bold">Rest time (minutes):</Text>
           </FormLabel>
@@ -96,7 +96,7 @@ export const InputsSection = ({
         w="100%"
       >
         <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="BOT_TOKEN">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="BOT_TOKEN" justify="center">
             <Icon alt="Telegram" as={MdNotifications} boxSize="20px" />
             <Text fontWeight="bold">Telegram Bot Token:</Text>
           </FormLabel>
@@ -113,7 +113,7 @@ export const InputsSection = ({
         </FormControl>
 
         <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="CHAT_ID">
+          <FormLabel align="center" display="flex" gap={4} htmlFor="CHAT_ID" justify="center">
             <Icon alt="Telegram" as={MdNotifications} boxSize="20px" />
             <Text fontWeight="bold">Telegram Chat ID:</Text>
           </FormLabel>
