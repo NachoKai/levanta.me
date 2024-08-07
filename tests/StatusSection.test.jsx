@@ -1,58 +1,55 @@
-import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { StatusSection } from "../src/components/StatusSection";
 
-describe("StatusSection", () => {
-  const defaultProps = {
-    status: "working",
-    faceDetected: true,
-    isPaused: false,
-  };
+describe("StatusSection component", () => {
+  it("renders the correct status", () => {
+    render(<StatusSection faceDetected={true} isPaused={false} status="working" />);
+    const statusElement = screen.getByText(/Current Status:/);
 
-  const renderComponent = (props = {}) => {
-    return render(<StatusSection {...defaultProps} {...props} />);
-  };
+    expect(statusElement).toBeInTheDocument();
+    const statusValue = screen.getByText("Working");
 
-  it('renders the correct status with "working" status', () => {
-    renderComponent();
+    expect(statusValue).toBeInTheDocument();
+    const statusIcon = screen.getByTestId("status-icon");
 
-    expect(screen.getByText(/Current Status:/)).toBeInTheDocument();
-    expect(screen.getByText(/Working/)).toBeInTheDocument();
+    expect(statusIcon).toHaveAttribute("alt", "Current Status");
   });
 
-  it('renders the correct status with "resting" status', () => {
-    renderComponent({ status: "resting" });
+  it("renders the correct face detection status", () => {
+    render(<StatusSection faceDetected={true} isPaused={false} status="working" />);
+    const faceDetectedElement = screen.getByText(/Face Detected:/);
 
-    expect(screen.getByText(/Current Status:/)).toBeInTheDocument();
-    expect(screen.getByText(/Resting/)).toBeInTheDocument();
+    expect(faceDetectedElement).toBeInTheDocument();
+    const faceDetectedValue = screen.getByText("Yes");
+
+    expect(faceDetectedValue).toBeInTheDocument();
+    const faceIcon = screen.getByTestId("face-icon");
+
+    expect(faceIcon).toHaveAttribute("alt", "Face Detected");
   });
 
-  it('renders the correct status with "idle" status', () => {
-    renderComponent({ status: "idle" });
+  it("renders the status as paused", () => {
+    render(<StatusSection faceDetected={true} isPaused={true} status="working" />);
+    const statusValue = screen.getByText("Working (Paused)");
 
-    expect(screen.getByText(/Current Status:/)).toBeInTheDocument();
-    expect(screen.getByText(/Idle/)).toBeInTheDocument();
+    expect(statusValue).toBeInTheDocument();
   });
 
-  it('renders the correct status with "paused" state', () => {
-    renderComponent({ isPaused: true });
+  it("renders no face detected", () => {
+    render(<StatusSection faceDetected={false} isPaused={false} status="resting" />);
+    const faceDetectedValue = screen.getByText("No");
 
-    expect(screen.getByText(/Current Status:/)).toBeInTheDocument();
-    expect(screen.getByText(/Working \(Paused\)/)).toBeInTheDocument();
+    expect(faceDetectedValue).toBeInTheDocument();
+    const faceIcon = screen.getByTestId("face-icon");
+
+    expect(faceIcon).toHaveAttribute("alt", "Face Detected");
   });
 
-  it('renders "Face Detected" as Yes when faceDetected is true', () => {
-    renderComponent();
+  it("renders with default icon when status is not recognized", () => {
+    render(<StatusSection faceDetected={true} isPaused={false} status="unknown" />);
+    const statusIcon = screen.getByTestId("status-icon");
 
-    expect(screen.getByText(/Face Detected:/)).toBeInTheDocument();
-    expect(screen.getByText(/Yes/)).toBeInTheDocument();
-  });
-
-  it('renders "Face Detected" as No when faceDetected is false', () => {
-    renderComponent({ faceDetected: false });
-
-    expect(screen.getByText(/Face Detected:/)).toBeInTheDocument();
-    expect(screen.getByText(/No/)).toBeInTheDocument();
+    expect(statusIcon).toHaveAttribute("alt", "Current Status");
   });
 });

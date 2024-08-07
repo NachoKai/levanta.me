@@ -31,12 +31,14 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
       <StatusItem
         icon={statusIcons[status] || MdOutlineQueryBuilder}
         label="Current Status"
+        testId="status-icon"
         value={`${capitalizedStatus} ${isPaused ? "(Paused)" : ""}`.trim()}
       />
       <StatusItem
         color={faceDetected ? "green.500" : "red.500"}
         icon={faceDetected ? MdAccountCircle : MdCircle}
         label="Face Detected"
+        testId="face-icon"
         value={faceDetected ? "Yes" : "No"}
       />
     </Flex>
@@ -49,11 +51,11 @@ StatusSection.propTypes = {
   isPaused: PropTypes.bool,
 };
 
-const StatusItem = ({ label, value, icon, color }) => (
+const StatusItem = ({ label, value, icon, color, testId }) => (
   <Flex align="center" gap={2} w={{ sm: "100%", md: "50%" }}>
     <Text fontWeight="bold">{label}:</Text>
     <Text>{value}</Text>
-    <Icon alt={label} as={icon} boxSize="20px" color={color} h="auto" />
+    <Icon alt={label} as={icon} boxSize="20px" color={color} data-testid={testId} h="auto" />
   </Flex>
 );
 
@@ -62,4 +64,5 @@ StatusItem.propTypes = {
   value: PropTypes.string.isRequired,
   icon: PropTypes.elementType.isRequired,
   color: PropTypes.string,
+  testId: PropTypes.string.isRequired,
 };

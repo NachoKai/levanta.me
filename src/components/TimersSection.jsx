@@ -17,9 +17,14 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
       p="24px"
       w="100%"
     >
-      <TimerItem icon={MdWorkOutline} label="Work Time" time={workTime} />
-      <TimerItem icon={MdOutlineQueryBuilder} label="Idle Time" time={idleTime} />
-      <TimerItem icon={MdOutlineBed} label="Rest Time" time={restTime} />
+      <TimerItem icon={MdWorkOutline} label="Work Time" testId="work-icon" time={workTime} />
+      <TimerItem
+        icon={MdOutlineQueryBuilder}
+        label="Idle Time"
+        testId="idle-icon"
+        time={idleTime}
+      />
+      <TimerItem icon={MdOutlineBed} label="Rest Time" testId="rest-icon" time={restTime} />
     </Flex>
   );
 };
@@ -30,7 +35,7 @@ TimersSection.propTypes = {
   idleTime: PropTypes.number.isRequired,
 };
 
-const TimerItem = ({ icon, label, time }) => (
+const TimerItem = ({ icon, label, time, testId }) => (
   <Flex
     direction={{ base: "row", sm: "row", md: "column" }}
     gap={4}
@@ -38,7 +43,7 @@ const TimerItem = ({ icon, label, time }) => (
     width={{ base: "100%", sm: "100%", md: "30%" }}
   >
     <Flex align="center" gap={2} w={{ base: "50%", sm: "50%", md: "100%" }}>
-      <Icon as={icon} boxSize="20px" h="auto" />
+      <Icon as={icon} boxSize="20px" data-testid={testId} h="auto" />
       <Text fontWeight={600} w="90%">
         {label}
       </Text>
@@ -57,4 +62,5 @@ TimerItem.propTypes = {
   icon: PropTypes.elementType.isRequired,
   label: PropTypes.string.isRequired,
   time: PropTypes.number.isRequired,
+  testId: PropTypes.string.isRequired,
 };
