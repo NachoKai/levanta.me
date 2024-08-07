@@ -43,62 +43,33 @@ export const InputsSection = ({
         gap={{ base: "8px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
       >
-        <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="WORK" justify="center">
-            <Icon alt="Work" as={MdWorkOutline} boxSize="20px" />
-            <Text fontWeight="bold">Work time (minutes):</Text>
-          </FormLabel>
-          <Input
-            bg={useColorModeValue("white", "gray.800")}
-            colorScheme="blue"
-            id="WORK"
-            min="1"
-            name="WORK"
-            placeholder="50"
-            type="number"
-            value={notificationTimes.WORK}
-            w="100%"
-            onChange={handleInputChange}
-          />
-        </FormControl>
-
-        <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="IDLE" justify="center">
-            <Icon alt="Idle" as={MdOutlineQueryBuilder} boxSize="20px" />
-            <Text fontWeight="bold">Idle time (minutes):</Text>
-          </FormLabel>
-          <Input
-            bg={useColorModeValue("white", "gray.800")}
-            colorScheme="blue"
-            id="IDLE"
-            min="1"
-            name="IDLE"
-            placeholder="50"
-            type="number"
-            value={notificationTimes.IDLE}
-            w="100%"
-            onChange={handleInputChange}
-          />
-        </FormControl>
-
-        <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="REST" justify="center">
-            <Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />
-            <Text fontWeight="bold">Rest time (minutes):</Text>
-          </FormLabel>
-          <Input
-            bg={useColorModeValue("white", "gray.800")}
-            colorScheme="blue"
-            id="REST"
-            min="1"
-            name="REST"
-            placeholder="10"
-            type="number"
-            value={notificationTimes.REST}
-            w="100%"
-            onChange={handleInputChange}
-          />
-        </FormControl>
+        <FormInput
+          icon={MdWorkOutline}
+          id="WORK"
+          label="Work time (minutes):"
+          min="1"
+          placeholder="50"
+          value={notificationTimes.WORK}
+          onChange={handleInputChange}
+        />
+        <FormInput
+          icon={MdOutlineQueryBuilder}
+          id="IDLE"
+          label="Idle time (minutes):"
+          min="1"
+          placeholder="50"
+          value={notificationTimes.IDLE}
+          onChange={handleInputChange}
+        />
+        <FormInput
+          icon={MdOutlineBed}
+          id="REST"
+          label="Rest time (minutes):"
+          min="1"
+          placeholder="10"
+          value={notificationTimes.REST}
+          onChange={handleInputChange}
+        />
       </Flex>
 
       <Flex
@@ -107,41 +78,24 @@ export const InputsSection = ({
         gap={{ base: "4px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
       >
-        <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="BOT_TOKEN" justify="center">
-            <Icon alt="Telegram" as={MdNotifications} boxSize="20px" />
-            <Text fontWeight="bold">Telegram Bot Token:</Text>
-          </FormLabel>
-          <Input
-            bg={useColorModeValue("white", "gray.800")}
-            colorScheme="blue"
-            id="BOT_TOKEN"
-            name="BOT_TOKEN"
-            placeholder="Bot Token from @BotFather"
-            type="text"
-            value={botToken}
-            w="100%"
-            onChange={handleBotTokenChange}
-          />
-        </FormControl>
-
-        <FormControl align="center" gap={8} w="100%">
-          <FormLabel align="center" display="flex" gap={4} htmlFor="CHAT_ID" justify="center">
-            <Icon alt="Telegram" as={MdNotifications} boxSize="20px" />
-            <Text fontWeight="bold">Telegram Chat ID:</Text>
-          </FormLabel>
-          <Input
-            bg={useColorModeValue("white", "gray.800")}
-            colorScheme="blue"
-            id="CHAT_ID"
-            name="CHAT_ID"
-            placeholder="Chat ID from @BotFather"
-            type="text"
-            value={chatId}
-            w="100%"
-            onChange={handleChatIdChange}
-          />
-        </FormControl>
+        <FormInput
+          icon={MdNotifications}
+          id="BOT_TOKEN"
+          label="Telegram Bot Token:"
+          placeholder="Bot Token from @BotFather"
+          type="text"
+          value={botToken}
+          onChange={handleBotTokenChange}
+        />
+        <FormInput
+          icon={MdNotifications}
+          id="CHAT_ID"
+          label="Telegram Chat ID:"
+          placeholder="Chat ID from @BotFather"
+          type="text"
+          value={chatId}
+          onChange={handleChatIdChange}
+        />
 
         <ToggleColorMode />
       </Flex>
@@ -156,4 +110,38 @@ InputsSection.propTypes = {
   chatId: PropTypes.string.isRequired,
   handleBotTokenChange: PropTypes.func.isRequired,
   handleChatIdChange: PropTypes.func.isRequired,
+};
+
+const FormInput = ({ icon, label, id, value, onChange, placeholder, type = "number", min }) => {
+  return (
+    <FormControl align="center" gap={8} w="100%">
+      <FormLabel align="center" display="flex" gap={4} htmlFor={id} justify="center">
+        <Icon as={icon} boxSize="20px" />
+        <Text fontWeight="bold">{label}</Text>
+      </FormLabel>
+      <Input
+        bg={useColorModeValue("white", "gray.800")}
+        colorScheme="blue"
+        id={id}
+        min={min}
+        name={id}
+        placeholder={placeholder}
+        type={type}
+        value={value}
+        w="100%"
+        onChange={onChange}
+      />
+    </FormControl>
+  );
+};
+
+FormInput.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  type: PropTypes.string,
+  min: PropTypes.string,
 };
