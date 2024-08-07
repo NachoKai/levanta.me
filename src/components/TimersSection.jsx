@@ -39,13 +39,17 @@ const TimerItem = ({ icon, label, time }) => (
     justify="center"
     width={{ base: "100%", sm: "100%", md: "30%" }}
   >
-    <Flex align="center" gap={2}>
+    <Flex align="center" gap={2} w={{ base: "50%", sm: "50%", md: "100%" }}>
       <Icon as={icon} boxSize="20px" />
       <Text fontWeight={600} w="90%">
         {label}
       </Text>
     </Flex>
-    <Text fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }} fontWeight={600}>
+    <Text
+      fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
+      fontWeight={600}
+      w={{ base: "50%", sm: "50%", md: "100%" }}
+    >
       {formatCounter(time)}
     </Text>
   </Flex>
