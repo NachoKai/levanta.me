@@ -9,7 +9,7 @@ export const VideoSection = ({ videoRef, canvasRef }) => {
         maxW={{ base: 320, sm: 320, md: 416, lg: 512, xl: 608 }}
         position="absolute"
         ratio={{ base: 1, sm: 1, md: 4 / 3, lg: 4 / 3, xl: 16 / 9 }}
-        top="0"
+        top="24px"
         w="100%"
       >
         <video ref={videoRef} autoPlay muted />
@@ -19,7 +19,7 @@ export const VideoSection = ({ videoRef, canvasRef }) => {
         maxW={{ base: 320, sm: 320, md: 416, lg: 512, xl: 608 }}
         position="absolute"
         ratio={{ base: 1, sm: 1, md: 4 / 3, lg: 4 / 3, xl: 16 / 9 }}
-        top="0"
+        top="24px"
         w="100%"
       >
         <canvas ref={canvasRef} />

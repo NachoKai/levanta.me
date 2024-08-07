@@ -272,7 +272,7 @@ const App = () => {
         maxW={{ base: "100%", sm: "100%", md: "620px", lg: "720px", xl: "960px" }}
         p={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
         position="relative"
-        top={{ base: "330px", sm: "330px", md: "320px", lg: "380px", xl: "340px" }}
+        top={{ base: "360px", sm: "360px", md: "350px", lg: "310px", xl: "370px" }}
         w="100%"
       >
         <TimersSection idleTime={idleTime} restTime={restTime} workTime={workTime} />
