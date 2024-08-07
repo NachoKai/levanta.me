@@ -261,7 +261,7 @@ const App = () => {
   ]);
 
   return (
-    <Flex align="center" background="gray.50" direction="column" h="100%" w="100%">
+    <Flex align="center" direction="column" h="100%" w="100%">
       <VideoSection canvasRef={canvasRef} videoRef={videoRef} />
 
       <Flex

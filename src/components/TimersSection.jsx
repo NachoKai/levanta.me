@@ -1,4 +1,4 @@
-import { Flex, Icon, Text } from "@chakra-ui/react";
+import { Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { MdOutlineBed, MdOutlineQueryBuilder, MdWorkOutline } from "react-icons/md";
 
@@ -8,8 +8,7 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
   return (
     <Flex
       align="center"
-      background="gray.100"
-      border="1px solid gray.50"
+      bg={useColorModeValue("gray.100", "gray.700")}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}

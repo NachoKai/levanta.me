@@ -1,4 +1,4 @@
-import { Button, Flex, Icon } from "@chakra-ui/react";
+import { Button, Flex, Icon, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { MdKingBed, MdOutlinePause, MdPlayArrow, MdReplay, MdWork } from "react-icons/md";
 
@@ -15,8 +15,7 @@ export const ButtonsSection = ({
   return (
     <Flex
       align="center"
-      background="gray.100"
-      border="1px solid gray.50"
+      bg={useColorModeValue("gray.100", "gray.700")}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}

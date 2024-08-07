@@ -1,4 +1,12 @@
-import { Flex, FormControl, FormLabel, Icon, Input, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  FormControl,
+  FormLabel,
+  Icon,
+  Input,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import {
   MdNotifications,
@@ -6,6 +14,8 @@ import {
   MdOutlineQueryBuilder,
   MdWorkOutline,
 } from "react-icons/md";
+
+import { ToggleColorMode } from "./ToggleColorMode";
 
 export const InputsSection = ({
   notificationTimes,
@@ -18,8 +28,7 @@ export const InputsSection = ({
   return (
     <Flex
       align="center"
-      background="gray.100"
-      border="1px solid gray.50"
+      bg={useColorModeValue("gray.100", "gray.700")}
       borderRadius={5}
       boxShadow="md"
       direction="column"
@@ -40,7 +49,8 @@ export const InputsSection = ({
             <Text fontWeight="bold">Work time (minutes):</Text>
           </FormLabel>
           <Input
-            background="white"
+            bg={useColorModeValue("white", "gray.800")}
+            colorScheme="blue"
             id="WORK"
             min="1"
             name="WORK"
@@ -58,7 +68,8 @@ export const InputsSection = ({
             <Text fontWeight="bold">Idle time (minutes):</Text>
           </FormLabel>
           <Input
-            background="white"
+            bg={useColorModeValue("white", "gray.800")}
+            colorScheme="blue"
             id="IDLE"
             min="1"
             name="IDLE"
@@ -76,7 +87,8 @@ export const InputsSection = ({
             <Text fontWeight="bold">Rest time (minutes):</Text>
           </FormLabel>
           <Input
-            background="white"
+            bg={useColorModeValue("white", "gray.800")}
+            colorScheme="blue"
             id="REST"
             min="1"
             name="REST"
@@ -90,7 +102,7 @@ export const InputsSection = ({
       </Flex>
 
       <Flex
-        align="center"
+        align="end"
         direction={{ base: "column", sm: "column", md: "row" }}
         gap={{ base: "4px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
@@ -101,7 +113,8 @@ export const InputsSection = ({
             <Text fontWeight="bold">Telegram Bot Token:</Text>
           </FormLabel>
           <Input
-            background="white"
+            bg={useColorModeValue("white", "gray.800")}
+            colorScheme="blue"
             id="BOT_TOKEN"
             name="BOT_TOKEN"
             placeholder="Bot Token from @BotFather"
@@ -118,7 +131,8 @@ export const InputsSection = ({
             <Text fontWeight="bold">Telegram Chat ID:</Text>
           </FormLabel>
           <Input
-            background="white"
+            bg={useColorModeValue("white", "gray.800")}
+            colorScheme="blue"
             id="CHAT_ID"
             name="CHAT_ID"
             placeholder="Chat ID from @BotFather"
@@ -128,6 +142,8 @@ export const InputsSection = ({
             onChange={handleChatIdChange}
           />
         </FormControl>
+
+        <ToggleColorMode />
       </Flex>
     </Flex>
   );

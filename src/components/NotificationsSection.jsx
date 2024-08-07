@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
 export const NotificationsSection = ({
@@ -18,9 +18,7 @@ export const NotificationsSection = ({
   return (
     <Flex
       align="center"
-      background="gray.100"
-      backgroundColor={showNotifications ? "gray.50" : "transparent"}
-      border={showNotifications ? "1px solid gray.50" : "none"}
+      bg={useColorModeValue("gray.100", "gray.700")}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
