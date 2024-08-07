@@ -43,7 +43,7 @@ export const VideoSection = ({ videoRef, canvasRef }) => {
           top="24px"
           w="100%"
         >
-          <Icon alt="Camera" as={MdOutlineCameraAlt} boxSize="20px" />
+          <Icon alt="Camera" as={MdOutlineCameraAlt} boxSize="20px" h="auto" />
           <Text fontWeight={600} size="lg">
             Camera Unavailable
           </Text>

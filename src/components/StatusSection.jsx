@@ -9,7 +9,7 @@ import {
 } from "react-icons/md";
 
 export const StatusSection = ({ status, faceDetected, isPaused }) => {
-  const icon = {
+  const statusIcons = {
     working: MdWorkOutline,
     resting: MdOutlineBed,
     idle: MdOutlineQueryBuilder,
@@ -28,23 +28,17 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
       p="24px"
       w="100%"
     >
-      <Flex align="center" gap={4} w="50%">
-        <Text fontWeight="bold">Current Status:</Text>
-        <Text>
-          {capitalizedStatus} {isPaused ? "(Paused)" : ""}
-        </Text>
-        <Icon alt="Status" as={icon[status] || MdOutlineQueryBuilder} boxSize="20px" />
-      </Flex>
-      <Flex align="center" gap={4} w="50%">
-        <Text fontWeight="bold">Face Detected: </Text>
-        <Text>{faceDetected ? "Yes" : "No"}</Text>
-        <Icon
-          alt="Face Detected"
-          as={faceDetected ? MdAccountCircle : MdCircle}
-          boxSize="20px"
-          color={faceDetected ? "green.500" : "red.500"}
-        />
-      </Flex>
+      <StatusItem
+        icon={statusIcons[status] || MdOutlineQueryBuilder}
+        label="Current Status"
+        value={`${capitalizedStatus} ${isPaused ? "(Paused)" : ""}`.trim()}
+      />
+      <StatusItem
+        color={faceDetected ? "green.500" : "red.500"}
+        icon={faceDetected ? MdAccountCircle : MdCircle}
+        label="Face Detected"
+        value={faceDetected ? "Yes" : "No"}
+      />
     </Flex>
   );
 };
@@ -53,4 +47,19 @@ StatusSection.propTypes = {
   status: PropTypes.string,
   faceDetected: PropTypes.bool,
   isPaused: PropTypes.bool,
+};
+
+const StatusItem = ({ label, value, icon, color }) => (
+  <Flex align="center" gap={2} w={{ sm: "100%", md: "50%" }}>
+    <Text fontWeight="bold">{label}:</Text>
+    <Text>{value}</Text>
+    <Icon alt={label} as={icon} boxSize="20px" color={color} h="auto" />
+  </Flex>
+);
+
+StatusItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  icon: PropTypes.elementType.isRequired,
+  color: PropTypes.string,
 };

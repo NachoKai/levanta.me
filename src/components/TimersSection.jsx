@@ -40,7 +40,7 @@ const TimerItem = ({ icon, label, time }) => (
     width={{ base: "100%", sm: "100%", md: "30%" }}
   >
     <Flex align="center" gap={2} w={{ base: "50%", sm: "50%", md: "100%" }}>
-      <Icon as={icon} boxSize="20px" />
+      <Icon as={icon} boxSize="20px" h="auto" />
       <Text fontWeight={600} w="90%">
         {label}
       </Text>

@@ -54,7 +54,7 @@ const ActionButton = ({ icon, label, onClick, isDisabled }) => (
   <Button
     colorScheme="blue"
     isDisabled={isDisabled}
-    leftIcon={<Icon as={icon} boxSize="20px" />}
+    leftIcon={<Icon as={icon} boxSize="20px" h="auto" />}
     w={{ base: "100%", sm: "100%", md: "300px" }}
     onClick={onClick}
   >

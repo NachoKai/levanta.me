@@ -32,7 +32,7 @@ export const InputsSection = ({
       borderRadius={5}
       boxShadow="md"
       direction="column"
-      gap={{ base: "8px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
+      gap={{ base: "16px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
       justify="space-between"
       p="24px"
       w="100%"
@@ -40,7 +40,7 @@ export const InputsSection = ({
       <Flex
         align="center"
         direction={{ base: "column", sm: "column", md: "row" }}
-        gap={{ base: "8px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
+        gap={{ base: "16px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
       >
         <FormInput
@@ -75,7 +75,7 @@ export const InputsSection = ({
       <Flex
         align="end"
         direction={{ base: "column", sm: "column", md: "row" }}
-        gap={{ base: "4px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
+        gap={{ base: "16px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
         w="100%"
       >
         <FormInput
@@ -115,8 +115,8 @@ InputsSection.propTypes = {
 const FormInput = ({ icon, label, id, value, onChange, placeholder, type = "number", min }) => {
   return (
     <FormControl align="center" gap={8} w="100%">
-      <FormLabel align="center" display="flex" gap={4} htmlFor={id} justify="center">
-        <Icon as={icon} boxSize="20px" />
+      <FormLabel align="center" display="flex" gap={2} htmlFor={id} justify="center">
+        <Icon as={icon} boxSize="20px" h="auto" />
         <Text fontWeight="bold">{label}</Text>
       </FormLabel>
       <Input
