@@ -1,6 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import * as faceapi from "@vladmandic/face-api";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useRef } from "react";
 
 import { ButtonsSection } from "./components/ButtonsSection";
 import { InputsSection } from "./components/InputsSection";
@@ -8,28 +7,22 @@ import { NotificationsSection } from "./components/NotificationsSection";
 import { StatusSection } from "./components/StatusSection";
 import { TimersSection } from "./components/TimersSection";
 import { VideoSection } from "./components/VideoSection";
+import { useFaceDetector } from "./hooks/useFaceDetector";
+import { useLoadModels } from "./hooks/useLoadModels";
+import { useSendNotifications } from "./hooks/useSendNotifications";
 import { useStore } from "./hooks/useStore";
-import { formatCounter } from "./utils/formatCounter";
-import { getFormattedDateTime } from "./utils/getFormattedDateTime";
-import { sendSystemNotification } from "./utils/sendSystemNotification";
+import { useTabTitle } from "./hooks/useTabTitle";
+import { useTimers } from "./hooks/useTimers";
 
 const App = () => {
   const {
     workTime,
-    setWorkTime,
     restTime,
-    setRestTime,
     idleTime,
-    setIdleTime,
     isPaused,
-    modelsLoaded,
-    setModelsLoaded,
     faceDetected,
-    setFaceDetected,
     telegramConfig,
     status,
-    notificationSent,
-    setNotificationSent,
     notificationTimes,
     resetTimers,
     startResting,
@@ -47,187 +40,29 @@ const App = () => {
   const restTimeExceeded = notificationTimes.REST ? restTime >= notificationTimes.REST * 60 : false;
   const idleTimeExceeded = notificationTimes.IDLE ? idleTime >= notificationTimes.IDLE * 60 : false;
 
-  useEffect(() => {
-    const loadModels = async () => {
-      try {
-        await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
-        setModelsLoaded(true);
-      } catch (error) {
-        console.error("Error loading models:", error);
-      }
-    };
+  useLoadModels();
 
-    loadModels();
-  }, [setModelsLoaded]);
+  useFaceDetector({ videoRef, canvasRef });
 
-  useEffect(() => {
-    if (!modelsLoaded) return;
+  useTimers({ isWorking, isResting, isIdle });
 
-    navigator.mediaDevices
-      .getUserMedia({ video: {} })
-      .then(stream => {
-        videoRef.current.srcObject = stream;
-      })
-      .catch(err => console.error(err));
-
-    const interval = setInterval(async () => {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-
-      if (!canvas || !video) return;
-
-      const detection = await faceapi.detectSingleFace(
-        video,
-        new faceapi.TinyFaceDetectorOptions({
-          inputSize: 160,
-          scoreThreshold: 0.3,
-        })
-      );
-
-      setFaceDetected(!!detection);
-
-      if (!detection) return;
-      const displaySize = {
-        width: video.clientWidth,
-        height: video.clientHeight,
-      };
-      const dimensions = faceapi.matchDimensions(canvas, displaySize, true);
-      const resizedDetection = faceapi.resizeResults(detection, dimensions);
-
-      faceapi.draw.drawDetections(canvas, resizedDetection);
-    }, 1500);
-
-    return () => clearInterval(interval);
-  }, [modelsLoaded, setFaceDetected]);
-
-  useEffect(() => {
-    const interval =
-      !isPaused && !isIdle
-        ? setInterval(() => {
-            if (faceDetected && isWorking) {
-              setWorkTime(workTime + 1);
-              setIdleTime(0);
-            } else if (!faceDetected && isResting) {
-              setRestTime(restTime + 1);
-              setIdleTime(0);
-            } else {
-              setIdleTime(idleTime + 1);
-            }
-          }, 950)
-        : null;
-
-    return () => clearInterval(interval);
-  }, [
-    faceDetected,
-    idleTime,
-    isIdle,
-    isPaused,
-    isResting,
-    isWorking,
-    restTime,
-    setIdleTime,
-    setRestTime,
-    setWorkTime,
-    workTime,
-  ]);
-
-  useEffect(() => {
-    if (idleTime >= notificationTimes.IDLE * 60) {
-      resetTimers();
-    }
-  }, [idleTime, notificationTimes.IDLE, resetTimers]);
-
-  useEffect(() => {
-    const sendNotification = async message => {
-      const { botToken, chatId } = telegramConfig;
-
-      if (!botToken || !chatId) return;
-      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to send notification");
-        }
-      } catch (err) {
-        console.error("Error sending notification:", err);
-      }
-    };
-    const dateTime = getFormattedDateTime();
-
-    if (workTimeExceeded && !notificationSent.workTime && isWorking) {
-      const message = `Work time finished at ${dateTime}. Go for a break!`;
-
-      sendNotification(message);
-      sendSystemNotification("Work Time Finished", message);
-      setNotificationSent({ ...notificationSent, workTime: true });
-    }
-
-    if (restTimeExceeded && !notificationSent.restTime && isResting) {
-      const message = `Rest time finished at ${dateTime}. Get back to work!`;
-
-      sendNotification(message);
-      sendSystemNotification("Rest Time Finished", message);
-      setNotificationSent({ ...notificationSent, restTime: true });
-    }
-
-    if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
-    const message = `Idle time finished at ${dateTime}. Timers have been reset.`;
-
-    sendNotification(message);
-    sendSystemNotification("Idle Time Finished", message);
-    setNotificationSent({ ...notificationSent, idleTime: true });
-  }, [
-    idleTimeExceeded,
-    isIdle,
-    isResting,
-    isWorking,
-    notificationSent,
-    restTimeExceeded,
-    setNotificationSent,
-    telegramConfig,
+  useSendNotifications({
     workTimeExceeded,
-  ]);
-
-  useLayoutEffect(() => {
-    let title = "Levanta.me";
-
-    if (isIdle) {
-      title = "Levanta.me";
-    } else if (isWorking) {
-      title = workTimeExceeded
-        ? `⏰ Time to Rest! - ${formatCounter(workTime)}`
-        : `💼 Working - ${formatCounter(workTime)}`;
-    } else if (isResting) {
-      title = restTimeExceeded
-        ? `⏰ Time to Work! - ${formatCounter(restTime)}`
-        : `🛌 Resting - ${formatCounter(restTime)}`;
-    } else if (idleTimeExceeded) {
-      title = `⏰ Idle Time - ${formatCounter(idleTime)}`;
-    }
-
-    document.title = title;
-  }, [
-    idleTime,
-    idleTimeExceeded,
-    isIdle,
-    isResting,
-    isWorking,
-    restTime,
     restTimeExceeded,
-    workTime,
+    idleTimeExceeded,
+    isWorking,
+    isResting,
+    isIdle,
+  });
+
+  useTabTitle({
+    isIdle,
+    isWorking,
+    isResting,
     workTimeExceeded,
-  ]);
+    restTimeExceeded,
+    idleTimeExceeded,
+  });
 
   return (
     <Flex align="center" direction="column" h="100%" w="100%">
