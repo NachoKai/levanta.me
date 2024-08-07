@@ -5,12 +5,10 @@ import { MdOutlineBed, MdOutlineQueryBuilder, MdWorkOutline } from "react-icons/
 import { formatCounter } from "../utils/formatCounter";
 
 export const TimersSection = ({ workTime, restTime, idleTime }) => {
-  const bgColor = useColorModeValue("gray.100", "gray.700");
-
   return (
     <Flex
       align="center"
-      bg={bgColor}
+      bg={useColorModeValue("gray.100", "gray.700")}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}

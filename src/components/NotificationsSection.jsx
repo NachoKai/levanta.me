@@ -29,17 +29,29 @@ export const NotificationsSection = ({
       w="100%"
     >
       {showWorkingNotification && (
-        <Text fontWeight={600} p="8px 16px">
+        <Text
+          fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
+          fontWeight={600}
+          p="8px 16px"
+        >
           Work time finished. Go for a break! 🛌
         </Text>
       )}
       {showIdleNotification && (
-        <Text fontWeight={600} p="8px 16px">
+        <Text
+          fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
+          fontWeight={600}
+          p="8px 16px"
+        >
           Idle time finished. Timers have been reset. ⏰
         </Text>
       )}
       {showRestingNotification && (
-        <Text fontWeight={600} p="8px 16px">
+        <Text
+          fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
+          fontWeight={600}
+          p="8px 16px"
+        >
           Rest time finished. Get back to work! 💼
         </Text>
       )}

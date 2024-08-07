@@ -1,96 +1,51 @@
-import * as faceapi from "@vladmandic/face-api";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-
 import { Flex } from "@chakra-ui/react";
+import * as faceapi from "@vladmandic/face-api";
+import { useEffect, useLayoutEffect, useRef } from "react";
+
 import { ButtonsSection } from "./components/ButtonsSection";
 import { InputsSection } from "./components/InputsSection";
 import { NotificationsSection } from "./components/NotificationsSection";
 import { StatusSection } from "./components/StatusSection";
 import { TimersSection } from "./components/TimersSection";
 import { VideoSection } from "./components/VideoSection";
+import { useStore } from "./hooks/useStore";
 import { formatCounter } from "./utils/formatCounter";
 import { getFormattedDateTime } from "./utils/getFormattedDateTime";
 import { sendSystemNotification } from "./utils/sendSystemNotification";
 
 const App = () => {
-  const [workTime, setWorkTime] = useState(0);
-  const [restTime, setRestTime] = useState(0);
-  const [idleTime, setIdleTime] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [modelsLoaded, setModelsLoaded] = useState(false);
-  const [faceDetected, setFaceDetected] = useState(false);
-  const [telegramConfig, setTelegramConfig] = useState({
-    botToken: localStorage.getItem("botToken") || "",
-    chatId: localStorage.getItem("chatId") || "",
-  });
-  const [status, setStatus] = useState("idle");
-  const [notificationSent, setNotificationSent] = useState({
-    workTime: false,
-    restTime: false,
-    idleTime: false,
-  });
-  const [notificationTimes, setNotificationTimes] = useState({
-    WORK: parseInt(localStorage.getItem("workTime")) || 50,
-    REST: parseInt(localStorage.getItem("restTime")) || 10,
-    IDLE: parseInt(localStorage.getItem("idleTime")) || 5,
-  });
+  const {
+    workTime,
+    setWorkTime,
+    restTime,
+    setRestTime,
+    idleTime,
+    setIdleTime,
+    isPaused,
+    modelsLoaded,
+    setModelsLoaded,
+    faceDetected,
+    setFaceDetected,
+    telegramConfig,
+    status,
+    notificationSent,
+    setNotificationSent,
+    notificationTimes,
+    resetTimers,
+    startResting,
+    startWorking,
+    togglePause,
+    handleInputChange,
+    handleTelegramConfigChange,
+  } = useStore();
   const videoRef = useRef();
   const canvasRef = useRef();
   const isWorking = status === "working";
   const isResting = status === "resting";
   const isIdle = status === "idle";
-  const workTimeExceeded = workTime >= notificationTimes.WORK * 60;
-  const restTimeExceeded = restTime >= notificationTimes.REST * 60;
-  const idleTimeExceeded = idleTime >= notificationTimes.IDLE * 60;
-
-  const togglePause = useCallback(() => {
-    setIsPaused(prev => !prev);
-  }, []);
-
-  const resetTimers = useCallback(() => {
-    setStatus("idle");
-    setWorkTime(0);
-    setRestTime(0);
-    setIdleTime(0);
-    setIsPaused(false);
-    setNotificationSent({
-      workTime: false,
-      restTime: false,
-      idleTime: false,
-    });
-  }, []);
-
-  const startWorking = useCallback(() => {
-    setStatus("working");
-    setRestTime(0);
-    setIdleTime(0);
-  }, []);
-
-  const startResting = useCallback(() => {
-    setStatus("resting");
-    setWorkTime(0);
-    setIdleTime(0);
-  }, []);
-
-  const handleInputChange = useCallback(e => {
-    const { name, value } = e.target;
-    const newValue = parseInt(value);
-
-    setNotificationTimes(prev => ({ ...prev, [name]: newValue }));
-    localStorage.setItem(`${name.toLowerCase()}Time`, newValue.toString());
-  }, []);
-
-  const handleTelegramConfigChange = useCallback(e => {
-    const { name, value } = e.target;
-
-    setTelegramConfig(prev => {
-      const newConfig = { ...prev, [name]: value };
-
-      localStorage.setItem(name, value);
-
-      return newConfig;
-    });
-  }, []);
+  const workTimeExceeded = notificationTimes.WORK ? workTime >= notificationTimes.WORK * 60 : false;
+  const restTimeExceeded = notificationTimes.REST ? restTime >= notificationTimes.REST * 60 : false;
+  const idleTimeExceeded = notificationTimes.IDLE ? idleTime >= notificationTimes.IDLE * 60 : false;
 
   useEffect(() => {
     const loadModels = async () => {
@@ -103,7 +58,7 @@ const App = () => {
     };
 
     loadModels();
-  }, []);
+  }, [setModelsLoaded]);
 
   useEffect(() => {
     if (!modelsLoaded) return;
@@ -143,26 +98,38 @@ const App = () => {
     }, 1500);
 
     return () => clearInterval(interval);
-  }, [modelsLoaded]);
+  }, [modelsLoaded, setFaceDetected]);
 
   useEffect(() => {
     const interval =
       !isPaused && !isIdle
         ? setInterval(() => {
             if (faceDetected && isWorking) {
-              setWorkTime(prevTime => prevTime + 1);
+              setWorkTime(workTime + 1);
               setIdleTime(0);
             } else if (!faceDetected && isResting) {
-              setRestTime(prevTime => prevTime + 1);
+              setRestTime(restTime + 1);
               setIdleTime(0);
             } else {
-              setIdleTime(prevTime => prevTime + 1);
+              setIdleTime(idleTime + 1);
             }
           }, 950)
         : null;
 
     return () => clearInterval(interval);
-  }, [faceDetected, isIdle, isPaused, isResting, isWorking]);
+  }, [
+    faceDetected,
+    idleTime,
+    isIdle,
+    isPaused,
+    isResting,
+    isWorking,
+    restTime,
+    setIdleTime,
+    setRestTime,
+    setWorkTime,
+    workTime,
+  ]);
 
   useEffect(() => {
     if (idleTime >= notificationTimes.IDLE * 60) {
@@ -203,7 +170,7 @@ const App = () => {
 
       sendNotification(message);
       sendSystemNotification("Work Time Finished", message);
-      setNotificationSent(prev => ({ ...prev, workTime: true }));
+      setNotificationSent({ ...notificationSent, workTime: true });
     }
 
     if (restTimeExceeded && !notificationSent.restTime && isResting) {
@@ -211,7 +178,7 @@ const App = () => {
 
       sendNotification(message);
       sendSystemNotification("Rest Time Finished", message);
-      setNotificationSent(prev => ({ ...prev, restTime: true }));
+      setNotificationSent({ ...notificationSent, restTime: true });
     }
 
     if (!(idleTimeExceeded && !notificationSent.idleTime && isIdle)) return;
@@ -219,20 +186,17 @@ const App = () => {
 
     sendNotification(message);
     sendSystemNotification("Idle Time Finished", message);
-    setNotificationSent(prev => ({ ...prev, idleTime: true }));
+    setNotificationSent({ ...notificationSent, idleTime: true });
   }, [
-    workTime,
-    restTime,
-    idleTime,
-    notificationTimes,
-    notificationSent,
-    isWorking,
-    isResting,
-    isIdle,
-    workTimeExceeded,
-    restTimeExceeded,
     idleTimeExceeded,
+    isIdle,
+    isResting,
+    isWorking,
+    notificationSent,
+    restTimeExceeded,
+    setNotificationSent,
     telegramConfig,
+    workTimeExceeded,
   ]);
 
   useLayoutEffect(() => {
@@ -293,8 +257,6 @@ const App = () => {
           togglePause={togglePause}
         />
 
-        <StatusSection faceDetected={faceDetected} isPaused={isPaused} status={status} />
-
         <NotificationsSection
           idleTimeExceeded={idleTimeExceeded}
           isIdle={isIdle}
@@ -303,6 +265,8 @@ const App = () => {
           restTimeExceeded={restTimeExceeded}
           workTimeExceeded={workTimeExceeded}
         />
+
+        <StatusSection faceDetected={faceDetected} isPaused={isPaused} status={status} />
 
         <InputsSection
           handleInputChange={handleInputChange}
