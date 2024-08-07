@@ -1,8 +1,11 @@
 import { Flex, FormControl, FormLabel, Icon, Input, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { BsClockHistory } from "react-icons/bs";
-import { LiaTelegram } from "react-icons/lia";
-import { MdOutlineBed, MdWorkOutline } from "react-icons/md";
+import {
+  MdNotifications,
+  MdOutlineBed,
+  MdOutlineQueryBuilder,
+  MdWorkOutline,
+} from "react-icons/md";
 
 export const InputsSection = ({
   notificationTimes,
@@ -51,7 +54,7 @@ export const InputsSection = ({
 
         <FormControl align="center" gap={8} w="100%">
           <FormLabel align="center" display="flex" gap={4} htmlFor="IDLE">
-            <Icon alt="Idle" as={BsClockHistory} boxSize="20px" />
+            <Icon alt="Idle" as={MdOutlineQueryBuilder} boxSize="20px" />
             <Text fontWeight="bold">Idle time (minutes):</Text>
           </FormLabel>
           <Input
@@ -94,7 +97,7 @@ export const InputsSection = ({
       >
         <FormControl align="center" gap={8} w="100%">
           <FormLabel align="center" display="flex" gap={4} htmlFor="BOT_TOKEN">
-            <Icon alt="Telegram" as={LiaTelegram} boxSize="20px" />
+            <Icon alt="Telegram" as={MdNotifications} boxSize="20px" />
             <Text fontWeight="bold">Telegram Bot Token:</Text>
           </FormLabel>
           <Input
@@ -111,7 +114,7 @@ export const InputsSection = ({
 
         <FormControl align="center" gap={8} w="100%">
           <FormLabel align="center" display="flex" gap={4} htmlFor="CHAT_ID">
-            <Icon alt="Telegram" as={LiaTelegram} boxSize="20px" />
+            <Icon alt="Telegram" as={MdNotifications} boxSize="20px" />
             <Text fontWeight="bold">Telegram Chat ID:</Text>
           </FormLabel>
           <Input

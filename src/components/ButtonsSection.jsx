@@ -1,6 +1,6 @@
 import { Button, Flex, Icon } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { MdOutlineBed, MdOutlinePause, MdPlayArrow, MdReplay, MdWork } from "react-icons/md";
+import { MdKingBed, MdOutlinePause, MdPlayArrow, MdReplay, MdWork } from "react-icons/md";
 
 export const ButtonsSection = ({
   isWorking,
@@ -38,7 +38,7 @@ export const ButtonsSection = ({
       <Button
         colorScheme="blue"
         isDisabled={isResting}
-        leftIcon={<Icon alt="Rest" as={MdOutlineBed} boxSize="20px" />}
+        leftIcon={<Icon alt="Rest" as={MdKingBed} boxSize="20px" />}
         w={{ base: "100%", sm: "100%", md: "300px" }}
         onClick={startResting}
       >

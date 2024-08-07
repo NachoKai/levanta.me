@@ -1,15 +1,18 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { BsClockHistory } from "react-icons/bs";
-import { IoIosCheckmarkCircle } from "react-icons/io";
-import { IoCloseCircle } from "react-icons/io5";
-import { MdOutlineBed, MdWork } from "react-icons/md";
+import {
+  MdAccountCircle,
+  MdCircle,
+  MdOutlineBed,
+  MdOutlineQueryBuilder,
+  MdWorkOutline,
+} from "react-icons/md";
 
 export const StatusSection = ({ status, faceDetected, isPaused }) => {
   const icon = {
-    working: MdWork,
+    working: MdWorkOutline,
     resting: MdOutlineBed,
-    idle: BsClockHistory,
+    idle: MdOutlineQueryBuilder,
   };
   const capitalizedStatus = status ? status.charAt(0).toUpperCase() + status.slice(1) : "";
 
@@ -31,14 +34,14 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
         <Text>
           {capitalizedStatus} {isPaused ? "(Paused)" : ""}
         </Text>
-        <Icon alt="Status" as={icon[status] || BsClockHistory} boxSize="20px" />
+        <Icon alt="Status" as={icon[status] || MdOutlineQueryBuilder} boxSize="20px" />
       </Flex>
       <Flex align="center" gap={4}>
         <Text fontWeight="bold">Face Detected: </Text>
         <Text>{faceDetected ? "Yes" : "No"}</Text>
         <Icon
           alt="Face Detected"
-          as={faceDetected ? IoIosCheckmarkCircle : IoCloseCircle}
+          as={faceDetected ? MdAccountCircle : MdCircle}
           boxSize="20px"
           color={faceDetected ? "green.500" : "red.500"}
         />

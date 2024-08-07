@@ -1,7 +1,6 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { BsClockHistory } from "react-icons/bs";
-import { MdOutlineBed, MdWorkOutline } from "react-icons/md";
+import { MdOutlineBed, MdOutlineQueryBuilder, MdWorkOutline } from "react-icons/md";
 
 import { formatCounter } from "../utils/formatCounter";
 
@@ -34,7 +33,7 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
         justify="center"
         width={{ base: "100%:", sm: "100%", md: "30%" }}
       >
-        <Icon alt="Idle" as={BsClockHistory} boxSize="20px" />
+        <Icon alt="Idle" as={MdOutlineQueryBuilder} boxSize="20px" />
         <Text fontWeight={600}>Idle Time: {formatCounter(idleTime)}</Text>
       </Flex>
       <Flex
