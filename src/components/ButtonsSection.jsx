@@ -12,10 +12,12 @@ export const ButtonsSection = ({
   togglePause,
   resetTimers,
 }) => {
+  const bgColor = useColorModeValue("gray.100", "gray.700");
+
   return (
     <Flex
       align="center"
-      bg={useColorModeValue("gray.100", "gray.700")}
+      bg={bgColor}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
@@ -24,51 +26,15 @@ export const ButtonsSection = ({
       p="24px"
       w="100%"
     >
-      <Button
-        colorScheme="blue"
-        isDisabled={isWorking}
-        leftIcon={<Icon alt="Work" as={MdWork} boxSize="20px" />}
-        w={{ base: "100%", sm: "100%", md: "300px" }}
-        onClick={startWorking}
-      >
-        Work
-      </Button>
-
-      <Button
-        colorScheme="blue"
-        isDisabled={isResting}
-        leftIcon={<Icon alt="Rest" as={MdKingBed} boxSize="20px" />}
-        w={{ base: "100%", sm: "100%", md: "300px" }}
-        onClick={startResting}
-      >
-        Rest
-      </Button>
-
-      <Button
-        colorScheme="blue"
+      <ActionButton icon={MdWork} isDisabled={isWorking} label="Work" onClick={startWorking} />
+      <ActionButton icon={MdKingBed} isDisabled={isResting} label="Rest" onClick={startResting} />
+      <ActionButton
+        icon={isPaused ? MdPlayArrow : MdOutlinePause}
         isDisabled={isIdle}
-        leftIcon={
-          <Icon
-            alt={isPaused ? "Play" : "Pause"}
-            as={isPaused ? MdPlayArrow : MdOutlinePause}
-            boxSize="20px"
-          />
-        }
-        w={{ base: "100%", sm: "100%", md: "300px" }}
+        label={isPaused ? "Play" : "Pause"}
         onClick={togglePause}
-      >
-        {isPaused ? "Play" : "Pause"}
-      </Button>
-
-      <Button
-        colorScheme="blue"
-        isDisabled={isIdle}
-        leftIcon={<Icon alt="Reset" as={MdReplay} boxSize="20px" />}
-        w={{ base: "100%", sm: "100%", md: "300px" }}
-        onClick={resetTimers}
-      >
-        Reset
-      </Button>
+      />
+      <ActionButton icon={MdReplay} isDisabled={isIdle} label="Reset" onClick={resetTimers} />
     </Flex>
   );
 };
@@ -82,4 +48,23 @@ ButtonsSection.propTypes = {
   isResting: PropTypes.bool.isRequired,
   isPaused: PropTypes.bool.isRequired,
   isIdle: PropTypes.bool.isRequired,
+};
+
+const ActionButton = ({ icon, label, onClick, isDisabled }) => (
+  <Button
+    colorScheme="blue"
+    isDisabled={isDisabled}
+    leftIcon={<Icon as={icon} boxSize="20px" />}
+    w={{ base: "100%", sm: "100%", md: "300px" }}
+    onClick={onClick}
+  >
+    {label}
+  </Button>
+);
+
+ActionButton.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool,
 };
