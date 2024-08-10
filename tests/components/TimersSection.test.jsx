@@ -17,9 +17,9 @@ describe("TimersSection", () => {
     expect(screen.getByText(/Idle Time/i)).toBeInTheDocument();
     expect(screen.getByText(/Rest Time/i)).toBeInTheDocument();
 
-    expect(screen.getByText("0h 25m 0s")).toBeInTheDocument(); // 1500 seconds = 0h 25m 0s
-    expect(screen.getByText("0h 10m 0s")).toBeInTheDocument(); // 600 seconds = 0h 10m 0s
-    expect(screen.getByText("0h 5m 0s")).toBeInTheDocument(); // 300 seconds = 0h 5m 0s
+    expect(screen.getByText("0h 25m 0s")).toBeInTheDocument();
+    expect(screen.getByText("0h 10m 0s")).toBeInTheDocument();
+    expect(screen.getByText("0h 5m 0s")).toBeInTheDocument();
   });
 
   it("renders the correct icons for each timer", () => {
