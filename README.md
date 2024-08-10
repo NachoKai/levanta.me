@@ -55,9 +55,10 @@ Ensure you have the following installed:
 
 1. **Configuration**: Set the work, rest, and idle time limits. Set telegram Bot Token and Chat ID.
 2. **Start Working**: Click the "Work" button to begin the work timer.
-3. **Start Resting**: Click the "Resting" button to begin the rest timer.
-4. **Reset**: Click the reset button to reset all timers.
-5. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
+3. **Start Resting**: Click the "Rest" button to begin the rest timer.
+4. **Reset**: Click the "Reset" button to reset all timers.
+5. **Pause**: Click the "Pause" button to pause the timer.
+6. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
 
 ### Contribution
 
