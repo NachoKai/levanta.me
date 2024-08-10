@@ -1,4 +1,4 @@
-import { Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
+import { Flex, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import {
   MdAccountCircle,
@@ -7,6 +7,7 @@ import {
   MdOutlineQueryBuilder,
   MdWorkOutline,
 } from "react-icons/md";
+import { StatusItem } from "./StatusItem";
 
 export const StatusSection = ({ status, faceDetected, isPaused }) => {
   const statusIcons = {
@@ -49,20 +50,4 @@ StatusSection.propTypes = {
   status: PropTypes.string,
   faceDetected: PropTypes.bool,
   isPaused: PropTypes.bool,
-};
-
-const StatusItem = ({ label, value, icon, color, testId }) => (
-  <Flex align="center" gap={2} w={{ sm: "100%", md: "50%" }}>
-    <Text fontWeight="bold">{label}:</Text>
-    <Text>{value}</Text>
-    <Icon alt={label} as={icon} boxSize="20px" color={color} data-testid={testId} h="auto" />
-  </Flex>
-);
-
-StatusItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  icon: PropTypes.elementType.isRequired,
-  color: PropTypes.string,
-  testId: PropTypes.string.isRequired,
 };

@@ -1,5 +1,6 @@
-import { Flex, Text, useColorModeValue } from "@chakra-ui/react";
+import { Flex, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+import { Notification } from "./Notification";
 
 export const NotificationsSection = ({
   isWorking,
@@ -28,33 +29,15 @@ export const NotificationsSection = ({
       p="24px"
       w="100%"
     >
-      {showWorkingNotification && (
-        <Text
-          fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
-          fontWeight={600}
-          p="8px 16px"
-        >
-          Work time finished. Go for a break! 🛌
-        </Text>
-      )}
-      {showIdleNotification && (
-        <Text
-          fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
-          fontWeight={600}
-          p="8px 16px"
-        >
-          Idle time finished. Timers have been reset. ⏰
-        </Text>
-      )}
-      {showRestingNotification && (
-        <Text
-          fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
-          fontWeight={600}
-          p="8px 16px"
-        >
-          Rest time finished. Get back to work! 💼
-        </Text>
-      )}
+      <Notification body="Work time finished. Go for a break! 🛌" show={showWorkingNotification} />
+      <Notification
+        body="Idle time finished. Timers have been reset. ⏰"
+        show={showIdleNotification}
+      />
+      <Notification
+        body="Rest time finished. Get back to work! 💼"
+        show={showRestingNotification}
+      />
     </Flex>
   );
 };

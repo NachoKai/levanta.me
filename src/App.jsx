@@ -1,12 +1,11 @@
 import { Flex } from "@chakra-ui/react";
 import { useRef } from "react";
-
-import { ButtonsSection } from "./components/ButtonsSection";
-import { InputsSection } from "./components/InputsSection";
-import { NotificationsSection } from "./components/NotificationsSection";
-import { StatusSection } from "./components/StatusSection";
-import { TimersSection } from "./components/TimersSection";
-import { VideoSection } from "./components/VideoSection";
+import { ButtonsSection } from "./components/ButtonsSection/ButtonsSection";
+import { InputsSection } from "./components/InputsSection/InputsSection";
+import { NotificationsSection } from "./components/NotificationsSection/NotificationsSection";
+import { StatusSection } from "./components/StatusSection/StatusSection";
+import { TimersSection } from "./components/TimersSection/TimersSection";
+import { VideoSection } from "./components/VideoSection/VideoSection";
 import { useFaceDetector } from "./hooks/useFaceDetector";
 import { useLoadModels } from "./hooks/useLoadModels";
 import { useSendNotifications } from "./hooks/useSendNotifications";
