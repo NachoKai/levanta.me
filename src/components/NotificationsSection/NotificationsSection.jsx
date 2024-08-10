@@ -30,10 +30,12 @@ export const NotificationsSection = ({
       w="100%"
     >
       <Notification body="Work time finished. Go for a break! 🛌" show={showWorkingNotification} />
+
       <Notification
         body="Idle time finished. Timers have been reset. ⏰"
         show={showIdleNotification}
       />
+
       <Notification
         body="Rest time finished. Get back to work! 💼"
         show={showRestingNotification}

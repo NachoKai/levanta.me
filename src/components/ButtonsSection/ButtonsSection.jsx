@@ -25,7 +25,9 @@ export const ButtonsSection = ({
     w="100%"
   >
     <ActionButton icon={MdWork} isDisabled={isWorking} label="Work" onClick={startWorking} />
+
     <ActionButton icon={MdKingBed} isDisabled={isResting} label="Rest" onClick={startResting} />
+
     <ActionButton
       icon={isPaused ? MdPlayArrow : MdOutlinePause}
       isDisabled={isIdle}

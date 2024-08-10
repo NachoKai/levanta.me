@@ -41,6 +41,7 @@ export const InputsSection = ({
         value={notificationTimes.WORK}
         onChange={handleInputChange}
       />
+
       <FormInput
         icon={MdOutlineQueryBuilder}
         id="IDLE"
@@ -50,6 +51,7 @@ export const InputsSection = ({
         value={notificationTimes.IDLE}
         onChange={handleInputChange}
       />
+
       <FormInput
         icon={MdOutlineBed}
         id="REST"
@@ -76,6 +78,7 @@ export const InputsSection = ({
         value={telegramConfig.botToken}
         onChange={handleTelegramConfigChange}
       />
+
       <FormInput
         icon={MdNotifications}
         id="chatId"

@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { NotificationsSection } from "../src/components/NotificationsSection/NotificationsSection";
+import { NotificationsSection } from "../../src/components/NotificationsSection/NotificationsSection";
 
 describe("NotificationsSection", () => {
   const defaultProps = {

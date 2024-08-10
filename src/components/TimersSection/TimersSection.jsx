@@ -17,7 +17,9 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
       w="100%"
     >
       <Timer icon={MdWorkOutline} label="Work Time" testId="work-icon" time={workTime} />
+
       <Timer icon={MdOutlineQueryBuilder} label="Idle Time" testId="idle-icon" time={idleTime} />
+
       <Timer icon={MdOutlineBed} label="Rest Time" testId="rest-icon" time={restTime} />
     </Flex>
   );

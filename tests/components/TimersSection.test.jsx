@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { TimersSection } from "../src/components/TimersSection/TimersSection";
+import { TimersSection } from "../../src/components/TimersSection/TimersSection";
 
 describe("TimersSection", () => {
   const defaultProps = {

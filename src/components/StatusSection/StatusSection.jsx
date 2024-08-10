@@ -33,8 +33,9 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
         icon={statusIcons[status] || MdOutlineQueryBuilder}
         label="Current Status"
         testId="status-icon"
-        value={`${capitalizedStatus} ${isPaused ? "(Paused)" : ""}`.trim()}
+        value={`${capitalizedStatus} ${isPaused ? "(Paused)" : ""}`}
       />
+
       <StatusItem
         color={faceDetected ? "green.500" : "red.500"}
         icon={faceDetected ? MdAccountCircle : MdCircle}
