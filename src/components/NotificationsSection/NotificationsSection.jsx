@@ -19,7 +19,7 @@ export const NotificationsSection = ({
   return (
     <Flex
       align="center"
-      bg={useColorModeValue("gray.100", "gray.700")}
+      bg={useColorModeValue("blue.100", "blue.700")}
       borderRadius={5}
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
