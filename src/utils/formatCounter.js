@@ -1,7 +1,13 @@
 export const formatCounter = time => {
-  const hours = Math.floor(time / 3600);
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
+  if (typeof time !== "number" || time < 0) {
+    throw new Error("Invalid time input. Expected a non-negative number.");
+  }
 
-  return `${hours}h ${minutes}m ${seconds}s`;
+  const SECONDS_IN_HOUR = 3600;
+  const SECONDS_IN_MINUTE = 60;
+  const hours = Math.floor(time / SECONDS_IN_HOUR);
+  const minutes = Math.floor((time % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE);
+  const seconds = time % SECONDS_IN_MINUTE;
+
+  return `${hours.toString().padStart(1, "0")}h ${minutes.toString().padStart(1, "0")}m ${seconds.toString().padStart(1, "0")}s`;
 };
