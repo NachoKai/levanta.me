@@ -18,7 +18,7 @@ export const useSendNotifications = ({
   const waterReminderIntervalRef = useRef(null);
 
   useEffect(() => {
-    const sendNotification = async message => {
+    const sendNotification = async (message) => {
       const { botToken, chatId } = telegramConfig;
 
       if (!botToken || !chatId) return;
@@ -45,7 +45,12 @@ export const useSendNotifications = ({
     };
 
     const sendReminderNotification = () => {
-      if (!timerReminderInterval || timerReminderInterval <= 0) return;
+      if (
+        !timerReminderInterval ||
+        timerReminderInterval <= 0 ||
+        (!isWorking && !isResting)
+      )
+        return;
       const dateTime = getFormattedDateTime();
       let message;
 
@@ -64,6 +69,8 @@ export const useSendNotifications = ({
     };
 
     const sendWaterReminder = () => {
+      if (!isWorking && !isResting) return;
+
       const dateTime = getFormattedDateTime();
       const message = `Don't forget to drink water! 💧 Current time: ${dateTime}`;
 
