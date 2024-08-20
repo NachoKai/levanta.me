@@ -5,6 +5,8 @@ const initialState = {
   workTime: 0,
   restTime: 0,
   idleTime: 0,
+  timerReminderInterval: parseInt(localStorage.getItem("timerReminderInterval") ?? "0"),
+  waterReminderInterval: parseInt(localStorage.getItem("waterReminderInterval") ?? "0"),
   isPaused: false,
   modelsLoaded: false,
   faceDetected: false,
@@ -107,6 +109,24 @@ export const useStore = create(
     setNotificationTimes: notificationTimes =>
       set(state => {
         state.notificationTimes = notificationTimes;
+      }),
+    setReminderInterval: timerReminderInterval =>
+      set(state => {
+        state.timerReminderInterval = timerReminderInterval;
+      }),
+    handleTimerReminderIntervalChange: e =>
+      set(state => {
+        const value = e.target.value ? parseInt(e.target.value) : 0;
+
+        state.timerReminderInterval = value;
+        localStorage.setItem("timerReminderInterval", e.target.value);
+      }),
+    handleWaterReminderIntervalChange: e =>
+      set(state => {
+        const value = e.target.value ? parseInt(e.target.value) : 0;
+
+        state.waterReminderInterval = value;
+        localStorage.setItem("waterReminderInterval", e.target.value);
       }),
   }))
 );

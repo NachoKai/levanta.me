@@ -29,6 +29,10 @@ const App = () => {
     togglePause,
     handleInputChange,
     handleTelegramConfigChange,
+    timerReminderInterval,
+    handleTimerReminderIntervalChange,
+    waterReminderInterval,
+    handleWaterReminderIntervalChange,
   } = useStore();
   const videoRef = useRef();
   const canvasRef = useRef();
@@ -52,6 +56,8 @@ const App = () => {
     isWorking,
     isResting,
     isIdle,
+    timerReminderInterval,
+    waterReminderInterval,
   });
 
   useTabTitle({
@@ -105,8 +111,12 @@ const App = () => {
         <InputsSection
           handleInputChange={handleInputChange}
           handleTelegramConfigChange={handleTelegramConfigChange}
+          handleTimerReminderIntervalChange={handleTimerReminderIntervalChange}
+          handleWaterReminderIntervalChange={handleWaterReminderIntervalChange}
           notificationTimes={notificationTimes}
           telegramConfig={telegramConfig}
+          timerReminderInterval={timerReminderInterval}
+          waterReminderInterval={waterReminderInterval}
         />
       </Flex>
     </Flex>
