@@ -5,7 +5,10 @@ export const Notification = ({ show, body }) => {
   if (!show) return null;
 
   return (
-    <Text fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }} fontWeight={600}>
+    <Text
+      fontSize={{ base: "md", sm: "md", md: "xl", lg: "xl", xl: "2xl" }}
+      fontWeight={600}
+    >
       {body}
     </Text>
   );

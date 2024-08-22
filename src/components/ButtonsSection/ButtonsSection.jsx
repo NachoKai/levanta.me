@@ -1,6 +1,12 @@
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { MdKingBed, MdOutlinePause, MdPlayArrow, MdReplay, MdWork } from "react-icons/md";
+import {
+  MdKingBed,
+  MdOutlinePause,
+  MdPlayArrow,
+  MdReplay,
+  MdWork,
+} from "react-icons/md";
 import { ActionButton } from "./ActionButton";
 
 export const ButtonsSection = ({
@@ -16,7 +22,9 @@ export const ButtonsSection = ({
   <Flex
     align="center"
     bg={useColorModeValue("gray.100", "gray.700")}
-    borderRadius={5}
+    border="1px solid"
+    borderColor={useColorModeValue("gray.200", "gray.600")}
+    borderRadius="24px"
     boxShadow="md"
     direction={{ base: "column", sm: "column", md: "row" }}
     gap={{ base: "8px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
@@ -24,9 +32,19 @@ export const ButtonsSection = ({
     p="24px"
     w="100%"
   >
-    <ActionButton icon={MdWork} isDisabled={isWorking} label="Work" onClick={startWorking} />
+    <ActionButton
+      icon={MdWork}
+      isDisabled={isWorking}
+      label="Work"
+      onClick={startWorking}
+    />
 
-    <ActionButton icon={MdKingBed} isDisabled={isResting} label="Rest" onClick={startResting} />
+    <ActionButton
+      icon={MdKingBed}
+      isDisabled={isResting}
+      label="Rest"
+      onClick={startResting}
+    />
 
     <ActionButton
       icon={isPaused ? MdPlayArrow : MdOutlinePause}
@@ -34,7 +52,12 @@ export const ButtonsSection = ({
       label={isPaused ? "Play" : "Pause"}
       onClick={togglePause}
     />
-    <ActionButton icon={MdReplay} isDisabled={isIdle} label="Reset" onClick={resetTimers} />
+    <ActionButton
+      icon={MdReplay}
+      isDisabled={isIdle}
+      label="Reset"
+      onClick={resetTimers}
+    />
   </Flex>
 );
 

@@ -6,7 +6,9 @@ import { formatCounter } from "../../utils/formatCounter";
 export const Timer = ({ icon, label, time, testId }) => (
   <Flex
     bg={useColorModeValue("gray.200", "gray.600")}
-    borderRadius={5}
+    border="1px solid"
+    borderColor={useColorModeValue("gray.300", "gray.500")}
+    borderRadius="16px"
     boxShadow="md"
     direction={{ base: "row", sm: "row", md: "column" }}
     gap={4}

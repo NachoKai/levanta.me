@@ -5,7 +5,14 @@ export const StatusItem = ({ label, value, icon, color, testId }) => (
   <Flex align="center" gap={2} w={{ sm: "100%", md: "50%" }}>
     <Text fontWeight="bold">{label}:</Text>
     <Text>{value}</Text>
-    <Icon alt={label} as={icon} boxSize="20px" color={color} data-testid={testId} h="auto" />
+    <Icon
+      alt={label}
+      as={icon}
+      boxSize="20px"
+      color={color}
+      data-testid={testId}
+      h="auto"
+    />
   </Flex>
 );
 

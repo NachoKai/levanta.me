@@ -20,7 +20,9 @@ export const NotificationsSection = ({
     <Flex
       align="center"
       bg={useColorModeValue("blue.100", "blue.700")}
-      borderRadius={5}
+      border="1px solid"
+      borderColor={useColorModeValue("blue.200", "blue.600")}
+      borderRadius="24px"
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
       display={showNotifications ? "flex" : "none"}
@@ -29,7 +31,10 @@ export const NotificationsSection = ({
       p="24px"
       w="100%"
     >
-      <Notification body="Work time finished. Go for a break! 🛌" show={showWorkingNotification} />
+      <Notification
+        body="Work time finished. Go for a break! 🛌"
+        show={showWorkingNotification}
+      />
 
       <Notification
         body="Idle time finished. Timers have been reset. ⏰"

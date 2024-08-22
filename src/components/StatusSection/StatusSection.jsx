@@ -15,13 +15,17 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
     resting: MdOutlineBed,
     idle: MdOutlineQueryBuilder,
   };
-  const capitalizedStatus = status ? status.charAt(0).toUpperCase() + status.slice(1) : "";
+  const capitalizedStatus = status
+    ? status.charAt(0).toUpperCase() + status.slice(1)
+    : "";
 
   return (
     <Flex
       align="center"
       bg={useColorModeValue("gray.100", "gray.700")}
-      borderRadius={5}
+      border="1px solid"
+      borderColor={useColorModeValue("gray.200", "gray.600")}
+      borderRadius="24px"
       boxShadow="md"
       direction={{ base: "column", sm: "column", md: "row" }}
       gap={{ base: "8px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
