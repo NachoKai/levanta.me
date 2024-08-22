@@ -85,6 +85,7 @@ module.exports = {
       },
     ],
     "react/react-in-jsx-scope": "off",
+    "arrow-parens": "as-needed",
     // "prettier/prettier": [
     //   "warn",
     //   {

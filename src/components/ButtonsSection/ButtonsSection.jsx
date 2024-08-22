@@ -1,12 +1,6 @@
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import {
-  MdKingBed,
-  MdOutlinePause,
-  MdPlayArrow,
-  MdReplay,
-  MdWork,
-} from "react-icons/md";
+import { MdKingBed, MdOutlinePause, MdPlayArrow, MdReplay, MdWork } from "react-icons/md";
 import { ActionButton } from "./ActionButton";
 
 export const ButtonsSection = ({

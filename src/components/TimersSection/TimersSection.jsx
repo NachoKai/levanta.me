@@ -1,10 +1,6 @@
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import {
-  MdOutlineBed,
-  MdOutlineQueryBuilder,
-  MdWorkOutline,
-} from "react-icons/md";
+import { MdOutlineBed, MdOutlineQueryBuilder, MdWorkOutline } from "react-icons/md";
 import { Timer } from "./Timer";
 
 export const TimersSection = ({ workTime, restTime, idleTime }) => {

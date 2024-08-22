@@ -1,13 +1,7 @@
 import { Button, Icon } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
-export const ActionButton = ({
-  icon,
-  label,
-  onClick,
-  isDisabled,
-  variant = "solid",
-}) => (
+export const ActionButton = ({ icon, label, onClick, isDisabled, variant = "solid" }) => (
   <Button
     colorScheme="blue"
     isDisabled={isDisabled}

@@ -18,7 +18,7 @@ export const useSendNotifications = ({
   const waterReminderIntervalRef = useRef(null);
 
   useEffect(() => {
-    const sendNotification = async (message) => {
+    const sendNotification = async message => {
       const { botToken, chatId } = telegramConfig;
 
       if (!botToken || !chatId) return;

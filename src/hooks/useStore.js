@@ -43,7 +43,11 @@ export const useStore = create(
         state.restTime = 0;
         state.idleTime = 0;
         state.isPaused = false;
-        state.notificationSent = { workTime: false, restTime: false, idleTime: false };
+        state.notificationSent = {
+          workTime: false,
+          restTime: false,
+          idleTime: false,
+        };
       }),
 
     startWorking: () =>

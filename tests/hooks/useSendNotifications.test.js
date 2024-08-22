@@ -117,7 +117,10 @@ describe("useSendNotifications", () => {
       });
     });
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Error sending notification:", expect.any(Error));
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error sending notification:",
+      expect.any(Error)
+    );
 
     consoleErrorSpy.mockRestore();
   });

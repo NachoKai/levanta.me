@@ -39,9 +39,15 @@ const App = () => {
   const isWorking = status === "working";
   const isResting = status === "resting";
   const isIdle = status === "idle";
-  const workTimeExceeded = notificationTimes.WORK ? workTime >= notificationTimes.WORK * 60 : false;
-  const restTimeExceeded = notificationTimes.REST ? restTime >= notificationTimes.REST * 60 : false;
-  const idleTimeExceeded = notificationTimes.IDLE ? idleTime >= notificationTimes.IDLE * 60 : false;
+  const workTimeExceeded = notificationTimes.WORK
+    ? workTime >= notificationTimes.WORK * 60
+    : false;
+  const restTimeExceeded = notificationTimes.REST
+    ? restTime >= notificationTimes.REST * 60
+    : false;
+  const idleTimeExceeded = notificationTimes.IDLE
+    ? idleTime >= notificationTimes.IDLE * 60
+    : false;
 
   useLoadModels();
 
@@ -78,14 +84,24 @@ const App = () => {
         borderRadius={5}
         direction="column"
         gap={{ base: "8px", sm: "16px", md: "24px", lg: "24px", xl: "32px" }}
-        maxW={{ base: "100%", sm: "100%", md: "620px", lg: "720px", xl: "960px" }}
+        maxW={{
+          base: "100%",
+          sm: "100%",
+          md: "620px",
+          lg: "720px",
+          xl: "960px",
+        }}
         p={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
         position="relative"
-        top={{ base: "360px", sm: "360px", md: "350px", lg: "400px", xl: "360px" }}
+        top={{
+          base: "360px",
+          sm: "360px",
+          md: "350px",
+          lg: "400px",
+          xl: "360px",
+        }}
         w="100%"
       >
-        <TimersSection idleTime={idleTime} restTime={restTime} workTime={workTime} />
-
         <ButtonsSection
           isIdle={isIdle}
           isPaused={isPaused}
@@ -96,6 +112,8 @@ const App = () => {
           startWorking={startWorking}
           togglePause={togglePause}
         />
+
+        <TimersSection idleTime={idleTime} restTime={restTime} workTime={workTime} />
 
         <NotificationsSection
           idleTimeExceeded={idleTimeExceeded}

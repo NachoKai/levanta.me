@@ -24,12 +24,8 @@ describe("InputsSection", () => {
       <InputsSection
         handleInputChange={mockHandleInputChange}
         handleTelegramConfigChange={mockHandleTelegramConfigChange}
-        handleTimerReminderIntervalChange={
-          mockHandleTimerReminderIntervalChange
-        }
-        handleWaterReminderIntervalChange={
-          mockHandleWaterReminderIntervalChange
-        }
+        handleTimerReminderIntervalChange={mockHandleTimerReminderIntervalChange}
+        handleWaterReminderIntervalChange={mockHandleWaterReminderIntervalChange}
         notificationTimes={notificationTimes}
         telegramConfig={telegramConfig}
         timerReminderInterval={5}
@@ -55,12 +51,8 @@ describe("InputsSection", () => {
       <InputsSection
         handleInputChange={mockHandleInputChange}
         handleTelegramConfigChange={mockHandleTelegramConfigChange}
-        handleTimerReminderIntervalChange={
-          mockHandleTimerReminderIntervalChange
-        }
-        handleWaterReminderIntervalChange={
-          mockHandleWaterReminderIntervalChange
-        }
+        handleTimerReminderIntervalChange={mockHandleTimerReminderIntervalChange}
+        handleWaterReminderIntervalChange={mockHandleWaterReminderIntervalChange}
         notificationTimes={notificationTimes}
         telegramConfig={telegramConfig}
         timerReminderInterval={5}
@@ -81,12 +73,8 @@ describe("InputsSection", () => {
       <InputsSection
         handleInputChange={mockHandleInputChange}
         handleTelegramConfigChange={mockHandleTelegramConfigChange}
-        handleTimerReminderIntervalChange={
-          mockHandleTimerReminderIntervalChange
-        }
-        handleWaterReminderIntervalChange={
-          mockHandleWaterReminderIntervalChange
-        }
+        handleTimerReminderIntervalChange={mockHandleTimerReminderIntervalChange}
+        handleWaterReminderIntervalChange={mockHandleWaterReminderIntervalChange}
         notificationTimes={notificationTimes}
         telegramConfig={telegramConfig}
         timerReminderInterval={5}
@@ -99,9 +87,7 @@ describe("InputsSection", () => {
     });
 
     expect(mockHandleTelegramConfigChange).toHaveBeenCalled();
-    expect(mockHandleTelegramConfigChange).toHaveBeenCalledWith(
-      expect.any(Object)
-    );
+    expect(mockHandleTelegramConfigChange).toHaveBeenCalledWith(expect.any(Object));
   });
 
   it("calls handleTimerReminderIntervalChange when timer reminder interval changes", () => {
@@ -109,12 +95,8 @@ describe("InputsSection", () => {
       <InputsSection
         handleInputChange={mockHandleInputChange}
         handleTelegramConfigChange={mockHandleTelegramConfigChange}
-        handleTimerReminderIntervalChange={
-          mockHandleTimerReminderIntervalChange
-        }
-        handleWaterReminderIntervalChange={
-          mockHandleWaterReminderIntervalChange
-        }
+        handleTimerReminderIntervalChange={mockHandleTimerReminderIntervalChange}
+        handleWaterReminderIntervalChange={mockHandleWaterReminderIntervalChange}
         notificationTimes={notificationTimes}
         telegramConfig={telegramConfig}
         timerReminderInterval={5}
@@ -122,12 +104,9 @@ describe("InputsSection", () => {
       />
     );
 
-    fireEvent.change(
-      screen.getByLabelText("Timer Reminder Interval (minutes)"),
-      {
-        target: { value: "10" },
-      }
-    );
+    fireEvent.change(screen.getByLabelText("Timer Reminder Interval (minutes)"), {
+      target: { value: "10" },
+    });
 
     expect(mockHandleTimerReminderIntervalChange).toHaveBeenCalled();
     expect(mockHandleTimerReminderIntervalChange).toHaveBeenCalledWith(
@@ -140,12 +119,8 @@ describe("InputsSection", () => {
       <InputsSection
         handleInputChange={mockHandleInputChange}
         handleTelegramConfigChange={mockHandleTelegramConfigChange}
-        handleTimerReminderIntervalChange={
-          mockHandleTimerReminderIntervalChange
-        }
-        handleWaterReminderIntervalChange={
-          mockHandleWaterReminderIntervalChange
-        }
+        handleTimerReminderIntervalChange={mockHandleTimerReminderIntervalChange}
+        handleWaterReminderIntervalChange={mockHandleWaterReminderIntervalChange}
         notificationTimes={notificationTimes}
         telegramConfig={telegramConfig}
         timerReminderInterval={5}
@@ -153,12 +128,9 @@ describe("InputsSection", () => {
       />
     );
 
-    fireEvent.change(
-      screen.getByLabelText("Water Reminder Interval (minutes)"),
-      {
-        target: { value: "30" },
-      }
-    );
+    fireEvent.change(screen.getByLabelText("Water Reminder Interval (minutes)"), {
+      target: { value: "30" },
+    });
 
     expect(mockHandleWaterReminderIntervalChange).toHaveBeenCalled();
     expect(mockHandleWaterReminderIntervalChange).toHaveBeenCalledWith(

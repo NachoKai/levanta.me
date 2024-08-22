@@ -34,7 +34,9 @@ describe("NotificationsSection", () => {
   it("renders idle notification when idle time is exceeded", () => {
     renderComponent({ isIdle: true, idleTimeExceeded: true });
 
-    expect(screen.getByText(/Idle time finished. Timers have been reset/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Idle time finished. Timers have been reset/i)
+    ).toBeInTheDocument();
   });
 
   it("renders rest notification when rest time is exceeded", () => {
@@ -54,7 +56,9 @@ describe("NotificationsSection", () => {
     });
 
     expect(screen.getByText(/Work time finished. Go for a break/i)).toBeInTheDocument();
-    expect(screen.getByText(/Idle time finished. Timers have been reset/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Idle time finished. Timers have been reset/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(/Rest time finished. Get back to work/i)).toBeInTheDocument();
   });
 });
