@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { formatCounter } from "../../utils/formatCounter";
 
-export const Timer = ({ icon, label, time, testId }) => (
+export const Timer = ({ icon, label, time }) => (
   <Flex
     bg={useColorModeValue("gray.200", "gray.600")}
     border="1px solid"
@@ -18,7 +18,7 @@ export const Timer = ({ icon, label, time, testId }) => (
     width={{ base: "100%", sm: "100%", md: "30%" }}
   >
     <Flex align="center" gap={2} w={{ base: "50%", sm: "50%", md: "100%" }}>
-      <Icon as={icon} boxSize="20px" data-testid={testId} h="auto" />
+      <Icon as={icon} boxSize="20px" h="auto" />
       <Text fontWeight={600} w="90%">
         {label}
       </Text>
@@ -34,8 +34,7 @@ export const Timer = ({ icon, label, time, testId }) => (
 );
 
 Timer.propTypes = {
-  icon: PropTypes.elementType.isRequired,
-  label: PropTypes.string.isRequired,
-  time: PropTypes.number.isRequired,
-  testId: PropTypes.string.isRequired,
+  icon: PropTypes.elementType,
+  label: PropTypes.string,
+  time: PropTypes.number,
 };

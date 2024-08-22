@@ -22,7 +22,13 @@ export const FormInput = ({
 }) => (
   <FormControl align="center" gap={8} w="100%">
     <Tooltip label={tooltip} placement="top">
-      <FormLabel align="center" display="flex" gap={2} htmlFor={id} justify="center">
+      <FormLabel
+        align="center"
+        display="flex"
+        gap={2}
+        htmlFor={id}
+        justify="center"
+      >
         <Icon as={icon} boxSize="20px" h="auto" />
         <Text fontWeight="bold">{label}</Text>
       </FormLabel>
@@ -44,11 +50,11 @@ export const FormInput = ({
 );
 
 FormInput.propTypes = {
-  icon: PropTypes.elementType.isRequired,
-  label: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  onChange: PropTypes.func.isRequired,
+  icon: PropTypes.elementType,
+  label: PropTypes.string,
+  id: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
   placeholder: PropTypes.string,
   type: PropTypes.string,
   min: PropTypes.string,

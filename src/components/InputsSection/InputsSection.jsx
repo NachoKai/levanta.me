@@ -137,15 +137,15 @@ export const InputsSection = ({
 );
 
 InputsSection.propTypes = {
-  notificationTimes: PropTypes.object.isRequired,
-  handleInputChange: PropTypes.func.isRequired,
-  timerReminderInterval: PropTypes.number.isRequired,
-  handleTimerReminderIntervalChange: PropTypes.func.isRequired,
+  notificationTimes: PropTypes.object,
+  handleInputChange: PropTypes.func,
+  timerReminderInterval: PropTypes.number,
+  handleTimerReminderIntervalChange: PropTypes.func,
   telegramConfig: PropTypes.shape({
-    botToken: PropTypes.string.isRequired,
-    chatId: PropTypes.string.isRequired,
-  }).isRequired,
-  handleTelegramConfigChange: PropTypes.func.isRequired,
-  waterReminderInterval: PropTypes.number.isRequired,
-  handleWaterReminderIntervalChange: PropTypes.func.isRequired,
+    botToken: PropTypes.string,
+    chatId: PropTypes.string,
+  }),
+  handleTelegramConfigChange: PropTypes.func,
+  waterReminderInterval: PropTypes.number,
+  handleWaterReminderIntervalChange: PropTypes.func,
 };

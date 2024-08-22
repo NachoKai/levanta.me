@@ -22,32 +22,17 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
       p="24px"
       w="100%"
     >
-      <Timer
-        icon={MdWorkOutline}
-        label="Work Time"
-        testId="work-icon"
-        time={workTime}
-      />
+      <Timer icon={MdWorkOutline} label="Work Time" time={workTime} />
 
-      <Timer
-        icon={MdOutlineQueryBuilder}
-        label="Idle Time"
-        testId="idle-icon"
-        time={idleTime}
-      />
+      <Timer icon={MdOutlineQueryBuilder} label="Idle Time" time={idleTime} />
 
-      <Timer
-        icon={MdOutlineBed}
-        label="Rest Time"
-        testId="rest-icon"
-        time={restTime}
-      />
+      <Timer icon={MdOutlineBed} label="Rest Time" time={restTime} />
     </Flex>
   );
 };
 
 TimersSection.propTypes = {
-  workTime: PropTypes.number.isRequired,
-  restTime: PropTypes.number.isRequired,
-  idleTime: PropTypes.number.isRequired,
+  workTime: PropTypes.number,
+  restTime: PropTypes.number,
+  idleTime: PropTypes.number,
 };

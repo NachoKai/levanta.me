@@ -50,24 +50,26 @@ export const ButtonsSection = ({
       icon={isPaused ? MdPlayArrow : MdOutlinePause}
       isDisabled={isIdle}
       label={isPaused ? "Play" : "Pause"}
+      variant="outline"
       onClick={togglePause}
     />
     <ActionButton
       icon={MdReplay}
       isDisabled={isIdle}
       label="Reset"
+      variant="outline"
       onClick={resetTimers}
     />
   </Flex>
 );
 
 ButtonsSection.propTypes = {
-  startWorking: PropTypes.func.isRequired,
-  startResting: PropTypes.func.isRequired,
-  togglePause: PropTypes.func.isRequired,
-  resetTimers: PropTypes.func.isRequired,
-  isWorking: PropTypes.bool.isRequired,
-  isResting: PropTypes.bool.isRequired,
-  isPaused: PropTypes.bool.isRequired,
-  isIdle: PropTypes.bool.isRequired,
+  startWorking: PropTypes.func,
+  startResting: PropTypes.func,
+  togglePause: PropTypes.func,
+  resetTimers: PropTypes.func,
+  isWorking: PropTypes.bool,
+  isResting: PropTypes.bool,
+  isPaused: PropTypes.bool,
+  isIdle: PropTypes.bool,
 };

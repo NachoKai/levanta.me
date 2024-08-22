@@ -50,10 +50,10 @@ export const NotificationsSection = ({
 };
 
 NotificationsSection.propTypes = {
-  isWorking: PropTypes.bool.isRequired,
-  workTimeExceeded: PropTypes.bool.isRequired,
-  isIdle: PropTypes.bool.isRequired,
-  idleTimeExceeded: PropTypes.bool.isRequired,
-  isResting: PropTypes.bool.isRequired,
-  restTimeExceeded: PropTypes.bool.isRequired,
+  isWorking: PropTypes.bool,
+  workTimeExceeded: PropTypes.bool,
+  isIdle: PropTypes.bool,
+  idleTimeExceeded: PropTypes.bool,
+  isResting: PropTypes.bool,
+  restTimeExceeded: PropTypes.bool,
 };

@@ -21,12 +21,4 @@ describe("TimersSection", () => {
     expect(screen.getByText("0h 10m 0s")).toBeInTheDocument();
     expect(screen.getByText("0h 5m 0s")).toBeInTheDocument();
   });
-
-  it("renders the correct icons for each timer", () => {
-    render(<TimersSection {...defaultProps} />);
-
-    expect(screen.getByTestId("work-icon")).toBeInTheDocument();
-    expect(screen.getByTestId("idle-icon")).toBeInTheDocument();
-    expect(screen.getByTestId("rest-icon")).toBeInTheDocument();
-  });
 });

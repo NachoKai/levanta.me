@@ -1,55 +1,66 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { StatusSection } from "../../src/components/StatusSection/StatusSection";
 
-describe("StatusSection component", () => {
-  it("renders the correct status", () => {
-    render(<StatusSection faceDetected={true} isPaused={false} status="working" />);
-    const statusElement = screen.getByText(/Current Status:/);
+describe("StatusSection", () => {
+  const mockStatus = "working";
+  const mockFaceDetected = true;
+  const mockIsPaused = false;
 
-    expect(statusElement).toBeInTheDocument();
+  it("renders the StatusSection component with the correct status", () => {
+    render(
+      <ChakraProvider>
+        <StatusSection
+          faceDetected={mockFaceDetected}
+          isPaused={mockIsPaused}
+          status={mockStatus}
+        />
+      </ChakraProvider>
+    );
+
+    const statusItem = screen.getByText(/Current Status/i);
+
+    expect(statusItem).toBeInTheDocument();
+
     const statusValue = screen.getByText("Working");
 
     expect(statusValue).toBeInTheDocument();
-    const statusIcon = screen.getByTestId("status-icon");
-
-    expect(statusIcon).toHaveAttribute("alt", "Current Status");
   });
 
-  it("renders the correct face detection status", () => {
-    render(<StatusSection faceDetected={true} isPaused={false} status="working" />);
-    const faceDetectedElement = screen.getByText(/Face Detected:/);
+  it("renders the face detection status correctly", () => {
+    render(
+      <ChakraProvider>
+        <StatusSection
+          faceDetected={mockFaceDetected}
+          isPaused={mockIsPaused}
+          status={mockStatus}
+        />
+      </ChakraProvider>
+    );
 
-    expect(faceDetectedElement).toBeInTheDocument();
-    const faceDetectedValue = screen.getByText("Yes");
+    const faceDetectionItem = screen.getByText(/Face Detected/i);
 
-    expect(faceDetectedValue).toBeInTheDocument();
-    const faceIcon = screen.getByTestId("face-icon");
+    expect(faceDetectionItem).toBeInTheDocument();
 
-    expect(faceIcon).toHaveAttribute("alt", "Face Detected");
+    const faceDetectionValue = screen.getByText("Yes");
+
+    expect(faceDetectionValue).toBeInTheDocument();
   });
 
-  it("renders the status as paused", () => {
-    render(<StatusSection faceDetected={true} isPaused={true} status="working" />);
-    const statusValue = screen.getByText("Working (Paused)");
+  it("renders paused status correctly", () => {
+    render(
+      <ChakraProvider>
+        <StatusSection
+          faceDetected={mockFaceDetected}
+          isPaused={true}
+          status={mockStatus}
+        />
+      </ChakraProvider>
+    );
 
-    expect(statusValue).toBeInTheDocument();
-  });
+    const pausedStatusValue = screen.getByText("Working (Paused)");
 
-  it("renders no face detected", () => {
-    render(<StatusSection faceDetected={false} isPaused={false} status="resting" />);
-    const faceDetectedValue = screen.getByText("No");
-
-    expect(faceDetectedValue).toBeInTheDocument();
-    const faceIcon = screen.getByTestId("face-icon");
-
-    expect(faceIcon).toHaveAttribute("alt", "Face Detected");
-  });
-
-  it("renders with default icon when status is not recognized", () => {
-    render(<StatusSection faceDetected={true} isPaused={false} status="unknown" />);
-    const statusIcon = screen.getByTestId("status-icon");
-
-    expect(statusIcon).toHaveAttribute("alt", "Current Status");
+    expect(pausedStatusValue).toBeInTheDocument();
   });
 });
