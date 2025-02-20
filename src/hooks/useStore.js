@@ -10,6 +10,7 @@ const initialState = {
   isPaused: false,
   modelsLoaded: false,
   faceDetected: false,
+  useCamera: false,
   telegramConfig: {
     botToken: localStorage.getItem("botToken") ?? "",
     chatId: localStorage.getItem("chatId") ?? "",
@@ -131,6 +132,10 @@ export const useStore = create(
 
         state.waterReminderInterval = value;
         localStorage.setItem("waterReminderInterval", e.target.value);
+      }),
+    setUseCamera: useCamera =>
+      set(state => {
+        state.useCamera = useCamera;
       }),
   }))
 );

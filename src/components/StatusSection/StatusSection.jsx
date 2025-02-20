@@ -9,7 +9,7 @@ import {
 } from "react-icons/md";
 import { StatusItem } from "./StatusItem";
 
-export const StatusSection = ({ status, faceDetected, isPaused }) => {
+export const StatusSection = ({ useCamera, status, faceDetected, isPaused }) => {
   const statusIcons = {
     working: MdWorkOutline,
     resting: MdOutlineBed,
@@ -39,12 +39,14 @@ export const StatusSection = ({ status, faceDetected, isPaused }) => {
         value={`${capitalizedStatus} ${isPaused ? "(Paused)" : ""}`}
       />
 
-      <StatusItem
-        color={faceDetected ? "green.500" : "red.500"}
-        icon={faceDetected ? MdAccountCircle : MdCircle}
-        label="Face Detected"
-        value={faceDetected ? "Yes" : "No"}
-      />
+      {useCamera && (
+        <StatusItem
+          color={faceDetected ? "green.500" : "red.500"}
+          icon={faceDetected ? MdAccountCircle : MdCircle}
+          label="Face Detected"
+          value={faceDetected ? "Yes" : "No"}
+        />
+      )}
     </Flex>
   );
 };
@@ -53,4 +55,5 @@ StatusSection.propTypes = {
   status: PropTypes.string,
   faceDetected: PropTypes.bool,
   isPaused: PropTypes.bool,
+  useCamera: PropTypes.bool,
 };

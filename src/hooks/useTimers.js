@@ -14,16 +14,20 @@ export const useTimers = ({ isWorking, isResting, isIdle }) => {
     faceDetected,
     notificationTimes,
     resetTimers,
+    useCamera,
   } = useStore();
 
   useEffect(() => {
     const interval =
       !isPaused && !isIdle
         ? setInterval(() => {
-            if (faceDetected && isWorking) {
+            if ((useCamera && faceDetected && isWorking) || (!useCamera && isWorking)) {
               setWorkTime(workTime + 1);
               setIdleTime(0);
-            } else if (!faceDetected && isResting) {
+            } else if (
+              (useCamera && !faceDetected && isResting) ||
+              (!useCamera && isResting)
+            ) {
               setRestTime(restTime + 1);
               setIdleTime(0);
             } else {
@@ -45,6 +49,7 @@ export const useTimers = ({ isWorking, isResting, isIdle }) => {
     setRestTime,
     setWorkTime,
     workTime,
+    useCamera,
   ]);
 
   useEffect(() => {

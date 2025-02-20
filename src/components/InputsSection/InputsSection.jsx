@@ -1,4 +1,10 @@
-import { Flex, useColorModeValue } from "@chakra-ui/react";
+import {
+  Flex,
+  FormControl,
+  FormLabel,
+  Switch,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import {
   MdAvTimer,
@@ -20,6 +26,8 @@ export const InputsSection = ({
   handleTimerReminderIntervalChange,
   waterReminderInterval,
   handleWaterReminderIntervalChange,
+  useCamera,
+  setUseCamera,
 }) => (
   <Flex
     align="center"
@@ -51,16 +59,18 @@ export const InputsSection = ({
         onChange={handleInputChange}
       />
 
-      <FormInput
-        icon={MdOutlineQueryBuilder}
-        id="IDLE"
-        label="Idle time (minutes)"
-        min="1"
-        placeholder="50"
-        tooltip="Bonus time"
-        value={notificationTimes.IDLE}
-        onChange={handleInputChange}
-      />
+      {useCamera && (
+        <FormInput
+          icon={MdOutlineQueryBuilder}
+          id="IDLE"
+          label="Idle time (minutes)"
+          min="1"
+          placeholder="50"
+          tooltip="Bonus time"
+          value={notificationTimes.IDLE}
+          onChange={handleInputChange}
+        />
+      )}
 
       <FormInput
         icon={MdOutlineBed}
@@ -130,6 +140,24 @@ export const InputsSection = ({
         value={telegramConfig.chatId}
         onChange={handleTelegramConfigChange}
       />
+    </Flex>
+
+    <Flex
+      align="center"
+      direction={{ base: "column", sm: "column", md: "row" }}
+      gap={{ base: "16px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
+      w="100%"
+    >
+      <FormControl alignItems="center" display="flex">
+        <FormLabel htmlFor="use-camera" mb="0">
+          Use Camera
+        </FormLabel>
+        <Switch
+          id="use-camera"
+          isChecked={useCamera}
+          onChange={e => setUseCamera(e.target.checked)}
+        />
+      </FormControl>
 
       <ToggleColorMode />
     </Flex>
@@ -148,4 +176,6 @@ InputsSection.propTypes = {
   handleTelegramConfigChange: PropTypes.func,
   waterReminderInterval: PropTypes.number,
   handleWaterReminderIntervalChange: PropTypes.func,
+  useCamera: PropTypes.bool,
+  setUseCamera: PropTypes.func,
 };

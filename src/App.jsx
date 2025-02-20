@@ -33,6 +33,8 @@ const App = () => {
     handleTimerReminderIntervalChange,
     waterReminderInterval,
     handleWaterReminderIntervalChange,
+    useCamera,
+    setUseCamera,
   } = useStore();
   const videoRef = useRef();
   const canvasRef = useRef();
@@ -77,7 +79,7 @@ const App = () => {
 
   return (
     <Flex align="center" direction="column" h="100%" w="100%">
-      <VideoSection canvasRef={canvasRef} videoRef={videoRef} />
+      {useCamera && <VideoSection canvasRef={canvasRef} videoRef={videoRef} />}
 
       <Flex
         align="center"
@@ -94,11 +96,11 @@ const App = () => {
         p={{ base: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }}
         position="relative"
         top={{
-          base: "360px",
-          sm: "360px",
-          md: "350px",
-          lg: "400px",
-          xl: "360px",
+          base: `${useCamera ? 360 : 0}px`,
+          sm: `${useCamera ? 360 : 0}px`,
+          md: `${useCamera ? 350 : 0}px`,
+          lg: `${useCamera ? 400 : 0}px`,
+          xl: `${useCamera ? 360 : 0}px`,
         }}
         w="100%"
       >
@@ -113,7 +115,12 @@ const App = () => {
           togglePause={togglePause}
         />
 
-        <TimersSection idleTime={idleTime} restTime={restTime} workTime={workTime} />
+        <TimersSection
+          idleTime={idleTime}
+          restTime={restTime}
+          useCamera={useCamera}
+          workTime={workTime}
+        />
 
         <NotificationsSection
           idleTimeExceeded={idleTimeExceeded}
@@ -124,7 +131,12 @@ const App = () => {
           workTimeExceeded={workTimeExceeded}
         />
 
-        <StatusSection faceDetected={faceDetected} isPaused={isPaused} status={status} />
+        <StatusSection
+          faceDetected={faceDetected}
+          isPaused={isPaused}
+          status={status}
+          useCamera={useCamera}
+        />
 
         <InputsSection
           handleInputChange={handleInputChange}
@@ -132,8 +144,10 @@ const App = () => {
           handleTimerReminderIntervalChange={handleTimerReminderIntervalChange}
           handleWaterReminderIntervalChange={handleWaterReminderIntervalChange}
           notificationTimes={notificationTimes}
+          setUseCamera={setUseCamera}
           telegramConfig={telegramConfig}
           timerReminderInterval={timerReminderInterval}
+          useCamera={useCamera}
           waterReminderInterval={waterReminderInterval}
         />
       </Flex>

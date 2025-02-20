@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { MdOutlineBed, MdOutlineQueryBuilder, MdWorkOutline } from "react-icons/md";
 import { Timer } from "./Timer";
 
-export const TimersSection = ({ workTime, restTime, idleTime }) => {
+export const TimersSection = ({ useCamera, workTime, restTime, idleTime }) => {
   return (
     <Flex
       align="center"
@@ -20,7 +20,9 @@ export const TimersSection = ({ workTime, restTime, idleTime }) => {
     >
       <Timer icon={MdWorkOutline} label="Work Time" time={workTime} />
 
-      <Timer icon={MdOutlineQueryBuilder} label="Idle Time" time={idleTime} />
+      {useCamera && (
+        <Timer icon={MdOutlineQueryBuilder} label="Idle Time" time={idleTime} />
+      )}
 
       <Timer icon={MdOutlineBed} label="Rest Time" time={restTime} />
     </Flex>
@@ -31,4 +33,5 @@ TimersSection.propTypes = {
   workTime: PropTypes.number,
   restTime: PropTypes.number,
   idleTime: PropTypes.number,
+  useCamera: PropTypes.bool,
 };
