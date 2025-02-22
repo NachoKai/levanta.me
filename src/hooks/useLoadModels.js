@@ -3,9 +3,11 @@ import { useEffect } from "react";
 import { useStore } from "./useStore";
 
 export const useLoadModels = () => {
-  const { setModelsLoaded } = useStore();
+  const { setModelsLoaded, useCamera } = useStore();
 
   useEffect(() => {
+    if (!useCamera) return;
+
     const loadModels = async () => {
       try {
         await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
@@ -16,5 +18,5 @@ export const useLoadModels = () => {
     };
 
     loadModels();
-  }, [setModelsLoaded]);
+  }, [setModelsLoaded, useCamera]);
 };

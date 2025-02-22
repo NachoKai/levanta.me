@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import { useStore } from "./useStore";
 
 export const useFaceDetector = ({ videoRef, canvasRef }) => {
-  const { modelsLoaded, setFaceDetected } = useStore();
+  const { modelsLoaded, setFaceDetected, useCamera } = useStore();
 
   useEffect(() => {
-    if (!modelsLoaded) return;
+    if (!modelsLoaded || !useCamera) return;
 
     navigator.mediaDevices
       .getUserMedia({ video: {} })
@@ -44,5 +44,5 @@ export const useFaceDetector = ({ videoRef, canvasRef }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [canvasRef, modelsLoaded, setFaceDetected, videoRef]);
+  }, [canvasRef, modelsLoaded, setFaceDetected, videoRef, useCamera]);
 };

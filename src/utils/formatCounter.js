@@ -5,9 +5,9 @@ export const formatCounter = time => {
 
   const SECONDS_IN_HOUR = 3600;
   const SECONDS_IN_MINUTE = 60;
-  const hours = Math.floor(time / SECONDS_IN_HOUR);
-  const minutes = Math.floor((time % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE);
-  const seconds = time % SECONDS_IN_MINUTE;
+  const hours = Math.trunc(time / SECONDS_IN_HOUR);
+  const minutes = Math.trunc((time % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE);
+  const seconds = Math.trunc(time % SECONDS_IN_MINUTE);
 
   return `${hours.toString().padStart(1, "0")}h ${minutes.toString().padStart(1, "0")}m ${seconds.toString().padStart(1, "0")}s`;
 };
