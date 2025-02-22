@@ -16,6 +16,8 @@ export const useSendNotifications = ({
   const { telegramConfig, notificationSent, setNotificationSent } = useStore();
   const reminderIntervalRef = useRef(null);
   const waterReminderIntervalRef = useRef(null);
+  const startTimeRef = useRef(null);
+  const waterStartTimeRef = useRef(null);
 
   useEffect(() => {
     const sendNotification = async message => {
@@ -79,17 +81,29 @@ export const useSendNotifications = ({
     };
 
     if (!reminderIntervalRef.current && timerReminderInterval > 0) {
-      reminderIntervalRef.current = setInterval(
-        sendReminderNotification,
-        timerReminderInterval * 60 * 1000
-      );
+      startTimeRef.current = new Date();
+      reminderIntervalRef.current = setInterval(() => {
+        const currentTime = new Date();
+        const elapsedTime = (currentTime - startTimeRef.current) / 1000 / 60;
+
+        if (elapsedTime >= timerReminderInterval) {
+          sendReminderNotification();
+          startTimeRef.current = new Date();
+        }
+      }, 100);
     }
 
     if (!waterReminderIntervalRef.current && waterReminderInterval > 0) {
-      waterReminderIntervalRef.current = setInterval(
-        sendWaterReminder,
-        waterReminderInterval * 60 * 1000
-      );
+      waterStartTimeRef.current = new Date();
+      waterReminderIntervalRef.current = setInterval(() => {
+        const currentTime = new Date();
+        const elapsedTime = (currentTime - waterStartTimeRef.current) / 1000 / 60;
+
+        if (elapsedTime >= waterReminderInterval) {
+          sendWaterReminder();
+          waterStartTimeRef.current = new Date();
+        }
+      }, 100);
     }
 
     const dateTime = getFormattedDateTime();

@@ -144,7 +144,6 @@ export const InputsSection = ({
 
     <Flex
       align="center"
-      direction={{ base: "column", sm: "column", md: "row" }}
       gap={{ base: "16px", sm: "16px", md: "16px", lg: "24px", xl: "32px" }}
       w="100%"
     >
