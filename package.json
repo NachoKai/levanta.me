@@ -5,8 +5,9 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "eslint .",
     "start": "next start",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts src",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prepare": "husky"
   },
   "dependencies": {
@@ -74,6 +75,35 @@
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
     "typescript": "^5",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "prettier": "^2.8.8",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-cypress": "^2.13.3",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  },
+  "prettier": {
+    "printWidth": 90,
+    "tabWidth": 2,
+    "useTabs": true,
+    "semi": false,
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "endOfLine": "lf",
+    "htmlWhitespaceSensitivity": "css",
+    "jsxSingleQuote": true,
+    "quoteProps": "as-needed",
+    "requirePragma": false,
+    "insertPragma": false,
+    "proseWrap": "always"
   }
 }
