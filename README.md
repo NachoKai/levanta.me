@@ -1,69 +1,139 @@
-# Levanta.me
+# Levanta.me - Productivity Tracker
 
-## Overview
-
-Levanta.me is a React-based application that uses the `@vladmandic/face-api` library to detect faces through a webcam feed. It tracks the user's work, rest, and idle times and notifies the user when specific thresholds are exceeded.
+A modern productivity timer with automatic face detection, Telegram notifications, and browser notifications. Track your work and rest time effortlessly.
 
 ## Features
 
-- **Face Detection**: Uses `face-api.js` to detect faces in real-time from the webcam.
-- **Timer Management**: Tracks work, rest, and idle times based on face detection.
-- **Notifications**: Alerts the user when the work or rest time exceeds the configured limits or when the face is not detected for a certain period (idle time).
+- **Automatic Face Detection**: Timer starts when you're at your desk and pauses when you leave
+- **Work/Rest Modes**: Switch between work and rest modes with customizable durations
+- **Smart Notifications**:
+  - Browser notifications for timer events
+  - Telegram bot integration for remote notifications
+  - Work reminders at custom intervals
+  - Water break reminders
+- **Accurate Timer Tracking**: Precise second-by-second tracking of work and rest time
+- **Persistent Storage**: Your settings and timer data are saved locally
+- **Modern UI**: Clean, minimalist design with dark mode support
+- **Real-time Status**: See your current status at a glance
 
-## Technologies Used
+## Quick Start
 
-- **React**: Frontend library for building user interfaces.
-- **Styled-Components**: CSS-in-JS library for styling React components.
-- **face-api.js**: JavaScript API for face detection and recognition.
-- **Navigator MediaDevices API**: Provides access to media input devices like the camera.
-
-## Getting Started
-
-### Prerequisites
-
-Ensure you have the following installed:
-
-- Node.js (>= 14.x)
-- yarn (>= 1.x)
-
-### Installation
-
-1. Clone the repository:
-
-   ```
-   git clone https://github.com/NachoKai/levanta.me.git
-   cd levanta.me
+1. **Clone and install**:
+   ```bash
+   npm install
    ```
 
-2. Install the dependencies:
-
-   ```
-   yarn install
-   ```
-
-### Running the App
-
-1. Start the development server:
-
-   ```
-   yarn run dev
+2. **Download face detection models** (if using camera feature):
+   ```bash
+   node scripts/download-models.mjs
    ```
 
-2. Open your browser and navigate to `http://localhost:5173/`.
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-### Usage
+4. **Open your browser**: Navigate to `http://localhost:3000`
 
-1. **Configuration**: Set the work, rest, and idle time limits. Set telegram Bot Token and Chat ID.
-2. **Start Working**: Click the "Work" button to begin the work timer.
-3. **Start Resting**: Click the "Rest" button to begin the rest timer.
-4. **Reset**: Click the "Reset" button to reset all timers.
-5. **Pause**: Click the "Pause" button to pause the timer.
-6. **Notifications**: Alerts will appear when the configured work, rest, or idle times are exceeded.
+## Setup
 
-### Contribution
+### Face Detection (Optional)
 
-Feel free to submit issues and pull requests. For major changes, please open an issue first to discuss what you would like to change.
+If you want to use the camera-based face detection feature:
 
-### License
+```bash
+node scripts/download-models.mjs
+```
 
-This project is licensed under the MIT License.
+Or manually download from: https://github.com/vladmandic/face-api/tree/master/model
+
+### Telegram Notifications (Optional)
+
+1. Create a bot with [@BotFather](https://t.me/botfather)
+2. Get your bot token
+3. Get your chat ID from `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
+4. Enter both in the app settings
+
+## Usage
+
+### Basic Controls
+
+- **Work**: Start tracking work time
+- **Rest**: Start tracking rest time
+- **Pause/Resume**: Pause or resume the current timer
+- **Reset**: Reset all timers to zero
+
+### Settings
+
+- **Work/Rest Duration**: Get notified when work/rest time is complete - you manually switch when ready (0 = disabled)
+- **Timer Reminder**: Get periodic reminders during work sessions (0 = disabled)
+- **Water Reminder**: Stay hydrated with periodic reminders (0 = disabled)
+- **Use Camera**: Enable automatic face detection tracking
+
+### How It Works
+
+1. **Manual Mode** (Camera OFF): Click Work/Rest to start tracking
+2. **Automatic Mode** (Camera ON): Timer starts when your face is detected and pauses when you leave
+
+### Keyboard Shortcuts
+
+- `W` - Switch to Work mode
+- `R` - Switch to Rest mode
+- `P` or `Space` - Pause/Resume timer
+- `Shift + R` - Reset all timers
+
+## Technology Stack
+
+- **Next.js 16** - React framework with App Router
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS v4** - Styling
+- **Zustand** - State management
+- **face-api.js** - Face detection
+- **shadcn/ui** - UI components
+
+## Browser Permissions
+
+The app may request:
+- **Camera**: For face detection (only if enabled)
+- **Notifications**: For browser notifications
+
+## Deployment
+
+Deploy to Vercel with one click:
+
+```bash
+npm run build
+```
+
+Or use the Vercel CLI:
+
+```bash
+vercel
+```
+
+## Privacy
+
+- All data is stored locally in your browser
+- Camera feed is processed locally and never uploaded
+- Telegram notifications only sent if you configure them
+
+## Troubleshooting
+
+### Face detection not working
+- Make sure you've downloaded the models: `node scripts/download-models.mjs`
+- Check browser console for errors
+- Ensure camera permissions are granted
+
+### Notifications not showing
+- Check browser notification permissions
+- For Telegram: Verify bot token and chat ID are correct
+
+### Timer not counting
+- Check browser console for errors
+- Make sure JavaScript is enabled
+- Try refreshing the page
+
+## License
+
+MIT
