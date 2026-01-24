@@ -84,7 +84,7 @@ export function HelpDialog() {
 								<h4 className='font-medium mb-1'>Manual Mode (Camera OFF)</h4>
 								<p className='text-muted-foreground'>
 									Click Work or Rest buttons to manually start tracking time. Perfect for
-									when you don't want to use the camera.
+									when you don&apos;t want to use the camera.
 								</p>
 							</div>
 							<div className='p-3 rounded bg-muted'>
