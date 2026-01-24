@@ -6,8 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "lint": "eslint --ext .jsx,.js,.tsx,.ts src",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts app components hooks lib scripts styles",
+    "format": "prettier --write \"{app,components,hooks,lib,scripts,styles}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prepare": "husky"
   },
   "dependencies": {
