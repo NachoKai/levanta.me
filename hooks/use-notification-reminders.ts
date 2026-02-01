@@ -65,8 +65,8 @@ export function useNotificationReminders({
 					currentState.status === 'working'
 				) {
 					sendNotification(
-						'Still working?',
-						`You should take a break! Your work time finished ${overtimeMinutes} minutes ago.`
+						'Still working? ⏰',
+						`You should take a break! Your work time finished ${overtimeMinutes} minutes ago. ☕`
 					)
 				} else if (
 					currentState.mode === 'rest' &&
@@ -74,8 +74,8 @@ export function useNotificationReminders({
 					currentState.status === 'resting'
 				) {
 					sendNotification(
-						'Still resting?',
-						`Time to get back to work! Your rest time finished ${overtimeMinutes} minutes ago.`
+						'Still resting? ☕',
+						`Time to get back to work! Your rest time finished ${overtimeMinutes} minutes ago. ⏰`
 					)
 				}
 			}, timerInterval * 60 * 1000)
@@ -108,7 +108,7 @@ export function useNotificationReminders({
 
 		if (waterInterval > 0 && status !== 'idle') {
 			waterReminderRef.current = setInterval(() => {
-				sendNotification('Water Reminder', '💧 Time to drink some water!')
+				sendNotification('💦 Water Reminder', 'Time to drink some water! 💧')
 			}, waterInterval * 60 * 1000)
 		}
 
