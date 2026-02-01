@@ -79,26 +79,6 @@ export const useWorkTimerStore = create<WorkTimerState>()(
 		}),
 		{
 			name: 'work-timer-storage',
-			partialize: state => ({
-				workDuration: state.workDuration,
-				restDuration: state.restDuration,
-				timerInterval: state.timerInterval,
-				waterInterval: state.waterInterval,
-				telegramToken: state.telegramToken,
-				telegramChatId: state.telegramChatId,
-				useCameraDetection: state.useCameraDetection,
-				useBrowserNotifications: state.useBrowserNotifications,
-				useTelegramNotifications: state.useTelegramNotifications,
-			}),
-			onRehydrateStorage: () => state => {
-				if (state) {
-					state.status = 'idle'
-					state.workTime = 0
-					state.restTime = 0
-					state.isSessionActive = false
-					state.mode = 'work'
-				}
-			},
 		}
 	)
 )
