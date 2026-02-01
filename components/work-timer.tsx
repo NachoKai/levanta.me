@@ -201,6 +201,8 @@ export function WorkTimer() {
 			setStatus('working')
 		} else if (!isFaceDetected && status === 'working') {
 			setStatus('idle')
+		} else if (isFaceDetected && status === 'resting') {
+			setStatus('idle')
 		}
 	}, [isFaceDetected, status, useCameraDetection, setStatus, isSessionActive])
 
