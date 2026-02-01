@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -47,6 +47,7 @@ export function WorkTimer() {
 		useCameraDetection,
 		useBrowserNotifications,
 		useTelegramNotifications,
+		isSessionActive,
 		setMode,
 		setStatus,
 		incrementWorkTime,
@@ -175,21 +176,40 @@ export function WorkTimer() {
 		incrementRestTime,
 	})
 
+	const memoizedSetStatus = useCallback(
+		(newStatus: 'idle' | 'working' | 'resting') => {
+			setStatus(newStatus)
+		},
+		[setStatus]
+	)
+
 	useEffect(() => {
 		if (!useCameraDetection) return
+		if (!isSessionActive) return
 
-		if (!isFaceDetected && status === 'working') {
-			setStatus('idle')
-		} else if (isFaceDetected && status === 'resting') {
-			setStatus('idle')
-		} else if (isFaceDetected && status === 'idle' && mode === 'work') {
-			setStatus('working')
-			setIsSessionActive(true)
-		} else if (isFaceDetected && status === 'idle' && mode === 'rest') {
-			setStatus('resting')
-			setIsSessionActive(true)
+		if (mode === 'work') {
+			if (isFaceDetected && status === 'idle') {
+				memoizedSetStatus('working')
+			} else if (!isFaceDetected && status === 'working') {
+				memoizedSetStatus('idle')
+			}
 		}
-	}, [isFaceDetected, status, useCameraDetection, setStatus, mode, setIsSessionActive])
+
+		if (mode === 'rest') {
+			if (!isFaceDetected && status === 'idle') {
+				memoizedSetStatus('resting')
+			} else if (isFaceDetected && status === 'resting') {
+				memoizedSetStatus('idle')
+			}
+		}
+	}, [
+		isFaceDetected,
+		status,
+		useCameraDetection,
+		mode,
+		isSessionActive,
+		memoizedSetStatus,
+	])
 
 	const { clearTimerReminder } = useNotificationReminders({
 		workTime,
