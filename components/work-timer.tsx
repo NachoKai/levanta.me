@@ -56,6 +56,8 @@ export function WorkTimer() {
 		setUseCameraDetection,
 		setUseBrowserNotifications,
 		setUseTelegramNotifications,
+		isSessionActive,
+		setIsSessionActive,
 	} = useWorkTimerStore()
 
 	const {
@@ -195,12 +197,12 @@ export function WorkTimer() {
 	useEffect(() => {
 		if (!useCameraDetection) return
 
-		if (isFaceDetected && status === 'idle') {
+		if (isFaceDetected && status === 'idle' && isSessionActive) {
 			setStatus('working')
 		} else if (!isFaceDetected && status === 'working') {
 			setStatus('idle')
 		}
-	}, [isFaceDetected, status, useCameraDetection, setStatus])
+	}, [isFaceDetected, status, useCameraDetection, setStatus, isSessionActive])
 
 	useEffect(() => {
 		const shouldNagWorkToRest =
@@ -336,6 +338,7 @@ export function WorkTimer() {
 		isNaggingRef.current = false
 
 		setMode(newMode)
+		setIsSessionActive(true)
 		if (newMode === 'work') {
 			setStatus('working')
 			resetRestTime()
@@ -347,6 +350,7 @@ export function WorkTimer() {
 
 	const handlePause = () => {
 		if (status === 'idle') {
+			setIsSessionActive(true)
 			if (mode === 'work') {
 				setStatus('working')
 			} else {
@@ -354,12 +358,14 @@ export function WorkTimer() {
 			}
 		} else {
 			setStatus('idle')
+			setIsSessionActive(false)
 		}
 	}
 
 	const handleReset = () => {
 		resetTimers()
 		setStatus('idle')
+		setIsSessionActive(false)
 	}
 
 	const formatTime = (seconds: number) => {

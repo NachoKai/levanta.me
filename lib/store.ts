@@ -18,9 +18,11 @@ interface WorkTimerState {
 	useCameraDetection: boolean
 	useBrowserNotifications: boolean
 	useTelegramNotifications: boolean
+	isSessionActive: boolean
 
 	setMode: (mode: Mode) => void
 	setStatus: (status: Status) => void
+	setIsSessionActive: (active: boolean) => void
 	incrementWorkTime: (amount?: number) => void
 	incrementRestTime: (amount?: number) => void
 	resetWorkTime: () => void
@@ -53,9 +55,11 @@ export const useWorkTimerStore = create<WorkTimerState>()(
 			useCameraDetection: false,
 			useBrowserNotifications: true,
 			useTelegramNotifications: true,
+			isSessionActive: false,
 
 			setMode: mode => set({ mode }),
 			setStatus: status => set({ status }),
+			setIsSessionActive: active => set({ isSessionActive: active }),
 			incrementWorkTime: (amount = 1) =>
 				set(state => ({ workTime: state.workTime + amount })),
 			incrementRestTime: (amount = 1) =>
