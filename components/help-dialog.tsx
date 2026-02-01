@@ -9,16 +9,16 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { HelpCircle, Keyboard, Info, Zap } from 'lucide-react'
+import { HelpCircle, Info, Keyboard, Zap } from 'lucide-react'
 
 export function HelpDialog() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
 				<Button
-					variant='outline'
-					size='icon'
 					className='fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg bg-transparent cursor-pointer'
+					size='icon'
+					variant='outline'
 				>
 					<HelpCircle className='h-5 w-5' />
 					<span className='sr-only'>Help</span>

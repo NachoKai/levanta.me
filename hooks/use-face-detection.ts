@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function useFaceDetection() {
 	const [isFaceDetected, setIsFaceDetected] = useState(false)
@@ -14,19 +14,17 @@ export function useFaceDetection() {
 
 	const loadFaceDetector = useCallback(async () => {
 		try {
-			// Check if models directory exists by trying to fetch a test file
 			const testResponse = await fetch(
 				'/models/tiny_face_detector_model-weights_manifest.json'
 			)
+
 			if (!testResponse.ok) {
 				throw new Error('Models not found. Please download face detection models first.')
 			}
 
-			// Dynamically import face-api.js
 			const faceapi = await import('@vladmandic/face-api')
-
-			// Load models
 			const MODEL_URL = '/models'
+
 			await Promise.all([
 				faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
 				faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -34,13 +32,15 @@ export function useFaceDetection() {
 			])
 
 			detectorRef.current = faceapi
-			console.log('Face detection models loaded successfully')
+
 			return true
 		} catch (err) {
 			console.error('Failed to load face detection models:', err)
 			const errorMessage =
 				'Face detection models not found. Run: npx degit vladmandic/face-api/model public/models to download them, then restart the app.'
+
 			setError(errorMessage)
+
 			return false
 		}
 	}, [])
@@ -57,7 +57,6 @@ export function useFaceDetection() {
 
 			setIsFaceDetected(detections.length > 0)
 
-			// Continue detection loop
 			animationFrameRef.current = requestAnimationFrame(detectFaces)
 		} catch (err) {
 			console.error('Face detection error:', err)
@@ -69,21 +68,20 @@ export function useFaceDetection() {
 		setError(null)
 
 		try {
-			// Load face detector if not already loaded
 			if (!detectorRef.current) {
 				const loaded = await loadFaceDetector()
+
 				if (!loaded) {
 					setIsLoading(false)
+
 					return
 				}
 			}
 
-			// Get camera stream
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: { width: 640, height: 480 },
 			})
 
-			// Create video element if it doesn't exist
 			if (!videoRef.current) {
 				videoRef.current = document.createElement('video')
 				videoRef.current.autoplay = true
@@ -93,14 +91,12 @@ export function useFaceDetection() {
 			videoRef.current.srcObject = stream
 			streamRef.current = stream
 
-			// Wait for video to load
 			await new Promise(resolve => {
 				if (videoRef.current) {
 					videoRef.current.onloadedmetadata = resolve
 				}
 			})
 
-			// Start face detection
 			detectFaces()
 			setIsLoading(false)
 		} catch (err) {
@@ -111,19 +107,16 @@ export function useFaceDetection() {
 	}, [loadFaceDetector, detectFaces])
 
 	const stopCamera = useCallback(() => {
-		// Stop animation frame
 		if (animationFrameRef.current) {
 			cancelAnimationFrame(animationFrameRef.current)
 			animationFrameRef.current = null
 		}
 
-		// Stop media stream
 		if (streamRef.current) {
 			streamRef.current.getTracks().forEach(track => track.stop())
 			streamRef.current = null
 		}
 
-		// Clear video element
 		if (videoRef.current) {
 			videoRef.current.srcObject = null
 		}
@@ -131,7 +124,6 @@ export function useFaceDetection() {
 		setIsFaceDetected(false)
 	}, [])
 
-	// Cleanup on unmount
 	useEffect(() => {
 		return () => {
 			stopCamera()

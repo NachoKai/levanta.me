@@ -1,23 +1,23 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Card, CardContent } from '@/components/ui/card'
 import {
+	Bell,
 	Briefcase,
+	Camera,
+	Clock,
 	Coffee,
+	Droplet,
+	MessageSquare,
+	Moon,
 	Pause,
 	Play,
 	RotateCcw,
-	Clock,
-	Bell,
-	Droplet,
-	MessageSquare,
-	Camera,
-	Moon,
 	Sun,
 } from 'lucide-react'
 import { useWorkTimerStore } from '@/lib/store'
@@ -74,14 +74,15 @@ export function WorkTimer() {
 	const waterReminderRef = useRef<NodeJS.Timeout | null>(null)
 	const isNaggingRef = useRef<boolean>(false)
 
-	// Initialize theme
 	useEffect(() => {
 		const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
+
 		if (savedTheme) {
 			setTheme(savedTheme)
 			document.documentElement.classList.toggle('dark', savedTheme === 'dark')
 		} else {
 			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
 			setTheme(prefersDark ? 'dark' : 'light')
 			document.documentElement.classList.toggle('dark', prefersDark)
 		}
@@ -89,15 +90,14 @@ export function WorkTimer() {
 
 	const toggleTheme = () => {
 		const newTheme = theme === 'dark' ? 'light' : 'dark'
+
 		setTheme(newTheme)
 		localStorage.setItem('theme', newTheme)
 		document.documentElement.classList.toggle('dark', newTheme === 'dark')
 	}
 
-	// Keyboard shortcuts
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
-			// Ignore if user is typing in an input field
 			if (
 				e.target instanceof HTMLInputElement ||
 				e.target instanceof HTMLTextAreaElement
@@ -125,15 +125,16 @@ export function WorkTimer() {
 		}
 
 		window.addEventListener('keydown', handleKeyPress)
+
 		return () => window.removeEventListener('keydown', handleKeyPress)
 	}, [status])
 
-	// Update page title based on status
 	useEffect(() => {
 		const formatTime = (seconds: number) => {
 			const h = Math.floor(seconds / 3600)
 			const m = Math.floor((seconds % 3600) / 60)
 			const s = seconds % 60
+
 			return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`
 		}
 
@@ -146,7 +147,6 @@ export function WorkTimer() {
 		}
 	}, [status, workTime, restTime])
 
-	// Start/stop camera based on settings
 	useEffect(() => {
 		if (useCameraDetection) {
 			startCamera()
@@ -155,7 +155,6 @@ export function WorkTimer() {
 		}
 	}, [useCameraDetection, startCamera, stopCamera])
 
-	// Main timer logic
 	useEffect(() => {
 		if (timerIntervalRef.current) {
 			clearInterval(timerIntervalRef.current)
@@ -178,7 +177,6 @@ export function WorkTimer() {
 		}
 	}, [status, incrementWorkTime, incrementRestTime])
 
-	// Face detection logic
 	useEffect(() => {
 		if (!useCameraDetection) return
 
@@ -191,9 +189,7 @@ export function WorkTimer() {
 		}
 	}, [isFaceDetected, status, useCameraDetection, setStatus, sendNotification])
 
-	// Timer reminder - nag user if they exceed work/rest duration and don't switch
 	useEffect(() => {
-		// Check if we should start nagging (must NOT be idle)
 		const shouldNagWorkToRest =
 			workDuration > 0 &&
 			workTime >= workDuration * 60 &&
@@ -208,16 +204,12 @@ export function WorkTimer() {
 			timerInterval > 0
 		const shouldNag = shouldNagWorkToRest || shouldNagRestToWork
 
-		// Start nagging if conditions met and not already nagging
 		if (shouldNag && !isNaggingRef.current) {
 			isNaggingRef.current = true
-			console.log('Starting nag interval for mode:', mode)
 
 			timerReminderRef.current = setInterval(() => {
 				const currentState = useWorkTimerStore.getState()
-				console.log('Nag interval firing - status:', currentState.status)
 
-				// Don't send notification if status is idle (paused)
 				if (currentState.status === 'idle') {
 					return
 				}
@@ -249,10 +241,9 @@ export function WorkTimer() {
 			}, timerInterval * 60 * 1000)
 		}
 
-		// Stop nagging if conditions no longer met (mode changed, paused, etc.)
 		if (!shouldNag && isNaggingRef.current) {
 			isNaggingRef.current = false
-			console.log('Stopping nag interval')
+
 			if (timerReminderRef.current) {
 				clearInterval(timerReminderRef.current)
 				timerReminderRef.current = null
@@ -269,7 +260,6 @@ export function WorkTimer() {
 		sendNotification,
 	])
 
-	// Water reminder
 	useEffect(() => {
 		if (waterReminderRef.current) {
 			clearInterval(waterReminderRef.current)
@@ -288,7 +278,6 @@ export function WorkTimer() {
 		}
 	}, [waterInterval, status, sendNotification])
 
-	// Notify when work/rest duration completes (no auto-switch)
 	const [workCompleted, setWorkCompleted] = useState(false)
 	const [restCompleted, setRestCompleted] = useState(false)
 
@@ -327,7 +316,6 @@ export function WorkTimer() {
 	}, [restTime, restDuration, restCompleted, mode, sendNotification])
 
 	const handleModeChange = (newMode: 'work' | 'rest') => {
-		// Clear any existing nag interval when switching modes
 		if (timerReminderRef.current) {
 			clearInterval(timerReminderRef.current)
 			timerReminderRef.current = null
@@ -337,16 +325,15 @@ export function WorkTimer() {
 		setMode(newMode)
 		if (newMode === 'work') {
 			setStatus('working')
-			resetRestTime() // Reset rest time when switching to work
+			resetRestTime()
 		} else {
 			setStatus('resting')
-			resetWorkTime() // Reset work time when switching to rest
+			resetWorkTime()
 		}
 	}
 
 	const handlePause = () => {
 		if (status === 'idle') {
-			// Resume - go back to the current mode
 			if (mode === 'work') {
 				setStatus('working')
 			} else {
@@ -366,6 +353,7 @@ export function WorkTimer() {
 		const h = Math.floor(seconds / 3600)
 		const m = Math.floor((seconds % 3600) / 60)
 		const s = seconds % 60
+
 		return `${h}h ${m}m ${s}s`
 	}
 
@@ -373,10 +361,10 @@ export function WorkTimer() {
 		<>
 			<HelpDialog />
 			<Button
-				variant='outline'
-				size='icon'
-				onClick={toggleTheme}
 				className='fixed top-6 right-6 h-10 w-10 rounded-full shadow-lg cursor-pointer z-50 bg-transparent'
+				size='icon'
+				variant='outline'
+				onClick={toggleTheme}
 			>
 				{theme === 'dark' ? <Sun className='h-5 w-5' /> : <Moon className='h-5 w-5' />}
 				<span className='sr-only'>Toggle theme</span>
@@ -387,28 +375,28 @@ export function WorkTimer() {
 					<CardContent className='p-6'>
 						<div className='flex flex-wrap gap-3'>
 							<Button
+								className='flex-1 min-w-[140px] h-12 text-base cursor-pointer disabled:cursor-not-allowed'
+								disabled={mode === 'work' && status !== 'idle'}
 								variant={mode === 'work' ? 'default' : 'outline'}
 								onClick={() => handleModeChange('work')}
-								disabled={mode === 'work' && status !== 'idle'}
-								className='flex-1 min-w-[140px] h-12 text-base cursor-pointer disabled:cursor-not-allowed'
 							>
 								<Briefcase className='mr-2 h-5 w-5' />
 								Work
 							</Button>
 							<Button
+								className='flex-1 min-w-[140px] h-12 text-base cursor-pointer disabled:cursor-not-allowed'
+								disabled={mode === 'rest' && status !== 'idle'}
 								variant={mode === 'rest' ? 'default' : 'outline'}
 								onClick={() => handleModeChange('rest')}
-								disabled={mode === 'rest' && status !== 'idle'}
-								className='flex-1 min-w-[140px] h-12 text-base cursor-pointer disabled:cursor-not-allowed'
 							>
 								<Coffee className='mr-2 h-5 w-5' />
 								Rest
 							</Button>
 							<Button
+								className='flex-1 min-w-[140px] h-12 text-base bg-transparent cursor-pointer disabled:cursor-not-allowed'
+								disabled={status === 'idle' && workTime === 0 && restTime === 0}
 								variant='outline'
 								onClick={handlePause}
-								disabled={status === 'idle' && workTime === 0 && restTime === 0}
-								className='flex-1 min-w-[140px] h-12 text-base bg-transparent cursor-pointer disabled:cursor-not-allowed'
 							>
 								{status === 'idle' ? (
 									<>
@@ -423,10 +411,10 @@ export function WorkTimer() {
 								)}
 							</Button>
 							<Button
+								className='flex-1 min-w-[140px] h-12 text-base bg-transparent cursor-pointer disabled:cursor-not-allowed'
+								disabled={workTime === 0 && restTime === 0}
 								variant='outline'
 								onClick={handleReset}
-								disabled={workTime === 0 && restTime === 0}
-								className='flex-1 min-w-[140px] h-12 text-base bg-transparent cursor-pointer disabled:cursor-not-allowed'
 							>
 								<RotateCcw className='mr-2 h-5 w-5' />
 								Reset
@@ -518,104 +506,108 @@ export function WorkTimer() {
 
 						<div className='grid gap-6 md:grid-cols-2'>
 							<div className='space-y-2'>
-								<Label htmlFor='work-duration' className='flex items-center gap-2'>
+								<Label className='flex items-center gap-2' htmlFor='work-duration'>
 									<Briefcase className='h-4 w-4' />
 									Work time (minutes)
 								</Label>
 								<Input
+									className='h-10'
 									id='work-duration'
+									min='0'
 									type='number'
 									value={workDuration}
 									onChange={e => {
 										const value = e.target.value.replace(/^0+/, '') || '0'
+
 										setWorkDuration(Number(value))
 									}}
-									min='0'
-									className='h-10'
 								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='rest-duration' className='flex items-center gap-2'>
+								<Label className='flex items-center gap-2' htmlFor='rest-duration'>
 									<Coffee className='h-4 w-4' />
 									Rest time (minutes)
 								</Label>
 								<Input
+									className='h-10'
 									id='rest-duration'
+									min='0'
 									type='number'
 									value={restDuration}
 									onChange={e => {
 										const value = e.target.value.replace(/^0+/, '') || '0'
+
 										setRestDuration(Number(value))
 									}}
-									min='0'
-									className='h-10'
 								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='timer-interval' className='flex items-center gap-2'>
+								<Label className='flex items-center gap-2' htmlFor='timer-interval'>
 									<Clock className='h-4 w-4' />
 									Timer Reminder Interval (minutes)
 								</Label>
 								<Input
+									className='h-10'
 									id='timer-interval'
+									min='0'
 									type='number'
 									value={timerInterval}
 									onChange={e => {
 										const value = e.target.value.replace(/^0+/, '') || '0'
+
 										setTimerInterval(Number(value))
 									}}
-									min='0'
-									className='h-10'
 								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='water-interval' className='flex items-center gap-2'>
+								<Label className='flex items-center gap-2' htmlFor='water-interval'>
 									<Droplet className='h-4 w-4' />
 									Water Reminder Interval (minutes)
 								</Label>
 								<Input
+									className='h-10'
 									id='water-interval'
+									min='0'
 									type='number'
 									value={waterInterval}
 									onChange={e => {
 										const value = e.target.value.replace(/^0+/, '') || '0'
+
 										setWaterInterval(Number(value))
 									}}
-									min='0'
-									className='h-10'
 								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='telegram-token' className='flex items-center gap-2'>
+								<Label className='flex items-center gap-2' htmlFor='telegram-token'>
 									<Bell className='h-4 w-4' />
 									Telegram Bot Token
 								</Label>
 								<Input
+									className='h-10'
 									id='telegram-token'
+									placeholder='Bot Token from @BotFather'
 									type='text'
 									value={telegramToken}
 									onChange={e => setTelegramToken(e.target.value)}
-									placeholder='Bot Token from @BotFather'
-									className='h-10'
 								/>
 							</div>
 
 							<div className='space-y-2'>
-								<Label htmlFor='telegram-chat' className='flex items-center gap-2'>
+								<Label className='flex items-center gap-2' htmlFor='telegram-chat'>
 									<MessageSquare className='h-4 w-4' />
 									Telegram Chat ID
 								</Label>
 								<Input
+									className='h-10'
 									id='telegram-chat'
+									placeholder='Chat ID from @BotFather'
 									type='text'
 									value={telegramChatId}
 									onChange={e => setTelegramChatId(e.target.value)}
-									placeholder='Chat ID from @BotFather'
-									className='h-10'
 								/>
 							</div>
 						</div>
@@ -625,15 +617,15 @@ export function WorkTimer() {
 								<div className='flex items-center gap-2'>
 									<Bell className='h-5 w-5' />
 									<Label
-										htmlFor='use-browser-notifications'
 										className='text-base cursor-pointer'
+										htmlFor='use-browser-notifications'
 									>
 										Enable Browser Notifications
 									</Label>
 								</div>
 								<Switch
-									id='use-browser-notifications'
 									checked={useBrowserNotifications}
+									id='use-browser-notifications'
 									onCheckedChange={setUseBrowserNotifications}
 								/>
 							</div>
@@ -642,15 +634,15 @@ export function WorkTimer() {
 								<div className='flex items-center gap-2'>
 									<MessageSquare className='h-5 w-5' />
 									<Label
-										htmlFor='use-telegram-notifications'
 										className='text-base cursor-pointer'
+										htmlFor='use-telegram-notifications'
 									>
 										Enable Telegram Notifications
 									</Label>
 								</div>
 								<Switch
-									id='use-telegram-notifications'
 									checked={useTelegramNotifications}
+									id='use-telegram-notifications'
 									onCheckedChange={setUseTelegramNotifications}
 								/>
 							</div>
@@ -658,18 +650,19 @@ export function WorkTimer() {
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-2'>
 									<Camera className='h-5 w-5' />
-									<Label htmlFor='use-camera' className='text-base cursor-pointer'>
+									<Label className='text-base cursor-pointer' htmlFor='use-camera'>
 										Use Camera for Face Detection
 									</Label>
 								</div>
 								<Switch
-									id='use-camera'
 									checked={useCameraDetection}
+									id='use-camera'
 									onCheckedChange={setUseCameraDetection}
 								/>
 							</div>
 
 							<Button
+								className='w-full cursor-pointer'
 								variant='outline'
 								onClick={() =>
 									sendNotification(
@@ -677,7 +670,6 @@ export function WorkTimer() {
 										'This is a test notification to verify your settings are working correctly.'
 									)
 								}
-								className='w-full cursor-pointer'
 							>
 								<Bell className='mr-2 h-4 w-4' />
 								Test Notification

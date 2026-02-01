@@ -13,31 +13,20 @@ export function useNotifications() {
 
 	const sendBrowserNotification = useCallback(
 		(title: string, body: string) => {
-			console.log('sendBrowserNotification called', { title, useBrowserNotifications })
-
 			if (!useBrowserNotifications) {
-				console.log('Browser notifications disabled')
 				return
 			}
 
 			if ('Notification' in window) {
-				console.log('Notification API available, permission:', Notification.permission)
 				if (Notification.permission === 'granted') {
-					console.log('Creating notification...')
 					new Notification(title, { body, icon: '/icon.png' })
 				} else if (Notification.permission !== 'denied') {
-					console.log('Requesting notification permission...')
 					Notification.requestPermission().then(permission => {
-						console.log('Permission result:', permission)
 						if (permission === 'granted') {
 							new Notification(title, { body, icon: '/icon.png' })
 						}
 					})
-				} else {
-					console.log('Notifications denied by user')
 				}
-			} else {
-				console.log('Notification API not available')
 			}
 		},
 		[useBrowserNotifications]
