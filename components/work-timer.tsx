@@ -865,20 +865,6 @@ export function WorkTimer() {
 						/>
 						<canvas ref={canvasRef} className='absolute inset-0 w-full h-full' />
 
-						{/* Status indicator */}
-						<div className='absolute top-2 left-2 right-2 flex justify-between items-start pointer-events-none'>
-							<div className='flex gap-1 opacity-0 group-hover:opacity-100'>
-								<button
-									className='p-1 bg-black/50 text-white rounded hover:bg-black/70 '
-									onClick={() => {
-										// Toggle camera size
-									}}
-								>
-									⛶
-								</button>
-							</div>
-						</div>
-
 						{isCameraLoading && (
 							<div className='absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm text-white'>
 								<div className='text-center'>
@@ -889,12 +875,7 @@ export function WorkTimer() {
 						)}
 
 						{cameraError && (
-							<div className='absolute inset-0 flex items-center justify-center bg-red-500/20 backdrop-blur-sm text-red-500'>
-								<div className='text-center'>
-									<div className='text-2xl mb-2'>⚠️</div>
-									<span className='text-sm font-medium'>Camera Error</span>
-								</div>
-							</div>
+							<div className='absolute inset-0 flex items-center justify-center bg-red-500/20 backdrop-blur-sm text-red-500' />
 						)}
 					</div>
 
