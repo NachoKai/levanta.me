@@ -21,8 +21,8 @@ interface WorkTimerState {
 
 	setMode: (mode: Mode) => void
 	setStatus: (status: Status) => void
-	incrementWorkTime: () => void
-	incrementRestTime: () => void
+	incrementWorkTime: (amount?: number) => void
+	incrementRestTime: (amount?: number) => void
 	resetWorkTime: () => void
 	resetRestTime: () => void
 	resetTimers: () => void
@@ -56,8 +56,10 @@ export const useWorkTimerStore = create<WorkTimerState>()(
 
 			setMode: mode => set({ mode }),
 			setStatus: status => set({ status }),
-			incrementWorkTime: () => set(state => ({ workTime: state.workTime + 1 })),
-			incrementRestTime: () => set(state => ({ restTime: state.restTime + 1 })),
+			incrementWorkTime: (amount = 1) =>
+				set(state => ({ workTime: state.workTime + amount })),
+			incrementRestTime: (amount = 1) =>
+				set(state => ({ restTime: state.restTime + amount })),
 			resetWorkTime: () => set({ workTime: 0 }),
 			resetRestTime: () => set({ restTime: 0 }),
 			resetTimers: () => set({ workTime: 0, restTime: 0 }),
