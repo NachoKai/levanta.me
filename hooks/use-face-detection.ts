@@ -8,6 +8,7 @@ export function useFaceDetection() {
 	const [error, setError] = useState<string | null>(null)
 
 	const videoRef = useRef<HTMLVideoElement | null>(null)
+	const canvasRef = useRef<HTMLCanvasElement | null>(null)
 	const streamRef = useRef<MediaStream | null>(null)
 	const detectorRef = useRef<any>(null)
 	const animationFrameRef = useRef<number | null>(null)
@@ -19,7 +20,14 @@ export function useFaceDetection() {
 			)
 
 			if (!testResponse.ok) {
-				throw new Error('Models not found. Please download face detection models first.')
+				console.error(
+					'Model manifest check failed:',
+					testResponse.status,
+					testResponse.statusText
+				)
+				throw new Error(
+					`Models not found (Status: ${testResponse.status}). Please download face detection models.`
+				)
 			}
 
 			const faceapi = await import('@vladmandic/face-api')
@@ -37,7 +45,7 @@ export function useFaceDetection() {
 		} catch (err) {
 			console.error('Failed to load face detection models:', err)
 			const errorMessage =
-				'Face detection models not found. Run: npx degit vladmandic/face-api/model public/models to download them, then restart the app.'
+				'Face detection models not found or failed to load. Run: npx degit vladmandic/face-api/model public/models'
 
 			setError(errorMessage)
 
@@ -46,14 +54,45 @@ export function useFaceDetection() {
 	}, [])
 
 	const detectFaces = useCallback(async () => {
-		if (!videoRef.current || !detectorRef.current) return
+		if (
+			!videoRef.current ||
+			!canvasRef.current ||
+			!detectorRef.current ||
+			videoRef.current.paused ||
+			videoRef.current.ended
+		) {
+			return
+		}
 
 		try {
 			const faceapi = detectorRef.current
-			const detections = await faceapi.detectAllFaces(
-				videoRef.current,
-				new faceapi.TinyFaceDetectorOptions()
-			)
+
+			const displaySize = {
+				width: videoRef.current.videoWidth,
+				height: videoRef.current.videoHeight,
+			}
+
+			if (displaySize.width === 0 || displaySize.height === 0) {
+				animationFrameRef.current = requestAnimationFrame(detectFaces)
+
+				return
+			}
+
+			faceapi.matchDimensions(canvasRef.current, displaySize)
+
+			const detections = await faceapi
+				.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+				.withFaceLandmarks()
+
+			const resizedDetections = faceapi.resizeResults(detections, displaySize)
+
+			const ctx = canvasRef.current.getContext('2d')
+
+			if (ctx) {
+				ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+				faceapi.draw.drawDetections(canvasRef.current, resizedDetections)
+				faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections)
+			}
 
 			setIsFaceDetected(detections.length > 0)
 
@@ -68,6 +107,18 @@ export function useFaceDetection() {
 		setError(null)
 
 		try {
+			const stream = await navigator.mediaDevices.getUserMedia({
+				video: { width: 640, height: 480 },
+			})
+
+			if (videoRef.current) {
+				videoRef.current.srcObject = stream
+				videoRef.current.onloadedmetadata = () => {
+					videoRef.current?.play().catch(e => console.error('Play error:', e))
+				}
+			}
+			streamRef.current = stream
+
 			if (!detectorRef.current) {
 				const loaded = await loadFaceDetector()
 
@@ -78,30 +129,11 @@ export function useFaceDetection() {
 				}
 			}
 
-			const stream = await navigator.mediaDevices.getUserMedia({
-				video: { width: 640, height: 480 },
-			})
-
-			if (!videoRef.current) {
-				videoRef.current = document.createElement('video')
-				videoRef.current.autoplay = true
-				videoRef.current.muted = true
-			}
-
-			videoRef.current.srcObject = stream
-			streamRef.current = stream
-
-			await new Promise(resolve => {
-				if (videoRef.current) {
-					videoRef.current.onloadedmetadata = resolve
-				}
-			})
-
 			detectFaces()
 			setIsLoading(false)
 		} catch (err) {
 			console.error('Camera access error:', err)
-			setError('Failed to access camera')
+			setError('Failed to access camera. Please allow camera permissions.')
 			setIsLoading(false)
 		}
 	}, [loadFaceDetector, detectFaces])
@@ -121,6 +153,12 @@ export function useFaceDetection() {
 			videoRef.current.srcObject = null
 		}
 
+		if (canvasRef.current) {
+			const ctx = canvasRef.current.getContext('2d')
+
+			if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+		}
+
 		setIsFaceDetected(false)
 	}, [])
 
@@ -131,6 +169,8 @@ export function useFaceDetection() {
 	}, [stopCamera])
 
 	return {
+		videoRef,
+		canvasRef,
 		isFaceDetected,
 		isLoading,
 		error,

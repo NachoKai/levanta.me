@@ -64,6 +64,8 @@ export function WorkTimer() {
 		error: cameraError,
 		startCamera,
 		stopCamera,
+		videoRef,
+		canvasRef,
 	} = useFaceDetection()
 	const { sendNotification } = useNotifications()
 
@@ -195,12 +197,10 @@ export function WorkTimer() {
 
 		if (isFaceDetected && status === 'idle') {
 			setStatus('working')
-			sendNotification('Work Started', 'Face detected! Timer started.')
 		} else if (!isFaceDetected && status === 'working') {
 			setStatus('idle')
-			sendNotification('Work Paused', 'Face not detected. Timer paused.')
 		}
-	}, [isFaceDetected, status, useCameraDetection, setStatus, sendNotification])
+	}, [isFaceDetected, status, useCameraDetection, setStatus])
 
 	useEffect(() => {
 		const shouldNagWorkToRest =
@@ -719,6 +719,27 @@ export function WorkTimer() {
 					</CardContent>
 				</Card>
 			</div>
+
+			{/* Camera Overlay */}
+			{useCameraDetection && (
+				<div className='fixed bottom-4 right-4 z-50 rounded-lg overflow-hidden shadow-2xl border-2 border-primary/20 bg-black w-32 md:w-80 aspect-[4/3]'>
+					<video
+						ref={videoRef}
+						muted
+						playsInline
+						className='w-full h-full object-cover transform scale-x-[-1]'
+					/>
+					<canvas
+						ref={canvasRef}
+						className='absolute inset-0 w-full h-full transform scale-x-[-1]'
+					/>
+					{isCameraLoading && (
+						<div className='absolute inset-0 flex items-center justify-center bg-black/50 text-white'>
+							<span className='animate-pulse'>Starting Camera...</span>
+						</div>
+					)}
+				</div>
+			)}
 		</>
 	)
 }
