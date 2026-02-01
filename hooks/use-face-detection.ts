@@ -15,28 +15,24 @@ export function useFaceDetection() {
 
 	const loadFaceDetector = useCallback(async () => {
 		try {
-			const testResponse = await fetch(
-				'/models/tiny_face_detector_model-weights_manifest.json'
-			)
+			const faceapi = await import('@vladmandic/face-api')
+			let modelUrl = '/models'
 
-			if (!testResponse.ok) {
-				console.error(
-					'Model manifest check failed:',
-					testResponse.status,
-					testResponse.statusText
+			try {
+				const testResponse = await fetch(
+					'/models/tiny_face_detector_model-weights_manifest.json'
 				)
-				throw new Error(
-					`Models not found (Status: ${testResponse.status}). Please download face detection models.`
-				)
+
+				if (!testResponse.ok) throw new Error('Local models not found')
+			} catch (e) {
+				console.warn('Local models not found, falling back to CDN')
+				modelUrl = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model'
 			}
 
-			const faceapi = await import('@vladmandic/face-api')
-			const MODEL_URL = '/models'
-
 			await Promise.all([
-				faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-				faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-				faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+				faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl),
+				faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl),
+				faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
 			])
 
 			detectorRef.current = faceapi
@@ -44,10 +40,9 @@ export function useFaceDetection() {
 			return true
 		} catch (err) {
 			console.error('Failed to load face detection models:', err)
-			const errorMessage =
-				'Face detection models not found or failed to load. Run: npx degit vladmandic/face-api/model public/models'
-
-			setError(errorMessage)
+			setError(
+				'Failed to load face detection models. Please check your internet connection.'
+			)
 
 			return false
 		}
@@ -85,7 +80,6 @@ export function useFaceDetection() {
 				.withFaceLandmarks()
 
 			const resizedDetections = faceapi.resizeResults(detections, displaySize)
-
 			const ctx = canvasRef.current.getContext('2d')
 
 			if (ctx) {
