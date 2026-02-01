@@ -225,8 +225,14 @@ export function WorkTimer() {
 			setStatus('idle')
 		} else if (isFaceDetected && status === 'resting') {
 			setStatus('idle')
+		} else if (isFaceDetected && status === 'idle' && mode === 'work') {
+			setStatus('working')
+			setIsSessionActive(true)
+		} else if (isFaceDetected && status === 'idle' && mode === 'rest') {
+			setStatus('resting')
+			setIsSessionActive(true)
 		}
-	}, [isFaceDetected, status, useCameraDetection, setStatus])
+	}, [isFaceDetected, status, useCameraDetection, setStatus, mode, setIsSessionActive])
 
 	useEffect(() => {
 		const shouldNagWorkToRest =
