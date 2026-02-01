@@ -13,6 +13,8 @@ import {
 	Clock,
 	Coffee,
 	Droplet,
+	Eye,
+	EyeOff,
 	MessageSquare,
 	Moon,
 	Pause,
@@ -71,6 +73,8 @@ export function WorkTimer() {
 	const { sendNotification } = useNotifications()
 
 	const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+	const [showToken, setShowToken] = useState(false)
+	const [showChatId, setShowChatId] = useState(false)
 
 	const timerIntervalRef = useRef<NodeJS.Timeout | null>(null)
 	const timerReminderRef = useRef<NodeJS.Timeout | null>(null)
@@ -604,14 +608,30 @@ export function WorkTimer() {
 									<Bell className='h-4 w-4' />
 									Telegram Bot Token
 								</Label>
-								<Input
-									className='h-10'
-									id='telegram-token'
-									placeholder='Bot Token from @BotFather'
-									type='text'
-									value={telegramToken}
-									onChange={e => setTelegramToken(e.target.value)}
-								/>
+								<div className='relative'>
+									<Input
+										className='h-10 pr-10'
+										id='telegram-token'
+										placeholder='Bot Token from @BotFather'
+										type={showToken ? 'text' : 'password'}
+										value={telegramToken}
+										onChange={e => setTelegramToken(e.target.value)}
+									/>
+									<Button
+										className='absolute right-0 top-0 h-10 w-10 rounded-l-none'
+										size='icon'
+										type='button'
+										variant='ghost'
+										onClick={() => setShowToken(!showToken)}
+									>
+										{showToken ? (
+											<EyeOff className='h-4 w-4' />
+										) : (
+											<Eye className='h-4 w-4' />
+										)}
+										<span className='sr-only'>Toggle token visibility</span>
+									</Button>
+								</div>
 							</div>
 
 							<div className='space-y-2'>
@@ -619,14 +639,30 @@ export function WorkTimer() {
 									<MessageSquare className='h-4 w-4' />
 									Telegram Chat ID
 								</Label>
-								<Input
-									className='h-10'
-									id='telegram-chat'
-									placeholder='Chat ID from @BotFather'
-									type='text'
-									value={telegramChatId}
-									onChange={e => setTelegramChatId(e.target.value)}
-								/>
+								<div className='relative'>
+									<Input
+										className='h-10 pr-10'
+										id='telegram-chat'
+										placeholder='Chat ID from @BotFather'
+										type={showChatId ? 'text' : 'password'}
+										value={telegramChatId}
+										onChange={e => setTelegramChatId(e.target.value)}
+									/>
+									<Button
+										className='absolute right-0 top-0 h-10 w-10 rounded-l-none'
+										size='icon'
+										type='button'
+										variant='ghost'
+										onClick={() => setShowChatId(!showChatId)}
+									>
+										{showChatId ? (
+											<EyeOff className='h-4 w-4' />
+										) : (
+											<Eye className='h-4 w-4' />
+										)}
+										<span className='sr-only'>Toggle chat ID visibility</span>
+									</Button>
+								</div>
 							</div>
 						</div>
 
@@ -693,34 +729,6 @@ export function WorkTimer() {
 								Test Notification
 							</Button>
 						</div>
-
-						{useCameraDetection && (
-							<div
-								className={`p-4 rounded-lg border ${
-									cameraError
-										? 'bg-destructive/10 border-destructive'
-										: 'bg-muted border-border'
-								}`}
-							>
-								<p className='text-sm'>
-									{isCameraLoading ? (
-										<span className='text-muted-foreground'>⏳ Loading camera...</span>
-									) : cameraError ? (
-										<span className='text-destructive'>
-											<strong>Error:</strong> {cameraError}
-										</span>
-									) : isFaceDetected ? (
-										<span className='text-green-600 dark:text-green-500 font-medium'>
-											✅ Face detected - Timer active
-										</span>
-									) : (
-										<span className='text-amber-600 dark:text-amber-500 font-medium'>
-											⏸️ No face detected - Timer paused
-										</span>
-									)}
-								</p>
-							</div>
-						)}
 					</CardContent>
 				</Card>
 			</div>
