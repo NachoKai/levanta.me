@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -47,7 +47,6 @@ export function WorkTimer() {
 		useCameraDetection,
 		useBrowserNotifications,
 		useTelegramNotifications,
-		isSessionActive,
 		setMode,
 		setStatus,
 		incrementWorkTime,
@@ -78,9 +77,21 @@ export function WorkTimer() {
 	} = useFaceDetection()
 	const { sendNotification } = useNotifications()
 	const { theme, toggleTheme } = useTheme()
-
 	const [showToken, setShowToken] = useState(false)
 	const [showChatId, setShowChatId] = useState(false)
+	const [workCompleted, setWorkCompleted] = useState(false)
+	const [restCompleted, setRestCompleted] = useState(false)
+	const { clearTimerReminder } = useNotificationReminders({
+		workTime,
+		restTime,
+		workDuration,
+		restDuration,
+		mode,
+		status,
+		timerInterval,
+		waterInterval,
+		sendNotification,
+	})
 
 	const {
 		workDurationInput,
@@ -144,6 +155,12 @@ export function WorkTimer() {
 		status,
 	})
 
+	useTimer({
+		status,
+		incrementWorkTime,
+		incrementRestTime,
+	})
+
 	useEffect(() => {
 		const formatTime = (seconds: number) => {
 			const h = Math.floor(seconds / 3600)
@@ -169,62 +186,6 @@ export function WorkTimer() {
 			stopCamera()
 		}
 	}, [useCameraDetection, startCamera, stopCamera])
-
-	useTimer({
-		status,
-		incrementWorkTime,
-		incrementRestTime,
-	})
-
-	const memoizedSetStatus = useCallback(
-		(newStatus: 'idle' | 'working' | 'resting') => {
-			setStatus(newStatus)
-		},
-		[setStatus]
-	)
-
-	useEffect(() => {
-		if (!useCameraDetection) return
-		if (!isSessionActive) return
-
-		if (mode === 'work') {
-			if (isFaceDetected && status === 'idle') {
-				memoizedSetStatus('working')
-			} else if (!isFaceDetected && status === 'working') {
-				memoizedSetStatus('idle')
-			}
-		}
-
-		if (mode === 'rest') {
-			if (!isFaceDetected && status === 'idle') {
-				memoizedSetStatus('resting')
-			} else if (isFaceDetected && status === 'resting') {
-				memoizedSetStatus('idle')
-			}
-		}
-	}, [
-		isFaceDetected,
-		status,
-		useCameraDetection,
-		mode,
-		isSessionActive,
-		memoizedSetStatus,
-	])
-
-	const { clearTimerReminder } = useNotificationReminders({
-		workTime,
-		restTime,
-		workDuration,
-		restDuration,
-		mode,
-		status,
-		timerInterval,
-		waterInterval,
-		sendNotification,
-	})
-
-	const [workCompleted, setWorkCompleted] = useState(false)
-	const [restCompleted, setRestCompleted] = useState(false)
 
 	useEffect(() => {
 		if (
@@ -409,9 +370,6 @@ export function WorkTimer() {
 									<h3 className='font-semibold text-sm uppercase tracking-wide'>
 										Work Time
 									</h3>
-									{mode === 'work' && status !== 'idle' && (
-										<p className='text-xs text-primary font-medium'>Currently Tracking</p>
-									)}
 								</div>
 							</div>
 							<p className='text-5xl md:text-6xl font-bold font-mono tabular-nums tracking-tight'>
@@ -465,11 +423,6 @@ export function WorkTimer() {
 									<h3 className='font-semibold text-sm uppercase tracking-wide'>
 										Rest Time
 									</h3>
-									{mode === 'rest' && status !== 'idle' && (
-										<p className='text-xs text-green-500 font-medium'>
-											Currently Tracking
-										</p>
-									)}
 								</div>
 							</div>
 							<p className='text-5xl md:text-6xl font-bold font-mono tabular-nums tracking-tight'>
