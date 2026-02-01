@@ -75,6 +75,10 @@ export function WorkTimer() {
 	const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 	const [showToken, setShowToken] = useState(false)
 	const [showChatId, setShowChatId] = useState(false)
+	const [workDurationInput, setWorkDurationInput] = useState(String(workDuration))
+	const [restDurationInput, setRestDurationInput] = useState(String(restDuration))
+	const [timerIntervalInput, setTimerIntervalInput] = useState(String(timerInterval))
+	const [waterIntervalInput, setWaterIntervalInput] = useState(String(waterInterval))
 
 	const timerIntervalRef = useRef<NodeJS.Timeout | null>(null)
 	const timerReminderRef = useRef<NodeJS.Timeout | null>(null)
@@ -94,6 +98,23 @@ export function WorkTimer() {
 			document.documentElement.classList.toggle('dark', prefersDark)
 		}
 	}, [])
+
+	// Sync local input states with store values
+	useEffect(() => {
+		setWorkDurationInput(String(workDuration))
+	}, [workDuration])
+
+	useEffect(() => {
+		setRestDurationInput(String(restDuration))
+	}, [restDuration])
+
+	useEffect(() => {
+		setTimerIntervalInput(String(timerInterval))
+	}, [timerInterval])
+
+	useEffect(() => {
+		setWaterIntervalInput(String(waterInterval))
+	}, [waterInterval])
 
 	const toggleTheme = () => {
 		const newTheme = theme === 'dark' ? 'light' : 'dark'
@@ -537,14 +558,19 @@ export function WorkTimer() {
 									id='work-duration'
 									min='0'
 									type='number'
-									value={workDuration}
+									value={workDurationInput}
 									onChange={e => {
 										const value = e.target.value
 
-										if (value === '') {
+										setWorkDurationInput(value)
+										if (value === '' || value === '-') {
 											setWorkDuration(0)
 										} else {
-											setWorkDuration(Number(value))
+											const num = Number(value)
+
+											if (!isNaN(num)) {
+												setWorkDuration(num)
+											}
 										}
 									}}
 								/>
@@ -560,14 +586,19 @@ export function WorkTimer() {
 									id='rest-duration'
 									min='0'
 									type='number'
-									value={restDuration}
+									value={restDurationInput}
 									onChange={e => {
 										const value = e.target.value
 
-										if (value === '') {
+										setRestDurationInput(value)
+										if (value === '' || value === '-') {
 											setRestDuration(0)
 										} else {
-											setRestDuration(Number(value))
+											const num = Number(value)
+
+											if (!isNaN(num)) {
+												setRestDuration(num)
+											}
 										}
 									}}
 								/>
@@ -583,14 +614,19 @@ export function WorkTimer() {
 									id='timer-interval'
 									min='0'
 									type='number'
-									value={timerInterval}
+									value={timerIntervalInput}
 									onChange={e => {
 										const value = e.target.value
 
-										if (value === '') {
+										setTimerIntervalInput(value)
+										if (value === '' || value === '-') {
 											setTimerInterval(0)
 										} else {
-											setTimerInterval(Number(value))
+											const num = Number(value)
+
+											if (!isNaN(num)) {
+												setTimerInterval(num)
+											}
 										}
 									}}
 								/>
@@ -606,14 +642,19 @@ export function WorkTimer() {
 									id='water-interval'
 									min='0'
 									type='number'
-									value={waterInterval}
+									value={waterIntervalInput}
 									onChange={e => {
 										const value = e.target.value
 
-										if (value === '') {
+										setWaterIntervalInput(value)
+										if (value === '' || value === '-') {
 											setWaterInterval(0)
 										} else {
-											setWaterInterval(Number(value))
+											const num = Number(value)
+
+											if (!isNaN(num)) {
+												setWaterInterval(num)
+											}
 										}
 									}}
 								/>
