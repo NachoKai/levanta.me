@@ -237,10 +237,14 @@ export function WorkTimer() {
 			mode === 'work'
 		) {
 			setWorkCompleted(true)
-			sendNotification(
-				'Work time finished. Go for a break!',
-				`You've completed ${workDuration} minutes of work. Click Rest when you're ready for a break.`
-			)
+			try {
+				sendNotification(
+					'Work time finished. Go for a break!',
+					`You've completed ${workDuration} minutes of work. Click Rest when you're ready for a break.`
+				)
+			} catch (err) {
+				console.warn('Work completion notification failed:', err)
+			}
 		} else if (workTime < workDuration * 60 || mode !== 'work') {
 			setWorkCompleted(false)
 		}
@@ -254,10 +258,14 @@ export function WorkTimer() {
 			mode === 'rest'
 		) {
 			setRestCompleted(true)
-			sendNotification(
-				'Rest time finished!',
-				`You've rested for ${restDuration} minutes. Click Work when you're ready to resume.`
-			)
+			try {
+				sendNotification(
+					'Rest time finished!',
+					`You've rested for ${restDuration} minutes. Click Work when you're ready to resume.`
+				)
+			} catch (err) {
+				console.warn('Rest completion notification failed:', err)
+			}
 		} else if (restTime < restDuration * 60 || mode !== 'rest') {
 			setRestCompleted(false)
 		}

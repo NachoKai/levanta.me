@@ -17,16 +17,24 @@ export function useNotifications() {
 				return
 			}
 
-			if ('Notification' in window) {
-				if (Notification.permission === 'granted') {
-					new Notification(title, { body })
-				} else if (Notification.permission !== 'denied') {
-					Notification.requestPermission().then(permission => {
-						if (permission === 'granted') {
-							new Notification(title, { body })
-						}
-					})
+			try {
+				if ('Notification' in window) {
+					if (Notification.permission === 'granted') {
+						new Notification(title, { body })
+					} else if (Notification.permission !== 'denied') {
+						Notification.requestPermission()
+							.then(permission => {
+								if (permission === 'granted') {
+									new Notification(title, { body })
+								}
+							})
+							.catch(err => {
+								console.warn('Notification permission request failed:', err)
+							})
+					}
 				}
+			} catch (err) {
+				console.warn('Browser notification failed:', err)
 			}
 		},
 		[useBrowserNotifications]
@@ -61,8 +69,12 @@ export function useNotifications() {
 
 	const sendNotification = useCallback(
 		(title: string, body: string) => {
-			sendBrowserNotification(title, body)
-			sendTelegramNotification(title, body)
+			try {
+				sendBrowserNotification(title, body)
+				sendTelegramNotification(title, body)
+			} catch (err) {
+				console.warn('Notification sending failed:', err)
+			}
 		},
 		[sendBrowserNotification, sendTelegramNotification]
 	)
