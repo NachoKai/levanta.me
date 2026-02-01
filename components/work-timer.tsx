@@ -56,7 +56,6 @@ export function WorkTimer() {
 		setUseCameraDetection,
 		setUseBrowserNotifications,
 		setUseTelegramNotifications,
-		isSessionActive,
 		setIsSessionActive,
 	} = useWorkTimerStore()
 
@@ -728,7 +727,17 @@ export function WorkTimer() {
 
 			{/* Camera Overlay */}
 			{useCameraDetection && (
-				<div className='fixed bottom-4 right-4 z-50 rounded-lg overflow-hidden shadow-2xl border-2 border-primary/20 bg-black w-32 md:w-80 aspect-[4/3]'>
+				<div
+					className={`fixed bottom-4 right-4 z-50 rounded-lg overflow-hidden shadow-2xl bg-black w-32 md:w-80 aspect-[4/3] ${
+						cameraError
+							? 'border-4 border-red-500'
+							: isCameraLoading
+							? 'border-4 border-gray-400'
+							: isFaceDetected
+							? 'border-4 border-green-500'
+							: 'border-4 border-yellow-500'
+					}`}
+				>
 					<video
 						ref={videoRef}
 						muted
