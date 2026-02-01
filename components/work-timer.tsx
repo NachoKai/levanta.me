@@ -867,28 +867,6 @@ export function WorkTimer() {
 
 						{/* Status indicator */}
 						<div className='absolute top-2 left-2 right-2 flex justify-between items-start pointer-events-none'>
-							<div
-								className={`
-								px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm
-								${
-									cameraError
-										? 'bg-red-500/90 text-white'
-										: isCameraLoading
-										? 'bg-gray-400/90 text-white'
-										: isFaceDetected
-										? 'bg-green-500/90 text-white'
-										: 'bg-yellow-500/90 text-black'
-								}
-							`}
-							>
-								{cameraError
-									? 'Error'
-									: isCameraLoading
-									? 'Loading'
-									: isFaceDetected
-									? 'Face Detected'
-									: 'No Face'}
-							</div>
 							<div className='flex gap-1 opacity-0 group-hover:opacity-100'>
 								<button
 									className='p-1 bg-black/50 text-white rounded hover:bg-black/70 '

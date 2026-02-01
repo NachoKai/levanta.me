@@ -48,7 +48,7 @@ export function HelpDialog() {
 							<HelpCircle className='h-6 w-6' />
 						</div>
 						<div>
-							<DialogTitle className='text-2xl font-bold'>Levanta.me Help</DialogTitle>
+							<DialogTitle className='text-2xl font-bold'>Help</DialogTitle>
 							<DialogDescription className='text-base mt-1'>
 								Learn how to use the productivity timer effectively
 							</DialogDescription>

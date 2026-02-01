@@ -119,7 +119,27 @@
 	* {
 		@apply border-border outline-ring/50;
 	}
+
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+* {
+	transition-property: none !important;
+}
+
+.animate-pulse {
+	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+	transition-property: none !important;
+}
+
+.animate-spin {
+	animation: spin 1s linear infinite !important;
+	transition-property: none !important;
+}
+
+[data-state='open'].animate-in,
+[data-state='closed'].animate-out {
+	transition-property: all !important;
 }
