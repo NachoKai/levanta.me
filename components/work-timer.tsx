@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -25,6 +25,11 @@ import {
 import { useWorkTimerStore } from '@/lib/store'
 import { useFaceDetection } from '@/hooks/use-face-detection'
 import { useNotifications } from '@/hooks/use-notifications'
+import { useTheme } from '@/hooks/use-theme'
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
+import { useTimer } from '@/hooks/use-timer'
+import { useNotificationReminders } from '@/hooks/use-notification-reminders'
+import { useSettingsInputs } from '@/hooks/use-settings-inputs'
 import { HelpDialog } from '@/components/help-dialog'
 
 export function WorkTimer() {
@@ -71,91 +76,72 @@ export function WorkTimer() {
 		canvasRef,
 	} = useFaceDetection()
 	const { sendNotification } = useNotifications()
+	const { theme, toggleTheme } = useTheme()
 
-	const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 	const [showToken, setShowToken] = useState(false)
 	const [showChatId, setShowChatId] = useState(false)
-	const [workDurationInput, setWorkDurationInput] = useState(String(workDuration))
-	const [restDurationInput, setRestDurationInput] = useState(String(restDuration))
-	const [timerIntervalInput, setTimerIntervalInput] = useState(String(timerInterval))
-	const [waterIntervalInput, setWaterIntervalInput] = useState(String(waterInterval))
 
-	const timerIntervalRef = useRef<NodeJS.Timeout | null>(null)
-	const timerReminderRef = useRef<NodeJS.Timeout | null>(null)
-	const waterReminderRef = useRef<NodeJS.Timeout | null>(null)
-	const isNaggingRef = useRef<boolean>(false)
+	const {
+		workDurationInput,
+		restDurationInput,
+		timerIntervalInput,
+		waterIntervalInput,
+		handleWorkDurationChange,
+		handleRestDurationChange,
+		handleTimerIntervalChange,
+		handleWaterIntervalChange,
+	} = useSettingsInputs({
+		workDuration,
+		restDuration,
+		timerInterval,
+		waterInterval,
+		onWorkDurationChange: setWorkDuration,
+		onRestDurationChange: setRestDuration,
+		onTimerIntervalChange: setTimerInterval,
+		onWaterIntervalChange: setWaterInterval,
+	})
 
-	useEffect(() => {
-		const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
+	const handleModeChange = (newMode: 'work' | 'rest') => {
+		clearTimerReminder()
 
-		if (savedTheme) {
-			setTheme(savedTheme)
-			document.documentElement.classList.toggle('dark', savedTheme === 'dark')
+		setMode(newMode)
+		setIsSessionActive(true)
+		if (newMode === 'work') {
+			setStatus('working')
+			resetRestTime()
 		} else {
-			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-			setTheme(prefersDark ? 'dark' : 'light')
-			document.documentElement.classList.toggle('dark', prefersDark)
+			setStatus('resting')
+			resetWorkTime()
 		}
-	}, [])
-
-	// Sync local input states with store values
-	useEffect(() => {
-		setWorkDurationInput(String(workDuration))
-	}, [workDuration])
-
-	useEffect(() => {
-		setRestDurationInput(String(restDuration))
-	}, [restDuration])
-
-	useEffect(() => {
-		setTimerIntervalInput(String(timerInterval))
-	}, [timerInterval])
-
-	useEffect(() => {
-		setWaterIntervalInput(String(waterInterval))
-	}, [waterInterval])
-
-	const toggleTheme = () => {
-		const newTheme = theme === 'dark' ? 'light' : 'dark'
-
-		setTheme(newTheme)
-		localStorage.setItem('theme', newTheme)
-		document.documentElement.classList.toggle('dark', newTheme === 'dark')
 	}
 
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			if (
-				e.target instanceof HTMLInputElement ||
-				e.target instanceof HTMLTextAreaElement
-			) {
-				return
+	const handlePause = () => {
+		if (status === 'idle') {
+			setIsSessionActive(true)
+			if (mode === 'work') {
+				setStatus('working')
+			} else {
+				setStatus('resting')
 			}
-
-			switch (e.key.toLowerCase()) {
-				case 'w':
-					handleModeChange('work')
-					break
-				case 'r':
-					if (e.shiftKey) {
-						handleReset()
-					} else {
-						handleModeChange('rest')
-					}
-					break
-				case 'p':
-				case ' ':
-					e.preventDefault()
-					handlePause()
-					break
-			}
+		} else {
+			setStatus('idle')
+			setIsSessionActive(false)
 		}
+	}
 
-		window.addEventListener('keydown', handleKeyPress)
+	const handleReset = () => {
+		resetTimers()
+		setStatus('idle')
+		setIsSessionActive(false)
+	}
 
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [status])
+	useKeyboardShortcuts({
+		onWorkMode: () => handleModeChange('work'),
+		onRestMode: () => handleModeChange('rest'),
+		onReset: handleReset,
+		onPause: handlePause,
+		status,
+	})
 
 	useEffect(() => {
 		const formatTime = (seconds: number) => {
@@ -183,40 +169,11 @@ export function WorkTimer() {
 		}
 	}, [useCameraDetection, startCamera, stopCamera])
 
-	const lastTickRef = useRef<number>(0)
-
-	useEffect(() => {
-		if (timerIntervalRef.current) {
-			clearInterval(timerIntervalRef.current)
-		}
-
-		if (status !== 'idle') {
-			lastTickRef.current = Date.now()
-
-			timerIntervalRef.current = setInterval(() => {
-				const now = Date.now()
-				const delta = now - lastTickRef.current
-
-				if (delta >= 1000) {
-					const secondsPassed = Math.floor(delta / 1000)
-
-					if (status === 'working') {
-						incrementWorkTime(secondsPassed)
-					} else if (status === 'resting') {
-						incrementRestTime(secondsPassed)
-					}
-
-					lastTickRef.current += secondsPassed * 1000
-				}
-			}, 100)
-		}
-
-		return () => {
-			if (timerIntervalRef.current) {
-				clearInterval(timerIntervalRef.current)
-			}
-		}
-	}, [status, incrementWorkTime, incrementRestTime])
+	useTimer({
+		status,
+		incrementWorkTime,
+		incrementRestTime,
+	})
 
 	useEffect(() => {
 		if (!useCameraDetection) return
@@ -234,67 +191,7 @@ export function WorkTimer() {
 		}
 	}, [isFaceDetected, status, useCameraDetection, setStatus, mode, setIsSessionActive])
 
-	useEffect(() => {
-		const shouldNagWorkToRest =
-			workDuration > 0 &&
-			workTime >= workDuration * 60 &&
-			mode === 'work' &&
-			status === 'working' &&
-			timerInterval > 0
-		const shouldNagRestToWork =
-			restDuration > 0 &&
-			restTime >= restDuration * 60 &&
-			mode === 'rest' &&
-			status === 'resting' &&
-			timerInterval > 0
-		const shouldNag = shouldNagWorkToRest || shouldNagRestToWork
-
-		if (shouldNag && !isNaggingRef.current) {
-			isNaggingRef.current = true
-
-			timerReminderRef.current = setInterval(() => {
-				const currentState = useWorkTimerStore.getState()
-
-				if (currentState.status === 'idle') {
-					return
-				}
-
-				const overtimeMinutes =
-					currentState.mode === 'work'
-						? Math.floor((currentState.workTime - currentState.workDuration * 60) / 60)
-						: Math.floor((currentState.restTime - currentState.restDuration * 60) / 60)
-
-				if (
-					currentState.mode === 'work' &&
-					currentState.workTime >= currentState.workDuration * 60 &&
-					currentState.status === 'working'
-				) {
-					sendNotification(
-						'Still working?',
-						`You should take a break! Your work time finished ${overtimeMinutes} minutes ago.`
-					)
-				} else if (
-					currentState.mode === 'rest' &&
-					currentState.restTime >= currentState.restDuration * 60 &&
-					currentState.status === 'resting'
-				) {
-					sendNotification(
-						'Still resting?',
-						`Time to get back to work! Your rest time finished ${overtimeMinutes} minutes ago.`
-					)
-				}
-			}, timerInterval * 60 * 1000)
-		}
-
-		if (!shouldNag && isNaggingRef.current) {
-			isNaggingRef.current = false
-
-			if (timerReminderRef.current) {
-				clearInterval(timerReminderRef.current)
-				timerReminderRef.current = null
-			}
-		}
-	}, [
+	const { clearTimerReminder } = useNotificationReminders({
 		workTime,
 		restTime,
 		workDuration,
@@ -302,26 +199,9 @@ export function WorkTimer() {
 		mode,
 		status,
 		timerInterval,
+		waterInterval,
 		sendNotification,
-	])
-
-	useEffect(() => {
-		if (waterReminderRef.current) {
-			clearInterval(waterReminderRef.current)
-		}
-
-		if (waterInterval > 0 && status !== 'idle') {
-			waterReminderRef.current = setInterval(() => {
-				sendNotification('Water Reminder', '💧 Time to drink some water!')
-			}, waterInterval * 60 * 1000)
-		}
-
-		return () => {
-			if (waterReminderRef.current) {
-				clearInterval(waterReminderRef.current)
-			}
-		}
-	}, [waterInterval, status, sendNotification])
+	})
 
 	const [workCompleted, setWorkCompleted] = useState(false)
 	const [restCompleted, setRestCompleted] = useState(false)
@@ -359,44 +239,6 @@ export function WorkTimer() {
 			setRestCompleted(false)
 		}
 	}, [restTime, restDuration, restCompleted, mode, sendNotification])
-
-	const handleModeChange = (newMode: 'work' | 'rest') => {
-		if (timerReminderRef.current) {
-			clearInterval(timerReminderRef.current)
-			timerReminderRef.current = null
-		}
-		isNaggingRef.current = false
-
-		setMode(newMode)
-		setIsSessionActive(true)
-		if (newMode === 'work') {
-			setStatus('working')
-			resetRestTime()
-		} else {
-			setStatus('resting')
-			resetWorkTime()
-		}
-	}
-
-	const handlePause = () => {
-		if (status === 'idle') {
-			setIsSessionActive(true)
-			if (mode === 'work') {
-				setStatus('working')
-			} else {
-				setStatus('resting')
-			}
-		} else {
-			setStatus('idle')
-			setIsSessionActive(false)
-		}
-	}
-
-	const handleReset = () => {
-		resetTimers()
-		setStatus('idle')
-		setIsSessionActive(false)
-	}
 
 	const formatTime = (seconds: number) => {
 		const h = Math.floor(seconds / 3600)
@@ -565,20 +407,7 @@ export function WorkTimer() {
 									min='0'
 									type='number'
 									value={workDurationInput}
-									onChange={e => {
-										const value = e.target.value
-
-										setWorkDurationInput(value)
-										if (value === '' || value === '-') {
-											setWorkDuration(0)
-										} else {
-											const num = Number(value)
-
-											if (!isNaN(num)) {
-												setWorkDuration(num)
-											}
-										}
-									}}
+									onChange={e => handleWorkDurationChange(e.target.value)}
 								/>
 							</div>
 
@@ -593,20 +422,7 @@ export function WorkTimer() {
 									min='0'
 									type='number'
 									value={restDurationInput}
-									onChange={e => {
-										const value = e.target.value
-
-										setRestDurationInput(value)
-										if (value === '' || value === '-') {
-											setRestDuration(0)
-										} else {
-											const num = Number(value)
-
-											if (!isNaN(num)) {
-												setRestDuration(num)
-											}
-										}
-									}}
+									onChange={e => handleRestDurationChange(e.target.value)}
 								/>
 							</div>
 
@@ -621,20 +437,7 @@ export function WorkTimer() {
 									min='0'
 									type='number'
 									value={timerIntervalInput}
-									onChange={e => {
-										const value = e.target.value
-
-										setTimerIntervalInput(value)
-										if (value === '' || value === '-') {
-											setTimerInterval(0)
-										} else {
-											const num = Number(value)
-
-											if (!isNaN(num)) {
-												setTimerInterval(num)
-											}
-										}
-									}}
+									onChange={e => handleTimerIntervalChange(e.target.value)}
 								/>
 							</div>
 
@@ -649,20 +452,7 @@ export function WorkTimer() {
 									min='0'
 									type='number'
 									value={waterIntervalInput}
-									onChange={e => {
-										const value = e.target.value
-
-										setWaterIntervalInput(value)
-										if (value === '' || value === '-') {
-											setWaterInterval(0)
-										} else {
-											const num = Number(value)
-
-											if (!isNaN(num)) {
-												setWaterInterval(num)
-											}
-										}
-									}}
+									onChange={e => handleWaterIntervalChange(e.target.value)}
 								/>
 							</div>
 
