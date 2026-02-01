@@ -539,9 +539,13 @@ export function WorkTimer() {
 									type='number'
 									value={workDuration}
 									onChange={e => {
-										const value = e.target.value.replace(/^0+/, '') || '0'
+										const value = e.target.value
 
-										setWorkDuration(Number(value))
+										if (value === '') {
+											setWorkDuration(0)
+										} else {
+											setWorkDuration(Number(value))
+										}
 									}}
 								/>
 							</div>
@@ -558,9 +562,13 @@ export function WorkTimer() {
 									type='number'
 									value={restDuration}
 									onChange={e => {
-										const value = e.target.value.replace(/^0+/, '') || '0'
+										const value = e.target.value
 
-										setRestDuration(Number(value))
+										if (value === '') {
+											setRestDuration(0)
+										} else {
+											setRestDuration(Number(value))
+										}
 									}}
 								/>
 							</div>
@@ -577,9 +585,13 @@ export function WorkTimer() {
 									type='number'
 									value={timerInterval}
 									onChange={e => {
-										const value = e.target.value.replace(/^0+/, '') || '0'
+										const value = e.target.value
 
-										setTimerInterval(Number(value))
+										if (value === '') {
+											setTimerInterval(0)
+										} else {
+											setTimerInterval(Number(value))
+										}
 									}}
 								/>
 							</div>
@@ -596,9 +608,13 @@ export function WorkTimer() {
 									type='number'
 									value={waterInterval}
 									onChange={e => {
-										const value = e.target.value.replace(/^0+/, '') || '0'
+										const value = e.target.value
 
-										setWaterInterval(Number(value))
+										if (value === '') {
+											setWaterInterval(0)
+										} else {
+											setWaterInterval(Number(value))
+										}
 									}}
 								/>
 							</div>
@@ -758,7 +774,7 @@ export function WorkTimer() {
 					/>
 					{isCameraLoading && (
 						<div className='absolute inset-0 flex items-center justify-center bg-black/50 text-white'>
-							<span className='animate-pulse'>Starting Camera...</span>
+							<span className='animate-pulse text-center'>Starting Camera...</span>
 						</div>
 					)}
 				</div>
