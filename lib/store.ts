@@ -19,10 +19,12 @@ interface WorkTimerState {
 	useBrowserNotifications: boolean
 	useTelegramNotifications: boolean
 	isSessionActive: boolean
+	isManuallyPaused: boolean
 
 	setMode: (mode: Mode) => void
 	setStatus: (status: Status) => void
 	setIsSessionActive: (active: boolean) => void
+	setIsManuallyPaused: (paused: boolean) => void
 	incrementWorkTime: (amount?: number) => void
 	incrementRestTime: (amount?: number) => void
 	resetWorkTime: () => void
@@ -56,10 +58,12 @@ export const useWorkTimerStore = create<WorkTimerState>()(
 			useBrowserNotifications: true,
 			useTelegramNotifications: true,
 			isSessionActive: false,
+			isManuallyPaused: false,
 
 			setMode: mode => set({ mode }),
 			setStatus: status => set({ status }),
 			setIsSessionActive: active => set({ isSessionActive: active }),
+			setIsManuallyPaused: paused => set({ isManuallyPaused: paused }),
 			incrementWorkTime: (amount = 1) =>
 				set(state => ({ workTime: state.workTime + amount })),
 			incrementRestTime: (amount = 1) =>

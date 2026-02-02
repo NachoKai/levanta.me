@@ -51,6 +51,7 @@ export function WorkTimer() {
 		useBrowserNotifications,
 		useTelegramNotifications,
 		isSessionActive,
+		isManuallyPaused,
 		setMode,
 		setStatus,
 		incrementWorkTime,
@@ -68,6 +69,7 @@ export function WorkTimer() {
 		setUseBrowserNotifications,
 		setUseTelegramNotifications,
 		setIsSessionActive,
+		setIsManuallyPaused,
 	} = useWorkTimerStore()
 
 	const {
@@ -135,6 +137,7 @@ export function WorkTimer() {
 
 		setMode(newMode)
 		setIsSessionActive(true)
+		setIsManuallyPaused(false)
 		if (newMode === 'work') {
 			setStatus('working')
 			resetRestTime()
@@ -147,6 +150,7 @@ export function WorkTimer() {
 	const handlePause = () => {
 		if (status === 'idle') {
 			setIsSessionActive(true)
+			setIsManuallyPaused(false)
 			if (mode === 'work') {
 				setStatus('working')
 			} else {
@@ -155,6 +159,7 @@ export function WorkTimer() {
 		} else {
 			setStatus('idle')
 			setIsSessionActive(false)
+			setIsManuallyPaused(true)
 		}
 	}
 
@@ -162,6 +167,7 @@ export function WorkTimer() {
 		resetTimers()
 		setStatus('idle')
 		setIsSessionActive(false)
+		setIsManuallyPaused(false)
 	}
 
 	useKeyboardShortcuts({
@@ -209,18 +215,20 @@ export function WorkTimer() {
 		if (workCompleted || restCompleted) return
 
 		if (mode === 'work') {
-			if (isFaceDetected && status === 'idle') {
+			if (isFaceDetected && status === 'idle' && !isManuallyPaused) {
 				memoizedSetStatus('working')
 			} else if (!isFaceDetected && status === 'working') {
 				memoizedSetStatus('idle')
+				setIsManuallyPaused(false)
 			}
 		}
 
 		if (mode === 'rest') {
-			if (!isFaceDetected && status === 'idle') {
+			if (!isFaceDetected && status === 'idle' && !isManuallyPaused) {
 				memoizedSetStatus('resting')
 			} else if (isFaceDetected && status === 'resting') {
 				memoizedSetStatus('idle')
+				setIsManuallyPaused(false)
 			}
 		}
 	}, [
@@ -232,6 +240,8 @@ export function WorkTimer() {
 		memoizedSetStatus,
 		workCompleted,
 		restCompleted,
+		isManuallyPaused,
+		setIsManuallyPaused,
 	])
 
 	return (
@@ -390,9 +400,7 @@ export function WorkTimer() {
 										? status === 'working'
 											? 'Working'
 											: 'Resting'
-										: status === 'idle' &&
-										  ((mode === 'work' && workTime > 0) ||
-												(mode === 'rest' && restTime > 0))
+										: isManuallyPaused
 										? 'Paused'
 										: 'Idle'}
 								</h2>
