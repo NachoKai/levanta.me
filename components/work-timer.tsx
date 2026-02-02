@@ -31,6 +31,7 @@ import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
 import { useTimer } from '@/hooks/use-timer'
 import { useNotificationReminders } from '@/hooks/use-notification-reminders'
 import { useSettingsInputs } from '@/hooks/use-settings-inputs'
+import { useDraggable } from '@/hooks/use-draggable'
 import { HelpDialog } from '@/components/help-dialog'
 
 export function WorkTimer() {
@@ -83,8 +84,17 @@ export function WorkTimer() {
 	const [showChatId, setShowChatId] = useState(false)
 	const [workCompleted, setWorkCompleted] = useState(false)
 	const [restCompleted, setRestCompleted] = useState(false)
-	const [cameraPosition, setCameraPosition] = useState({ x: 16, y: 16 })
-	const [isDragging, setIsDragging] = useState(false)
+
+	const {
+		position: cameraPosition,
+		isDragging,
+		handleMouseDown,
+		handleTouchStart,
+	} = useDraggable({
+		initialPosition: { x: 16, y: 16 },
+		elementWidth: 192,
+		elementHeight: 144,
+	})
 	const { clearTimerReminder } = useNotificationReminders({
 		workTime,
 		restTime,
@@ -190,44 +200,6 @@ export function WorkTimer() {
 			stopCamera()
 		}
 	}, [useCameraDetection, startCamera, stopCamera])
-
-	const handleMouseDown = (e: React.MouseEvent) => {
-		setIsDragging(true)
-		e.preventDefault()
-	}
-
-	const handleMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (!isDragging) return
-
-			const newX = e.clientX - 96
-			const newY = e.clientY - 72
-			const maxX = window.innerWidth - 192
-			const maxY = window.innerHeight - 144
-
-			setCameraPosition({
-				x: Math.max(0, Math.min(newX, maxX)),
-				y: Math.max(0, Math.min(newY, maxY)),
-			})
-		},
-		[isDragging]
-	)
-
-	const handleMouseUp = useCallback(() => {
-		setIsDragging(false)
-	}, [])
-
-	useEffect(() => {
-		if (isDragging) {
-			document.addEventListener('mousemove', handleMouseMove)
-			document.addEventListener('mouseup', handleMouseUp)
-
-			return () => {
-				document.removeEventListener('mousemove', handleMouseMove)
-				document.removeEventListener('mouseup', handleMouseUp)
-			}
-		}
-	}, [isDragging, handleMouseMove, handleMouseUp])
 
 	const memoizedSetStatus = useCallback(
 		(newStatus: 'idle' | 'working' | 'resting') => {
@@ -894,6 +866,7 @@ export function WorkTimer() {
 							zIndex: 999999,
 						}}
 						onMouseDown={handleMouseDown}
+						onTouchStart={handleTouchStart}
 					>
 						<div
 							className={`
