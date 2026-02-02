@@ -365,7 +365,7 @@ export function WorkTimer() {
 					border-2 duration-300 hover:shadow-lg
 					${
 						status === 'working'
-							? 'border-primary/50 bg-primary/5 shadow-primary/20'
+							? 'border-blue-500/50 bg-blue-500/5 shadow-blue-500/20'
 							: status === 'resting'
 							? 'border-green-500/50 bg-green-500/5 shadow-green-500/20'
 							: 'border-border bg-muted/30'
@@ -379,7 +379,7 @@ export function WorkTimer() {
 								p-4 rounded-xl duration-300
 								${
 									status === 'working'
-										? 'bg-primary text-primary-foreground shadow-lg'
+										? 'bg-blue-500 text-white shadow-lg'
 										: status === 'resting'
 										? 'bg-green-500 text-white shadow-lg'
 										: 'bg-muted text-muted-foreground'
@@ -405,7 +405,7 @@ export function WorkTimer() {
 										: 'Idle'}
 								</h2>
 								{status === 'working' && (
-									<p className='text-lg text-primary font-medium'>Focus Mode</p>
+									<p className='text-lg text-blue-500 font-medium'>Focus Mode</p>
 								)}
 								{status === 'resting' && (
 									<p className='text-lg text-green-500 font-medium'>Recharge Time</p>
@@ -456,7 +456,7 @@ export function WorkTimer() {
 											h-full duration-300 ease-out
 											${
 												status === 'working'
-													? 'bg-primary'
+													? 'bg-blue-500'
 													: status === 'resting'
 													? 'bg-green-500'
 													: 'bg-muted-foreground'
