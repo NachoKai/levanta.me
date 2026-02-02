@@ -83,6 +83,8 @@ export function WorkTimer() {
 	const [showChatId, setShowChatId] = useState(false)
 	const [workCompleted, setWorkCompleted] = useState(false)
 	const [restCompleted, setRestCompleted] = useState(false)
+	const [cameraPosition, setCameraPosition] = useState({ x: 16, y: 16 })
+	const [isDragging, setIsDragging] = useState(false)
 	const { clearTimerReminder } = useNotificationReminders({
 		workTime,
 		restTime,
@@ -189,6 +191,44 @@ export function WorkTimer() {
 		}
 	}, [useCameraDetection, startCamera, stopCamera])
 
+	const handleMouseDown = (e: React.MouseEvent) => {
+		setIsDragging(true)
+		e.preventDefault()
+	}
+
+	const handleMouseMove = useCallback(
+		(e: MouseEvent) => {
+			if (!isDragging) return
+
+			const newX = e.clientX - 96
+			const newY = e.clientY - 72
+			const maxX = window.innerWidth - 192
+			const maxY = window.innerHeight - 144
+
+			setCameraPosition({
+				x: Math.max(0, Math.min(newX, maxX)),
+				y: Math.max(0, Math.min(newY, maxY)),
+			})
+		},
+		[isDragging]
+	)
+
+	const handleMouseUp = useCallback(() => {
+		setIsDragging(false)
+	}, [])
+
+	useEffect(() => {
+		if (isDragging) {
+			document.addEventListener('mousemove', handleMouseMove)
+			document.addEventListener('mouseup', handleMouseUp)
+
+			return () => {
+				document.removeEventListener('mousemove', handleMouseMove)
+				document.removeEventListener('mouseup', handleMouseUp)
+			}
+		}
+	}, [isDragging, handleMouseMove, handleMouseUp])
+
 	const memoizedSetStatus = useCallback(
 		(newStatus: 'idle' | 'working' | 'resting') => {
 			setStatus(newStatus)
@@ -199,8 +239,6 @@ export function WorkTimer() {
 	useEffect(() => {
 		if (!useCameraDetection) return
 		if (!isSessionActive) return
-
-		// Don't interfere with timer completion states
 		if (workCompleted || restCompleted) return
 
 		if (mode === 'work') {
@@ -846,13 +884,22 @@ export function WorkTimer() {
 			{useCameraDetection &&
 				createPortal(
 					<div
-						className='fixed bottom-4 right-4 z-[999999] group'
-						style={{ position: 'fixed', bottom: '16px', right: '16px', zIndex: 999999 }}
+						className={`fixed z-[999999] group ${
+							isDragging ? 'cursor-grabbing' : 'cursor-grab'
+						}`}
+						style={{
+							position: 'fixed',
+							left: `${cameraPosition.x}px`,
+							top: `${cameraPosition.y}px`,
+							zIndex: 999999,
+						}}
+						onMouseDown={handleMouseDown}
 					>
 						<div
 							className={`
 								relative rounded-xl overflow-hidden shadow-2xl bg-black  duration-300
-								w-20 md:w-32 aspect-[4/3] hover:scale-105 hover:shadow-3xl
+								w-32 md:w-40 aspect-[4/3] hover:scale-105 hover:shadow-3xl select-none
+								${isDragging ? 'scale-95' : ''}
 								${
 									cameraError
 										? 'ring-4 ring-red-500/50 border-2 border-red-500'
@@ -876,7 +923,6 @@ export function WorkTimer() {
 								<div className='absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm text-white'>
 									<div className='text-center'>
 										<div className='animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2' />
-										<span className='text-sm'>Starting Camera...</span>
 									</div>
 								</div>
 							)}
