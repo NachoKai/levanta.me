@@ -12,6 +12,7 @@ export function useFaceDetection() {
 	const streamRef = useRef<MediaStream | null>(null)
 	const detectorRef = useRef<any>(null)
 	const animationFrameRef = useRef<number | null>(null)
+	const detectionIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
 	const loadFaceDetector = useCallback(async () => {
 		try {
@@ -68,8 +69,6 @@ export function useFaceDetection() {
 			}
 
 			if (displaySize.width === 0 || displaySize.height === 0) {
-				animationFrameRef.current = requestAnimationFrame(detectFaces)
-
 				return
 			}
 
@@ -89,8 +88,6 @@ export function useFaceDetection() {
 			}
 
 			setIsFaceDetected(detections.length > 0)
-
-			animationFrameRef.current = requestAnimationFrame(detectFaces)
 		} catch (err) {
 			console.error('Face detection error:', err)
 		}
@@ -123,7 +120,7 @@ export function useFaceDetection() {
 				}
 			}
 
-			detectFaces()
+			detectionIntervalRef.current = setInterval(detectFaces, 2000) // Check face every 2 seconds
 			setIsLoading(false)
 		} catch (err) {
 			console.error('Camera access error:', err)
@@ -136,6 +133,11 @@ export function useFaceDetection() {
 		if (animationFrameRef.current) {
 			cancelAnimationFrame(animationFrameRef.current)
 			animationFrameRef.current = null
+		}
+
+		if (detectionIntervalRef.current) {
+			clearInterval(detectionIntervalRef.current)
+			detectionIntervalRef.current = null
 		}
 
 		if (streamRef.current) {

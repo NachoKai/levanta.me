@@ -317,10 +317,10 @@ export function WorkTimer() {
 									<Coffee className='h-6 w-6' />
 								</div>
 								<div className='flex-1'>
-									<p className='text-lg font-semibold text-blue-700 dark:text-blue-300'>
+									<p className='text-xl font-semibold text-blue-700 dark:text-blue-300'>
 										Work Complete! Time for a Break
 									</p>
-									<p className='text-sm text-blue-600/70 dark:text-blue-400/70 mt-1'>
+									<p className='text-base text-blue-600/70 dark:text-blue-400/70 mt-1'>
 										You&apos;ve worked for {workDuration} minutes. Click Rest to start
 										your break.
 									</p>
@@ -337,10 +337,10 @@ export function WorkTimer() {
 									<Briefcase className='h-6 w-6' />
 								</div>
 								<div className='flex-1'>
-									<p className='text-lg font-semibold text-green-700 dark:text-green-300'>
+									<p className='text-xl font-semibold text-green-700 dark:text-green-300'>
 										Rest Complete! Ready to Work
 									</p>
-									<p className='text-sm text-green-600/70 dark:text-green-400/70 mt-1'>
+									<p className='text-base text-green-600/70 dark:text-green-400/70 mt-1'>
 										You&apos;ve rested for {restDuration} minutes. Click Work to resume.
 									</p>
 								</div>
