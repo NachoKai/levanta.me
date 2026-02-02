@@ -45,6 +45,9 @@ export function useDraggable({
 		(e: TouchEvent) => {
 			if (!isDragging) return
 
+			e.preventDefault()
+			e.stopPropagation()
+
 			const touch = e.touches[0]
 			const newX = touch.clientX - elementWidth / 2
 			const newY = touch.clientY - elementHeight / 2
