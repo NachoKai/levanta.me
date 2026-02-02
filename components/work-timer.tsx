@@ -482,9 +482,6 @@ export function WorkTimer() {
 
 						{/* Duration Settings */}
 						<div className='space-y-6'>
-							<h4 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
-								Time Durations
-							</h4>
 							<div className='grid gap-6 md:grid-cols-2'>
 								<div className='space-y-3'>
 									<Label
@@ -586,9 +583,6 @@ export function WorkTimer() {
 
 						{/* Telegram Settings */}
 						<div className='space-y-6'>
-							<h4 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
-								Telegram Integration
-							</h4>
 							<div className='grid gap-6 md:grid-cols-2'>
 								<div className='space-y-3'>
 									<Label
@@ -661,10 +655,7 @@ export function WorkTimer() {
 						</div>
 
 						{/* Feature Toggles */}
-						<div className='space-y-6 pt-6 border-t'>
-							<h4 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
-								Features
-							</h4>
+						<div className='space-y-6 pt-6'>
 							<div className='space-y-4'>
 								<div className='flex items-center justify-between p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 '>
 									<div className='flex items-center gap-3'>
