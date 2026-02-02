@@ -352,7 +352,7 @@ export function WorkTimer() {
 				{/* Timer Display */}
 				<Card
 					className={`
-					border-2 transition-all duration-300 hover:shadow-lg
+					border-2 duration-300 hover:shadow-lg
 					${
 						status === 'working'
 							? 'border-primary/50 bg-primary/5 shadow-primary/20'
@@ -366,7 +366,7 @@ export function WorkTimer() {
 						<div className='flex items-center gap-4 mb-8'>
 							<div
 								className={`
-								p-4 rounded-xl transition-all duration-300
+								p-4 rounded-xl duration-300
 								${
 									status === 'working'
 										? 'bg-primary text-primary-foreground shadow-lg'
@@ -445,7 +445,7 @@ export function WorkTimer() {
 									<div className='w-full bg-muted rounded-full h-3 overflow-hidden'>
 										<div
 											className={`
-											h-full transition-all duration-300 ease-out
+											h-full duration-300 ease-out
 											${
 												status === 'working'
 													? 'bg-primary'
@@ -554,7 +554,7 @@ export function WorkTimer() {
 										onChange={e => handleTimerIntervalChange(e.target.value)}
 									/>
 									<p className='text-xs text-muted-foreground'>
-										Minutes between status notifications
+										Minutes between timer reminders
 									</p>
 								</div>
 
