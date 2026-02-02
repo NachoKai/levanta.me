@@ -350,182 +350,122 @@ export function WorkTimer() {
 				)}
 
 				{/* Timer Display */}
-				<div className='grid gap-6 md:grid-cols-2'>
-					<Card
-						className={`
-						border-2  duration-300 hover:shadow-lg
-						${
-							mode === 'work' && status !== 'idle'
-								? 'border-primary/30 bg-primary/5 shadow-primary/10'
-								: 'border-border'
-						}
-					`}
-					>
-						<CardContent className='p-8'>
-							<div className='flex items-center gap-3 mb-6 text-muted-foreground'>
-								<div
-									className={`
-									p-2 rounded-lg
-									${mode === 'work' && status !== 'idle' ? 'bg-primary/20 text-primary' : 'bg-muted'}
-								`}
-								>
-									<Briefcase className='h-6 w-6' />
-								</div>
-								<div>
-									<h3 className='font-semibold text-sm uppercase tracking-wide'>
-										Work Time
-									</h3>
-								</div>
-							</div>
-							<p className='text-5xl md:text-6xl font-bold font-mono tabular-nums tracking-tight'>
-								{formatTime(workTime)}
-							</p>
-							{workDuration > 0 && (
-								<div className='mt-4'>
-									<div className='flex items-center justify-between text-sm text-muted-foreground mb-2'>
-										<span>Progress</span>
-										<span>
-											{Math.min(100, Math.round((workTime / (workDuration * 60)) * 100))}%
-										</span>
-									</div>
-									<div className='w-full bg-muted rounded-full h-2 overflow-hidden'>
-										<div
-											className='h-full bg-primary  duration-300 ease-out'
-											style={{
-												width: `${Math.min(
-													100,
-													(workTime / (workDuration * 60)) * 100
-												)}%`,
-											}}
-										/>
-									</div>
-								</div>
-							)}
-						</CardContent>
-					</Card>
-
-					<Card
-						className={`
-						border-2  duration-300 hover:shadow-lg
-						${
-							mode === 'rest' && status !== 'idle'
-								? 'border-green-500/30 bg-green-500/5 shadow-green-500/10'
-								: 'border-border'
-						}
-					`}
-					>
-						<CardContent className='p-8'>
-							<div className='flex items-center gap-3 mb-6 text-muted-foreground'>
-								<div
-									className={`
-									p-2 rounded-lg
-									${mode === 'rest' && status !== 'idle' ? 'bg-green-500/20 text-green-500' : 'bg-muted'}
-								`}
-								>
-									<Coffee className='h-6 w-6' />
-								</div>
-								<div>
-									<h3 className='font-semibold text-sm uppercase tracking-wide'>
-										Rest Time
-									</h3>
-								</div>
-							</div>
-							<p className='text-5xl md:text-6xl font-bold font-mono tabular-nums tracking-tight'>
-								{formatTime(restTime)}
-							</p>
-							{restDuration > 0 && (
-								<div className='mt-4'>
-									<div className='flex items-center justify-between text-sm text-muted-foreground mb-2'>
-										<span>Progress</span>
-										<span>
-											{Math.min(100, Math.round((restTime / (restDuration * 60)) * 100))}%
-										</span>
-									</div>
-									<div className='w-full bg-muted rounded-full h-2 overflow-hidden'>
-										<div
-											className='h-full bg-green-500  duration-300 ease-out'
-											style={{
-												width: `${Math.min(
-													100,
-													(restTime / (restDuration * 60)) * 100
-												)}%`,
-											}}
-										/>
-									</div>
-								</div>
-							)}
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Current Status */}
 				<Card
 					className={`
-					border-2  duration-300
+					border-2 transition-all duration-300 hover:shadow-lg
 					${
 						status === 'working'
-							? 'border-primary/30 bg-primary/5 shadow-primary/10'
+							? 'border-primary/50 bg-primary/5 shadow-primary/20'
 							: status === 'resting'
-							? 'border-green-500/30 bg-green-500/5 shadow-green-500/10'
+							? 'border-green-500/50 bg-green-500/5 shadow-green-500/20'
 							: 'border-border bg-muted/30'
 					}
 				`}
 				>
 					<CardContent className='p-8'>
-						<div className='flex items-center justify-between'>
+						<div className='flex items-center gap-4 mb-8'>
+							<div
+								className={`
+								p-4 rounded-xl transition-all duration-300
+								${
+									status === 'working'
+										? 'bg-primary text-primary-foreground shadow-lg'
+										: status === 'resting'
+										? 'bg-green-500 text-white shadow-lg'
+										: 'bg-muted text-muted-foreground'
+								}
+							`}
+							>
+								{status === 'working' ? (
+									<Briefcase className='h-8 w-8' />
+								) : status === 'resting' ? (
+									<Coffee className='h-8 w-8' />
+								) : (
+									<Clock className='h-8 w-8' />
+								)}
+							</div>
 							<div className='flex-1'>
-								<p className='text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3'>
-									Current Status
-								</p>
-								<div className='flex items-center gap-3'>
-									<div
-										className={`
-										p-3 rounded-xl  duration-300
-										${
-											status === 'working'
-												? 'bg-primary text-primary-foreground shadow-lg'
-												: status === 'resting'
-												? 'bg-green-500 text-white shadow-lg'
-												: 'bg-muted text-muted-foreground'
-										}
-									`}
-									>
-										{status === 'working' ? (
-											<Briefcase className='h-8 w-8' />
-										) : status === 'resting' ? (
-											<Coffee className='h-8 w-8' />
-										) : (
-											<Clock className='h-8 w-8' />
-										)}
-									</div>
-									<div>
-										<p className='text-4xl font-bold capitalize'>
-											{status === 'working'
-												? 'Working'
-												: status === 'resting'
-												? 'Resting'
-												: 'Idle'}
+								<h2 className='text-3xl font-bold capitalize mb-2'>
+									{status === 'working' || status === 'resting'
+										? status === 'working'
+											? 'Working'
+											: 'Resting'
+										: status === 'idle' &&
+										  ((mode === 'work' && workTime > 0) ||
+												(mode === 'rest' && restTime > 0))
+										? 'Paused'
+										: 'Idle'}
+								</h2>
+								{status === 'working' && (
+									<p className='text-lg text-primary font-medium'>Focus Mode</p>
+								)}
+								{status === 'resting' && (
+									<p className='text-lg text-green-500 font-medium'>Recharge Time</p>
+								)}
+								{status === 'idle' &&
+									!(
+										(mode === 'work' && workTime > 0) ||
+										(mode === 'rest' && restTime > 0)
+									) && (
+										<p className='text-lg text-muted-foreground font-medium'>
+											Ready to Start
 										</p>
-										{status === 'idle' &&
-											((mode === 'work' && workTime > 0) ||
-												(mode === 'rest' && restTime > 0)) && (
-												<p className='text-sm text-muted-foreground mt-1'>
-													Session Paused
-												</p>
+									)}
+								{status === 'idle' &&
+									((mode === 'work' && workTime > 0) ||
+										(mode === 'rest' && restTime > 0)) && (
+										<p className='text-lg text-muted-foreground font-medium'>
+											Ready to Resume
+										</p>
+									)}
+							</div>
+						</div>
+
+						<div className='text-center'>
+							<p className='text-6xl md:text-7xl font-bold font-mono tabular-nums tracking-tight mb-6'>
+								{formatTime(mode === 'work' ? workTime : restTime)}
+							</p>
+
+							{(mode === 'work' ? workDuration : restDuration) > 0 && (
+								<div className='max-w-xxl mx-auto'>
+									<div className='flex items-center justify-between text-sm text-muted-foreground mb-2'>
+										<span>{mode === 'work' ? 'Work' : 'Rest'} Progress</span>
+										<span>
+											{Math.min(
+												100,
+												Math.round(
+													((mode === 'work' ? workTime : restTime) /
+														((mode === 'work' ? workDuration : restDuration) * 60)) *
+														100
+												)
 											)}
-										{status === 'working' && (
-											<p className='text-sm text-primary mt-1 font-medium'>
-												Focus Mode Active
-											</p>
-										)}
-										{status === 'resting' && (
-											<p className='text-sm text-green-500 mt-1 font-medium'>
-												Recharge Time
-											</p>
-										)}
+											%
+										</span>
+									</div>
+									<div className='w-full bg-muted rounded-full h-3 overflow-hidden'>
+										<div
+											className={`
+											h-full transition-all duration-300 ease-out
+											${
+												status === 'working'
+													? 'bg-primary'
+													: status === 'resting'
+													? 'bg-green-500'
+													: 'bg-muted-foreground'
+											}
+											`}
+											style={{
+												width: `${Math.min(
+													100,
+													((mode === 'work' ? workTime : restTime) /
+														((mode === 'work' ? workDuration : restDuration) * 60)) *
+														100
+												)}%`,
+											}}
+										/>
 									</div>
 								</div>
-							</div>
+							)}
 						</div>
 					</CardContent>
 				</Card>
