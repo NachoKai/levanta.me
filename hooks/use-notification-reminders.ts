@@ -27,6 +27,45 @@ export function useNotificationReminders({
 	const timerReminderRef = useRef<NodeJS.Timeout | null>(null)
 	const waterReminderRef = useRef<NodeJS.Timeout | null>(null)
 	const isNaggingRef = useRef<boolean>(false)
+	const workCompletedRef = useRef<boolean>(false)
+	const restCompletedRef = useRef<boolean>(false)
+
+	// Completion notifications effect
+	useEffect(() => {
+		// Work completion notification
+		if (
+			workDuration > 0 &&
+			workTime >= workDuration * 60 &&
+			!workCompletedRef.current &&
+			mode === 'work' &&
+			status === 'working'
+		) {
+			workCompletedRef.current = true
+			sendNotification(
+				'Work time finished! ☕',
+				`You've completed ${workDuration} minutes of work. Click Rest when you're ready for a break.`
+			)
+		} else if (workTime < workDuration * 60 || mode !== 'work') {
+			workCompletedRef.current = false
+		}
+
+		// Rest completion notification
+		if (
+			restDuration > 0 &&
+			restTime >= restDuration * 60 &&
+			!restCompletedRef.current &&
+			mode === 'rest' &&
+			status === 'resting'
+		) {
+			restCompletedRef.current = true
+			sendNotification(
+				'Rest time finished! ⏰',
+				`You've rested for ${restDuration} minutes. Click Work when you're ready to resume.`
+			)
+		} else if (restTime < restDuration * 60 || mode !== 'rest') {
+			restCompletedRef.current = false
+		}
+	}, [workTime, restTime, workDuration, restDuration, mode, status, sendNotification])
 
 	// Timer reminder effect
 	useEffect(() => {
@@ -46,13 +85,10 @@ export function useNotificationReminders({
 
 		if (shouldNag && !isNaggingRef.current) {
 			isNaggingRef.current = true
-
 			timerReminderRef.current = setInterval(() => {
 				const currentState = useWorkTimerStore.getState()
 
-				if (currentState.status === 'idle') {
-					return
-				}
+				if (currentState.status === 'idle') return
 
 				const overtimeMinutes =
 					currentState.mode === 'work'
@@ -83,7 +119,6 @@ export function useNotificationReminders({
 
 		if (!shouldNag && isNaggingRef.current) {
 			isNaggingRef.current = false
-
 			if (timerReminderRef.current) {
 				clearInterval(timerReminderRef.current)
 				timerReminderRef.current = null

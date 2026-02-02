@@ -33,6 +33,7 @@ import { useNotificationReminders } from '@/hooks/use-notification-reminders'
 import { useSettingsInputs } from '@/hooks/use-settings-inputs'
 import { useDraggable } from '@/hooks/use-draggable'
 import { HelpDialog } from '@/components/help-dialog'
+import { formatTime } from '@/lib/utils'
 
 export function WorkTimer() {
 	const {
@@ -82,8 +83,10 @@ export function WorkTimer() {
 	const { theme, toggleTheme } = useTheme()
 	const [showToken, setShowToken] = useState(false)
 	const [showChatId, setShowChatId] = useState(false)
-	const [workCompleted, setWorkCompleted] = useState(false)
-	const [restCompleted, setRestCompleted] = useState(false)
+	const workCompleted =
+		workDuration > 0 && workTime >= workDuration * 60 && mode === 'work'
+	const restCompleted =
+		restDuration > 0 && restTime >= restDuration * 60 && mode === 'rest'
 
 	const {
 		position: cameraPosition,
@@ -176,14 +179,6 @@ export function WorkTimer() {
 	})
 
 	useEffect(() => {
-		const formatTime = (seconds: number) => {
-			const h = Math.floor(seconds / 3600)
-			const m = Math.floor((seconds % 3600) / 60)
-			const s = seconds % 60
-
-			return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`
-		}
-
 		if (status === 'working') {
 			document.title = `⏰ Working - ${formatTime(workTime)} - Levanta.me`
 		} else if (status === 'resting') {
@@ -238,56 +233,6 @@ export function WorkTimer() {
 		workCompleted,
 		restCompleted,
 	])
-
-	useEffect(() => {
-		if (
-			workDuration > 0 &&
-			workTime >= workDuration * 60 &&
-			!workCompleted &&
-			mode === 'work'
-		) {
-			setWorkCompleted(true)
-			try {
-				sendNotification(
-					'Work time finished. Go for a break!',
-					`You've completed ${workDuration} minutes of work. Click Rest when you're ready for a break.`
-				)
-			} catch (err) {
-				console.warn('Work completion notification failed:', err)
-			}
-		} else if (workTime < workDuration * 60 || mode !== 'work') {
-			setWorkCompleted(false)
-		}
-	}, [workTime, workDuration, workCompleted, mode, sendNotification])
-
-	useEffect(() => {
-		if (
-			restDuration > 0 &&
-			restTime >= restDuration * 60 &&
-			!restCompleted &&
-			mode === 'rest'
-		) {
-			setRestCompleted(true)
-			try {
-				sendNotification(
-					'Rest time finished!',
-					`You've rested for ${restDuration} minutes. Click Work when you're ready to resume.`
-				)
-			} catch (err) {
-				console.warn('Rest completion notification failed:', err)
-			}
-		} else if (restTime < restDuration * 60 || mode !== 'rest') {
-			setRestCompleted(false)
-		}
-	}, [restTime, restDuration, restCompleted, mode, sendNotification])
-
-	const formatTime = (seconds: number) => {
-		const h = Math.floor(seconds / 3600)
-		const m = Math.floor((seconds % 3600) / 60)
-		const s = seconds % 60
-
-		return `${h}h ${m}m ${s}s`
-	}
 
 	return (
 		<>
