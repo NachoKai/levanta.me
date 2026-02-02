@@ -310,7 +310,7 @@ export function WorkTimer() {
 
 				{/* Completion Notifications */}
 				{workCompleted && mode === 'work' && (
-					<Card className='border-2 border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-blue-600/10 shadow-lg shadow-blue-500/10 animate-pulse'>
+					<Card className='border-2 border-blue-500/30 bg-linear-to-r from-blue-500/10 to-blue-600/10 shadow-lg shadow-blue-500/10 animate-pulse'>
 						<CardContent className='p-6'>
 							<div className='flex items-center gap-4'>
 								<div className='p-3 bg-blue-500 text-white rounded-full'>
@@ -330,7 +330,7 @@ export function WorkTimer() {
 					</Card>
 				)}
 				{restCompleted && mode === 'rest' && (
-					<Card className='border-2 border-green-500/30 bg-gradient-to-r from-green-500/10 to-green-600/10 shadow-lg shadow-green-500/10 animate-pulse'>
+					<Card className='border-2 border-green-500/30 bg-linear-to-r from-green-500/10 to-green-600/10 shadow-lg shadow-green-500/10 animate-pulse'>
 						<CardContent className='p-6'>
 							<div className='flex items-center gap-4'>
 								<div className='p-3 bg-green-500 text-white rounded-full'>
@@ -741,7 +741,7 @@ export function WorkTimer() {
 			{useCameraDetection &&
 				createPortal(
 					<div
-						className={`fixed z-[999999] group ${
+						className={`fixed z-999999 group ${
 							isDragging ? 'cursor-grabbing' : 'cursor-grab'
 						}`}
 						style={{
@@ -756,7 +756,7 @@ export function WorkTimer() {
 						<div
 							className={`
 								relative rounded-xl overflow-hidden shadow-2xl bg-black  duration-300
-								w-32 md:w-40 aspect-[4/3] hover:scale-105 hover:shadow-3xl select-none
+								w-32 md:w-40 aspect-4/3 hover:scale-105 hover:shadow-3xl select-none
 								${isDragging ? 'scale-95' : ''}
 								${
 									cameraError
