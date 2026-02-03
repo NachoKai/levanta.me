@@ -21,78 +21,64 @@ export function useSettingsInputs({
 	onTimerIntervalChange: (value: number) => void
 	onWaterIntervalChange: (value: number) => void
 }) {
-	const [workDurationInput, setWorkDurationInput] = useState(String(workDuration))
-	const [restDurationInput, setRestDurationInput] = useState(String(restDuration))
-	const [timerIntervalInput, setTimerIntervalInput] = useState(String(timerInterval))
-	const [waterIntervalInput, setWaterIntervalInput] = useState(String(waterInterval))
+	const [workDurationInput, setWorkDurationInput] = useState(`${workDuration}`)
+	const [restDurationInput, setRestDurationInput] = useState(`${restDuration}`)
+	const [timerIntervalInput, setTimerIntervalInput] = useState(`${timerInterval}`)
+	const [waterIntervalInput, setWaterIntervalInput] = useState(`${waterInterval}`)
 
 	useEffect(() => {
-		setWorkDurationInput(String(workDuration))
+		setWorkDurationInput(`${workDuration}`)
 	}, [workDuration])
 
 	useEffect(() => {
-		setRestDurationInput(String(restDuration))
+		setRestDurationInput(`${restDuration}`)
 	}, [restDuration])
 
 	useEffect(() => {
-		setTimerIntervalInput(String(timerInterval))
+		setTimerIntervalInput(`${timerInterval}`)
 	}, [timerInterval])
 
 	useEffect(() => {
-		setWaterIntervalInput(String(waterInterval))
+		setWaterIntervalInput(`${waterInterval}`)
 	}, [waterInterval])
 
-	const handleWorkDurationChange = (value: string) => {
-		setWorkDurationInput(value)
-		if (value === '' || value === '-') {
-			onWorkDurationChange(0)
-		} else {
-			const num = Number(value)
+	const createNumberInputHandler = (
+		setter: (value: string) => void,
+		onChange: (value: number) => void
+	) => {
+		return (value: string) => {
+			setter(value)
+			if (value === '' || value === '-') {
+				onChange(0)
+			} else {
+				const num = Number(value)
 
-			if (!isNaN(num)) {
-				onWorkDurationChange(num)
+				if (!isNaN(num)) {
+					onChange(num)
+				}
 			}
 		}
 	}
 
-	const handleRestDurationChange = (value: string) => {
-		setRestDurationInput(value)
-		if (value === '' || value === '-') {
-			onRestDurationChange(0)
-		} else {
-			const num = Number(value)
+	const handleWorkDurationChange = createNumberInputHandler(
+		setWorkDurationInput,
+		onWorkDurationChange
+	)
 
-			if (!isNaN(num)) {
-				onRestDurationChange(num)
-			}
-		}
-	}
+	const handleRestDurationChange = createNumberInputHandler(
+		setRestDurationInput,
+		onRestDurationChange
+	)
 
-	const handleTimerIntervalChange = (value: string) => {
-		setTimerIntervalInput(value)
-		if (value === '' || value === '-') {
-			onTimerIntervalChange(0)
-		} else {
-			const num = Number(value)
+	const handleTimerIntervalChange = createNumberInputHandler(
+		setTimerIntervalInput,
+		onTimerIntervalChange
+	)
 
-			if (!isNaN(num)) {
-				onTimerIntervalChange(num)
-			}
-		}
-	}
-
-	const handleWaterIntervalChange = (value: string) => {
-		setWaterIntervalInput(value)
-		if (value === '' || value === '-') {
-			onWaterIntervalChange(0)
-		} else {
-			const num = Number(value)
-
-			if (!isNaN(num)) {
-				onWaterIntervalChange(num)
-			}
-		}
-	}
+	const handleWaterIntervalChange = createNumberInputHandler(
+		setWaterIntervalInput,
+		onWaterIntervalChange
+	)
 
 	return {
 		workDurationInput,

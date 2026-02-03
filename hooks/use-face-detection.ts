@@ -36,14 +36,17 @@ export function useFaceDetection() {
 				faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
 			])
 
-			const failedLoads = loadResults.filter(result => result.status === 'rejected')
+			const failedLoadReasons = loadResults.reduce((reasons, result) => {
+				if (result.status === 'rejected') {
+					reasons.push(result.reason)
+				}
 
-			if (failedLoads.length > 0) {
-				console.warn(
-					'Some models failed to load:',
-					failedLoads.map(r => r.reason)
-				)
-				if (failedLoads.length === loadResults.length) {
+				return reasons
+			}, [] as any[])
+
+			if (failedLoadReasons.length > 0) {
+				console.warn('Some models failed to load:', failedLoadReasons)
+				if (failedLoadReasons.length === loadResults.length) {
 					throw new Error('All models failed to load')
 				}
 			}

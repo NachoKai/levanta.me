@@ -7,8 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatTime(seconds: number) {
 	const h = Math.floor(seconds / 3600)
-	const m = Math.floor((seconds % 3600) / 60)
-	const s = seconds % 60
+	const remaining = seconds % 3600
+	const m = Math.floor(remaining / 60)
+	const s = remaining % 60
 
 	return `${h}h ${m}m ${s}s`
 }
