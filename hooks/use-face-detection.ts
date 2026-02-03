@@ -30,11 +30,23 @@ export function useFaceDetection() {
 				modelUrl = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model'
 			}
 
-			await Promise.all([
+			const loadResults = await Promise.allSettled([
 				faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl),
 				faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl),
 				faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
 			])
+
+			const failedLoads = loadResults.filter(result => result.status === 'rejected')
+
+			if (failedLoads.length > 0) {
+				console.warn(
+					'Some models failed to load:',
+					failedLoads.map(r => r.reason)
+				)
+				if (failedLoads.length === loadResults.length) {
+					throw new Error('All models failed to load')
+				}
+			}
 
 			detectorRef.current = faceapi
 
